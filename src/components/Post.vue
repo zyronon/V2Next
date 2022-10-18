@@ -66,13 +66,15 @@ export default {
     }
   },
   watch: {
-    'post.content_rendered'(newVal) {
-      this.$nextTick(() => {
-        if (!this.$refs.content) return
-        let rect = this.$refs.content.getBoundingClientRect()
-        console.log('res',rect)
-        this.mask = rect.height > 250
-      })
+    'post.content_rendered': {
+      handler(newVal) {
+        this.$nextTick(() => {
+          if (!this.$refs.content) return
+          let rect = this.$refs.content.getBoundingClientRect()
+          this.mask = rect.height >= 250
+        })
+      },
+      immediate: true
     }
   },
   created() {
@@ -185,6 +187,7 @@ p {
     color: black;
     max-height: 25rem;
     position: relative;
+    line-break: anywhere;
 
     &.mask {
       -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
