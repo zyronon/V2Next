@@ -25,6 +25,7 @@ export default {
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
+      isLogin: computed(() => !!window.user.username),
     }
   },
   components: {
@@ -51,6 +52,7 @@ export default {
         collectCount: 0,
         isFavorite: false,
         isIgnore: false,
+        isReport: false,
       },
       list: [],
     }
@@ -94,8 +96,8 @@ export default {
         // this.list =
       }
     }
-    if (this.isDev) {
-      // this.list = data
+    if (window.isDev) {
+      this.list = data
     }
     eventBus.on(CMD.SHOW_MSG, (val) => {
       this.msgList.push({...val, id: Date.now()})
@@ -285,7 +287,6 @@ export default {
           }
         }
       }
-
       return item
     },
     getNestedList(list, res) {
@@ -485,6 +486,8 @@ export default {
         that.current.once = once[1]
       }
 
+      that.current.isReport = htmlText.includes('你已对本主题进行了报告')
+
       let topic_buttons = body.find('.topic_buttons')
       if (topic_buttons.length) {
         let favoriteNode = topic_buttons.find('.tb:first')
@@ -531,7 +534,6 @@ export default {
           that.current.clickCount = Number(clickCountReg[0][1])
         }
       }
-
 
       console.log('current', that.current)
 

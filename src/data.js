@@ -23,6 +23,7 @@ export default [
     {
         avatar: 'https://cdn.v2ex.com/avatar/cdca/41db/41900_normal.png?m=1644293935',
         "id": "667520",
+        content_rendered: `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`,
         "title": "嵌套有问题",
         "node": "经典回顾",
         "username": "经典回顾",
