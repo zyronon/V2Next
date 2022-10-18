@@ -43,7 +43,7 @@
         <Comment v-for="(item,index) in modelValue.children"
                  v-model="modelValue.children[index]"
                  style="margin-top: .4rem;"
-                 @remove="remove"
+                 @remove="remove(index)"
                  :key="index"/>
       </div>
     </div>
@@ -72,7 +72,7 @@ export default {
       replyInfo: `@${this.modelValue.username} #${this.modelValue.index} `
     }
   },
-  inject: ['once'],
+  inject: ['once', 'target'],
   watch: {},
   created() {
     // console.log(this.modelValue)
@@ -88,7 +88,7 @@ export default {
     },
     hide() {
       let url = `${window.url}/ignore/reply/${this.modelValue.id}?once=${this.once}`
-      this.$emit('remove', this.modelValue.id)
+      this.$emit('remove')
       $.post(url).then(res => {
         console.log('hide：', res)
         eventBus.emit('refreshOnce')
@@ -97,18 +97,17 @@ export default {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '隐藏成功,仅本次有效（接口调用失败！）'})
       })
     },
-    remove(id) {
-      let rIndex = this.modelValue.children.findIndex(i => i.id === id)
-      if (rIndex > -1) {
-        this.modelValue.children.splice(rIndex, 1)
-      }
+    remove(index) {
+      this.modelValue.children.splice(index, 1)
     },
     toggle() {
       this.expand = !this.expand
     },
     addReplyChild(item) {
       this.edit = false
-      this.modelValue.children.push(item)
+      if (this.target === 0) {
+        this.modelValue.children.push(item)
+      }
     }
   }
 }
