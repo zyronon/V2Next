@@ -22,8 +22,8 @@
       </div>
       <div class="count" v-if="post.replyCount">{{ post.replyCount }}</div>
     </div>
-    <div class="content" :class="{mask}" v-if="post.content_rendered" ref="content">
-      <div v-html="post.content_rendered"></div>
+    <div class="post-content-wrapper" :class="{mask}" v-if="post.content_rendered">
+      <div v-html="post.content_rendered" ref="content"></div>
     </div>
   </div>
 </template>
@@ -49,6 +49,7 @@ export default {
       postTitle: computed(() => this.post.title),
       isFavorite: computed(() => this.post.isFavorite),
       isIgnore: computed(() => this.post.isIgnore),
+      isReport: computed(() => this.post.isReport),
       postId: computed(() => this.post.id),
       once: computed(() => this.post.once),
       replyCount: computed(() => this.post.replyCount),
@@ -125,10 +126,11 @@ p {
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 
     .left {
       display: flex;
+      width: 95%;
 
       .avatar {
         margin-right: 1rem;
@@ -165,6 +167,7 @@ p {
     }
 
     .count {
+      margin-top: 2rem;
       line-height: 12px;
       font-weight: 700;
       color: #fff;
@@ -182,10 +185,11 @@ p {
     }
   }
 
-  .content {
+  .post-content-wrapper {
+    max-height: 25rem;
+    overflow: hidden;
     margin-top: .6rem;
     color: black;
-    max-height: 25rem;
     position: relative;
     line-break: anywhere;
 
@@ -193,6 +197,5 @@ p {
       -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
     }
   }
-
 }
 </style>

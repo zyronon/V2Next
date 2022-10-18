@@ -48,6 +48,19 @@
       </svg>
       <span>{{ isIgnore ? '取消忽略' : '忽略主题' }}</span>
     </div>
+    <div v-if="once && isLogin" class="tool" :class="{'loading':loading3,'no-hover':isLogin}" @click="report">
+      <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M36 35H12V21C12 14.3726 17.3726 9 24 9C30.6274 9 36 14.3726 36 21V35Z" fill="#929596" stroke="#929596"
+              stroke-width="4" stroke-linejoin="round"/>
+        <path d="M8 42H40" stroke="#929596" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 13L7 14" stroke="#929596" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 3.9999L14 6.9999" stroke="#929596" stroke-width="4" stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <path d="M10.0001 9.99989L7.00009 6.99989" stroke="#929596" stroke-width="4" stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+      <span>{{ isReport ? '你已对本主题进行了报告' : '报告这个主题' }}</span>
+    </div>
     <div class="tool no-hover" v-if="once"
          @mouseenter="showTooltipHandler"
          @mouseleave="hideTooltip"
@@ -57,7 +70,7 @@
            @mouseenter="showTooltipHandler"
            @mouseleave="hideTooltip"
       >
-        脚本有问题？<a target="_blank" href="https://github.com/zyronon/">点击这里提一个Issue</a>
+        脚本有问题？<a target="_blank" href="https://github.com/zyronon/v2ex-script/issues">点击这里提一个Issue</a>
       </div>
       <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 44H12H16" stroke="#929596" stroke-width="2" stroke-linecap="round"
@@ -85,6 +98,8 @@ export default {
     'postTitle',
     'isFavorite',
     'isIgnore',
+    'isReport',
+    'isLogin',
     'once'
   ],
   data() {
@@ -93,7 +108,11 @@ export default {
       showTooltip: false,
       loading: false,
       loading2: false,
+      loading3: false,
     }
+  },
+  created() {
+    console.log(this)
   },
   methods: {
     showTooltipHandler() {
@@ -106,6 +125,13 @@ export default {
       }, 500)
     },
     tweet() {
+      let username = window.user.username
+      let url = `https://twitter.com/share?url=${window.url}/t/${this.postId}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.postTitle}`
+      window.w.open(url, '_blank', 'width=550,height=370');
+    },
+    report() {
+      if (!this.isLogin) return
+      if (this.isReport) return
       let username = window.user.username
       let url = `https://twitter.com/share?url=${window.url}/t/${this.postId}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.postTitle}`
       window.w.open(url, '_blank', 'width=550,height=370');

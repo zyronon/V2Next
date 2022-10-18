@@ -123,6 +123,7 @@ export default {
       postTitle: computed(() => this.post.title),
       isFavorite: computed(() => this.post.isFavorite),
       isIgnore: computed(() => this.post.isIgnore),
+      isReport: computed(() => this.post.isReport),
       postId: computed(() => this.post.id),
       once: computed(() => this.post.once),
       replyCount: computed(() => this.post.replyCount),

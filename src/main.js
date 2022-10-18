@@ -6,8 +6,9 @@ import Home from './views/Home.vue'
 // document.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
 //fetch，host必须相同，不然报跨域
 let appNode
-if (import.meta.env.DEV) {
-// if (false) {
+
+window.isDev = false
+if (import.meta.env.DEV && !window.isDev) {
     window.doc = window.top.document
     window.w = window.top
     window.w.fetch2 = window.top.fetch
