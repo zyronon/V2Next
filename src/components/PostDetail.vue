@@ -1,19 +1,13 @@
 <template>
-  <div class="post-detail" ref="detail" v-show="modelValue" @click="$emit('update:modelValue',false)">
+  <div class="post-detail"
+       ref="detail"
+       @scroll="scroll"
+       v-show="modelValue"
+       @click="$emit('update:modelValue',false)">
     <div class="main" @click.stop="stop">
       <div class="left">
         <div class="post">
-          <Point
-              @addThank="addThank"
-              @recallThank="recallThank"
-              :item="{
-                isThanked:post.isThanked,
-                thankCount:post.thankCount,
-                username:post.username
-              }"
-              type="vertical"
-              :api-url="'topic/'+post.id"/>
-          <div class="right">
+          <div class="base-info">
             <a :href="`/member/${post.username}`">
               <div class="avatar">
                 <img :src="post.avatar" alt="">
@@ -34,23 +28,54 @@
               &nbsp;&nbsp;·&nbsp;&nbsp;
               <div class="date">{{ post.clickCount }}次点击</div>
             </div>
-            <div class="content">
-              <BaseHtmlRender :html="post.content_rendered" class="htmlContent"/>
-              <BaseHtmlRender :html="post.subtlesHtml"/>
-            </div>
+          </div>
+          <div class="line"></div>
+          <div class="content">
+            <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
+            <BaseHtmlRender :html="post.subtlesHtml"/>
+          </div>
+          <div class="toolbar-wrapper">
+            <Point
+                @addThank="addThank"
+                @recallThank="recallThank"
+                :item="{
+                isThanked:post.isThanked,
+                thankCount:post.thankCount,
+                username:post.username
+              }"
+                :api-url="'topic/'+post.id"/>
             <Toolbar :post="post" :replyCount="post.replyCount"/>
-            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
           </div>
         </div>
-        <div class="line"></div>
+        <div class="post-wrapper2">
+          <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
+          <div class="sort-select">
+            <div class="target" @click.stop="showSortOption = true">
+              <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
+              <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
+                      stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="options" v-if="showSortOption">
+              <div class="option"
+                   :class="{active:target === item.value}"
+                   @click="changeOption(item)"
+                   v-for="item in sortOptions">
+                {{ item.label }}
+              </div>
+            </div>
+          </div>
+          <div class="line"></div>
+        </div>
         <div v-if="loading" class="loading-w">
           <div class="loading-c"></div>
         </div>
         <template v-else>
-          <div class="comments" v-if="post.nestedReplies.length">
-            <Comment v-for="(item,index) in post.nestedReplies"
+          <div class="comments" v-if="replies.length">
+            <Comment v-for="(item,index) in replies"
                      @remove="remove(index)"
-                     v-model="post.nestedReplies[index]" :key="index"/>
+                     v-model="replies[index]" :key="index"/>
           </div>
           <div v-else class="empty">
             <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,6 +127,7 @@ export default {
       once: computed(() => this.post.once),
       replyCount: computed(() => this.post.replyCount),
       collectCount: computed(() => this.post.collectCount),
+      target: computed(() => this.target),
     }
   },
   props: {
@@ -115,9 +141,26 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      showSortOption: false,
+      target: 0,
+      sortOptions: [
+        {value: 0, label: '楼中楼'},
+        {value: 1, label: '感谢'},
+        {value: 2, label: 'V2原版'},
+      ]
+    }
   },
-  computed: {},
+  computed: {
+    replies() {
+      if (this.target === 0) return this.post.nestedReplies
+      if (this.target === 1) {
+        let copy = JSON.parse(JSON.stringify(this.post.replies))
+        return copy.sort((a, b) => b.thankCount - a.thankCount)
+      }
+      if (this.target === 2) return this.post.replies
+    }
+  },
   watch: {
     modelValue(newVal) {
       if (!newVal) {
@@ -131,6 +174,19 @@ export default {
   mounted() {
   },
   methods: {
+    clone(val) {
+      return JSON.parse(JSON.stringify(val))
+    },
+    changeOption(item) {
+      this.showSortOption = false;
+      this.target = item.value
+    },
+    stop() {
+      this.showSortOption = false
+    },
+    scroll() {
+      this.showSortOption = false
+    },
     addThank() {
       this.post.isThanked = true
       this.post.thankCount++
@@ -140,10 +196,18 @@ export default {
       this.post.thankCount--
     },
     remove(index) {
-      this.post.nestedReplies.splice(index, 1)
+      if (this.target === 0) {
+        this.post.nestedReplies.splice(index, 1)
+      } else {
+        this.post.replies.splice(index, 1)
+      }
     },
     addReplyChild(item) {
-      this.post.nestedReplies.push(item)
+      if (this.target === 0) {
+        this.post.nestedReplies.push(item)
+      } else {
+        this.post.replies.push(item)
+      }
     },
     scrollTop() {
       this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
@@ -197,22 +261,21 @@ export default {
       flex-direction: column;
       align-items: center;
 
-
       .post {
         width: 100%;
-        display: flex;
+        //display: flex;
+        margin-bottom: 2rem;
 
-        .right {
-          box-sizing: border-box;
-          width: calc(100% - 4rem);
-          flex: 1;
+        .base-info {
           padding: 1rem;
-          padding-left: 0;
+          box-sizing: border-box;
+          border-bottom: 1px solid @border;
 
           .avatar {
             float: right;
 
             img {
+              border-radius: .4rem;
               width: 6.4rem;
             }
           }
@@ -230,17 +293,83 @@ export default {
             color: black;
           }
 
-          .post-author{
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e2e2e2;
+          .post-author {
+          }
+        }
+
+        .content {
+          color: black;
+          word-break: break-word;
+          line-height: 1.6;
+
+          .baseContent {
+            padding: 1rem;
+          }
+        }
+
+        .toolbar-wrapper {
+          width: 90%;
+          margin-left: 5%;
+          display: flex;
+
+          .point {
+            margin-right: 1rem;
+          }
+        }
+      }
+
+      .post-wrapper2 {
+        width: 90%;
+
+        .line {
+          border-bottom: 1px solid @border;
+          width: 100%;
+        }
+
+        .sort-select {
+          margin-top: 3rem;
+          margin-bottom: 1rem;
+          position: relative;
+
+          .target {
+            color: #0079d3;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+
+            svg {
+              @width: 1.4rem;
+              width: @width;
+              height: @width;
+              margin-left: .5rem;
+            }
           }
 
-          .content {
-            color: black;
-            word-break: break-word;
-            line-height: 1.6;
-            margin: 1rem 0;
+          .options {
+            box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
+            background: white;
+            z-index: 9998;
+            border-radius: .5rem;
+            cursor: pointer;
+            font-size: 1.4rem;
+            position: absolute;
+            top: 2.6rem;
+            left: 2.7rem;
+            color: @link-color;
 
+            .option {
+              padding: .8rem 1.4rem;
+
+              &.active {
+                color: #0079d3;
+              }
+
+              &:hover {
+                background: #e9f5fd;
+              }
+            }
           }
         }
       }
@@ -250,13 +379,6 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-
-
-      .line {
-        border-bottom: 1px solid @border;
-        width: 91%;
-        margin: 2rem;
       }
 
       .comments {

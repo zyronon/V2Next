@@ -1,7 +1,8 @@
 <template>
-  <div class="editor-wrapper" :class="{isFocus}">
+  <div class="post-editor-wrapper" :class="{isFocus}">
     <textarea class="post-editor"
               ref="txt"
+              placeholder="请尽量让自己的回复能够对别人有帮助"
               @focus="isFocus = true"
               @blur="isFocus = false"
               :class="editorId"
@@ -69,13 +70,13 @@ export default {
         reply_content: this.content || Date.now(),
         children: []
       }
-      // this.loading = false
+      this.loading = false
       // eventBus.emit('refreshOnce',)
-      // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-      // eventBus.emit('addReply', item)
-      // this.$emit('addReplyChild', item)
-      // this.content = this.replyInfo
-      // return
+      eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+      eventBus.emit('addReply', item)
+      this.$emit('addReplyChild', item)
+      this.content = this.replyInfo
+      return
       let url = `${window.url}/t/${this.postId}`
       $.post(url, {content: this.content, once: this.once}).then(
           res => {
@@ -112,11 +113,10 @@ export default {
 <style scoped lang="less">
 @import "@/assets/less/variable";
 
-.editor-wrapper {
+.post-editor-wrapper {
+  width: 100%;
   border-radius: .4rem;
   border: 1px solid @border;
-  margin-top: 1rem;
-  margin-right: 3rem;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;

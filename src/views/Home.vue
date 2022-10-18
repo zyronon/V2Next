@@ -43,6 +43,14 @@ export default {
       current: {
         replies: [],
         nestedReplies: [],
+        username: '',
+        title: '',
+        id: '',
+        once: '',
+        replyCount: 0,
+        collectCount: 0,
+        isFavorite: false,
+        isIgnore: false,
       },
       list: [],
     }
@@ -86,9 +94,9 @@ export default {
         // this.list =
       }
     }
-    if (this.isDev) {
-      this.list = data
-    }
+    // if (this.isDev) {
+    //   this.list = data
+    // }
     eventBus.on(CMD.SHOW_MSG, (val) => {
       this.msgList.push({...val, id: Date.now()})
     })
@@ -104,10 +112,10 @@ export default {
       }
     })
     eventBus.on('merge', (val) => {
-      this.current = Object.assign(this.current,val)
+      this.current = Object.assign(this.current, val)
       let rIndex = this.list.findIndex(i => i.id === this.current.id)
       if (rIndex > -1) {
-        this.list[rIndex] = Object.assign(this.list[rIndex],val)
+        this.list[rIndex] = Object.assign(this.list[rIndex], val)
       }
     })
     eventBus.on('addReply', (item) => {
@@ -321,14 +329,12 @@ export default {
       }
       //可能打开的不是列表里面的帖子
       this.current.replyCount = allList.length
-      setTimeout(() => {
-        let replyNestedList = []
-        let copy = JSON.parse(JSON.stringify(allList))
-        this.getNestedList(copy, replyNestedList)
-        // console.log(copy)
-        console.log('replyNestedList', replyNestedList)
-        this.current.nestedReplies = replyNestedList
-      })
+      let replyNestedList = []
+      let copy = JSON.parse(JSON.stringify(allList))
+      this.getNestedList(copy, replyNestedList)
+      // console.log(copy)
+      console.log('replyNestedList', replyNestedList)
+      this.current.nestedReplies = replyNestedList
     },
     parseReply(nodes, i) {
       let replyList = []
@@ -464,12 +470,14 @@ export default {
       }
 
       let subtles = body.find('.subtle')
-      that.current.subtlesHtml = `
+      if (subtles.length){
+        that.current.subtlesHtml = `
         <div class="subtlesHtml">${Array.from(subtles).reduce((p, i) => {
-        p += `<div class="subtle">${i.innerHTML}</div>`
-        return p
-      }, '')}</div>
+          p += `<div class="subtle">${i.innerHTML}</div>`
+          return p
+        }, '')}</div>
         `
+      }
 
       let once = htmlText.match(/var once = "([\d]+)";/)
       // console.log(once)
