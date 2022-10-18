@@ -1,0 +1,261 @@
+@import "variable";
+
+
+html, body {
+    font-size: 62.5%;
+}
+
+.post-author {
+    display: flex;
+    align-items: center;
+    margin-bottom: .5rem;
+    position: relative;
+    color: @date-color !important;
+
+    > .username {
+        font-size: 1.2rem;
+    }
+}
+
+.date {
+    font-size: 1.2rem;
+    color: @date-color;
+}
+
+a {
+    color: @link-color !important;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.subtlesHtml {
+    font-size: 1.4rem;
+
+    .subtle {
+        margin-top: 1rem;
+        background-color: #fffff9;
+        border-left: 3px solid #fffbc1;
+        padding: 10px;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: left;
+
+        .fade {
+            color: @date-color;
+        }
+
+        .sep5 {
+            height: 5px;
+        }
+
+        .topic_content {
+            color: black;
+        }
+    }
+}
+
+.base-loading {
+    @c: #00000033;
+    //@c: transparent;
+    @b: #000;
+    border: 2px solid;
+    border-color: @b @c @c @c;
+    border-radius: 100%;
+    animation: circle infinite 1s linear;
+}
+
+.loading-c {
+    .base-loading();
+    width: 3rem;
+    height: 3rem;
+}
+
+@keyframes circle {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.button {
+    cursor: pointer;
+    padding: .4rem 2.4rem;
+    border-radius: 10rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    background: @blue-color;
+    border: 1px solid @blue-color;
+    user-select: none;
+
+    &:hover {
+        opacity: .9;
+    }
+
+    &::before {
+        content: ' ';
+        .base-loading();
+        @c: transparent;
+        @b: #fff;
+        border-color: @b @c @c @c;
+        width: 1rem;
+        height: 1rem;
+        margin-right: 1rem;
+        display: none;
+    }
+
+    &.loading {
+        cursor: not-allowed;
+        opacity: .5;
+
+        &::before {
+            display: block;
+        }
+    }
+
+    &.disabled {
+        cursor: not-allowed;
+        color: rgb(198, 198, 198);
+        background: rgb(141, 141, 141);
+        border: 1px solid transparent;
+    }
+}
+
+.tool {
+    position: relative;
+    margin-right: .4rem;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: .2rem;
+    cursor: pointer;
+
+    &::before {
+        content: ' ';
+        .base-loading();
+        @c: @tool-color;
+        @b: transparent;
+        border-color: @b @c @c @c;
+        width: 1rem;
+        height: 1rem;
+        margin-left: 1rem;
+        display: none;
+    }
+
+    &.loading {
+        cursor: not-allowed;
+        opacity: .5;
+
+        &::before {
+            display: block;
+        }
+        &:hover {
+            background: unset;
+        }
+    }
+
+    > svg {
+        width: 2rem;
+        padding: .6rem;
+        border-radius: .2rem;
+    }
+
+    span {
+        margin-right: .6rem;
+    }
+
+    &:hover {
+        background: rgb(232, 232, 232);
+    }
+
+    &.no-hover {
+        cursor: default;
+
+        &:hover {
+            background: unset;
+        }
+    }
+}
+
+.my-node {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: .6rem;
+    height: 2.2rem;
+    padding: 0 1rem;
+    font-size: 1rem;
+    color: white;
+    transform: translateY(-.3rem);
+    background: rgb(100, 109, 115);
+    cursor: pointer;
+}
+
+.msgs {
+    position: fixed;
+    margin-left: calc(50% - 25rem);
+    width: 50rem;
+    z-index: 9999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.msg {
+    cursor: default;
+    margin-bottom: 2rem;
+    background: white;
+    display: flex;
+    color: black;
+    font-size: 1.4rem;
+    box-sizing: border-box;
+    border-radius: @border-radius;
+    box-shadow: 0 0 1rem 1px silver;
+
+    &.success {
+        .left {
+            background: @blue-color;
+        }
+    }
+
+    &.warning {
+        .left {
+            background: #c8c002;
+        }
+    }
+
+    &.error {
+        .left {
+            background: red;
+        }
+    }
+
+    .left {
+        border-radius: @border-radius 0 0 @border-radius;
+        display: flex;
+        align-items: center;
+        background: @blue-color;
+
+        svg {
+            margin: 0 .3rem;
+            cursor: pointer;
+        }
+    }
+
+    .right {
+        flex: 1;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
