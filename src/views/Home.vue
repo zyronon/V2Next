@@ -94,9 +94,9 @@ export default {
         // this.list =
       }
     }
-    // if (this.isDev) {
-    //   this.list = data
-    // }
+    if (this.isDev) {
+      // this.list = data
+    }
     eventBus.on(CMD.SHOW_MSG, (val) => {
       this.msgList.push({...val, id: Date.now()})
     })
@@ -470,7 +470,7 @@ export default {
       }
 
       let subtles = body.find('.subtle')
-      if (subtles.length){
+      if (subtles.length) {
         that.current.subtlesHtml = `
         <div class="subtlesHtml">${Array.from(subtles).reduce((p, i) => {
           p += `<div class="subtle">${i.innerHTML}</div>`
