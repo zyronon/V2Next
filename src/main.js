@@ -7,7 +7,7 @@ import Home from './views/Home.vue'
 //fetch，host必须相同，不然报跨域
 let appNode
 
-window.isDev = false
+window.isDev = true
 if (import.meta.env.DEV && !window.isDev) {
     window.doc = window.top.document
     window.w = window.top

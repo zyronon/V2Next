@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <div class="tool" :class="once?'no-hover':''">
+    <div class="tool" :class="post.once?'no-hover':''">
       <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round"/>
@@ -8,19 +8,19 @@
         <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
         <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <span>{{ replyCount }}条回复</span>
+      <span>{{ post.replyCount }}条回复</span>
     </div>
-    <div v-if="once" class="tool" :class="{loading}" @click="toggleFavorite">
+    <div v-if="post.once" class="tool" :class="{loading}" @click="toggleFavorite">
       <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M34 10V4H8V38L14 35" stroke="#929596" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round"/>
         <path d="M14 44V10H40V44L27 37.7273L14 44Z" fill="none" stroke="#929596" stroke-width="2"
               stroke-linejoin="round"/>
       </svg>
-      <span>{{ isFavorite ? '取消收藏' : '加入收藏' }}</span>
+      <span>{{ post.isFavorite ? '取消收藏' : '加入收藏' }}</span>
     </div>
-    <div v-if="once && collectCount!==0" class="tool no-hover">
-      <span>{{ collectCount + '人收藏' }}</span>
+    <div v-if="post.once && post.collectCount!==0" class="tool no-hover">
+      <span>{{ post.collectCount + '人收藏' }}</span>
     </div>
 
     <div class="tool" @click="tweet">
@@ -35,7 +35,7 @@
       </svg>
       <span>Tweet</span>
     </div>
-    <div v-if="once" class="tool" :class="{'loading':loading2}" @click="toggleIgnore">
+    <div v-if="post.once" class="tool" :class="{'loading':loading2}" @click="toggleIgnore">
       <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M9.85786 18C6.23858 21 4 24 4 24C4 24 12.9543 36 24 36C25.3699 36 26.7076 35.8154 28 35.4921M20.0318 12.5C21.3144 12.1816 22.6414 12 24 12C35.0457 12 44 24 44 24C44 24 41.7614 27 38.1421 30"
@@ -46,9 +46,9 @@
         <path d="M42 42L6 6" stroke="#929596" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round"/>
       </svg>
-      <span>{{ isIgnore ? '取消忽略' : '忽略主题' }}</span>
+      <span>{{ post.isIgnore ? '取消忽略' : '忽略主题' }}</span>
     </div>
-    <div v-if="once && isLogin" class="tool" :class="{'loading':loading3,'no-hover':isLogin}" @click="report">
+    <div v-if="post.once && post.isLogin" class="tool" :class="{'loading':loading3,'no-hover':post.isLogin}" @click="report">
       <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M36 35H12V21C12 14.3726 17.3726 9 24 9C30.6274 9 36 14.3726 36 21V35Z" fill="#929596" stroke="#929596"
               stroke-width="4" stroke-linejoin="round"/>
@@ -59,9 +59,9 @@
         <path d="M10.0001 9.99989L7.00009 6.99989" stroke="#929596" stroke-width="4" stroke-linecap="round"
               stroke-linejoin="round"/>
       </svg>
-      <span>{{ isReport ? '你已对本主题进行了报告' : '报告这个主题' }}</span>
+      <span>{{ post.isReport ? '你已对本主题进行了报告' : '报告这个主题' }}</span>
     </div>
-    <div class="tool no-hover" v-if="once"
+    <div class="tool no-hover" v-if="post.once"
          @mouseenter="showTooltipHandler"
          @mouseleave="hideTooltip"
     >
@@ -92,15 +92,8 @@ import {CMD} from "@/utils/type";
 export default {
   name: "Toolbar",
   inject: [
-    'replyCount',
-    'collectCount',
-    'postId',
-    'postTitle',
-    'isFavorite',
-    'isIgnore',
-    'isReport',
     'isLogin',
-    'once'
+    'post'
   ],
   data() {
     return {
@@ -126,30 +119,30 @@ export default {
     },
     tweet() {
       let username = window.user.username
-      let url = `https://twitter.com/share?url=${window.url}/t/${this.postId}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.postTitle}`
+      let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.w.open(url, '_blank', 'width=550,height=370');
     },
     report() {
       if (!this.isLogin) return
-      if (this.isReport) return
+      if (this.post.isReport) return
       let username = window.user.username
-      let url = `https://twitter.com/share?url=${window.url}/t/${this.postId}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.postTitle}`
+      let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.w.open(url, '_blank', 'width=550,height=370');
     },
     async toggleIgnore() {
-      if (this.isIgnore) {
+      if (this.post.isIgnore) {
         this.loading2 = true
       } else {
         eventBus.emit('ignore')
       }
-      let url = `${window.url}/${this.isIgnore ? 'unignore' : 'ignore'}/topic/${this.postId}?once=${this.once}`
+      let url = `${window.url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
       let apiRes = await window.w.fetch(url)
       if (apiRes.redirected) {
-        if (this.isIgnore) {
+        if (this.post.isIgnore) {
           eventBus.emit('refreshOnce')
         }
-        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.isIgnore ? '取消成功' : '忽略成功'})
-        eventBus.emit('merge', {isIgnore: !this.isIgnore})
+        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
+        eventBus.emit('merge', {isIgnore: !this.post.isIgnore})
         this.loading2 = false
         return
       }
@@ -159,16 +152,16 @@ export default {
     async toggleFavorite() {
       // return eventBus.emit('merge', 'isFavorite')
       this.loading = true
-      let url = `${window.url}/${this.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.postId}?once=${this.once}`
+      let url = `${window.url}/${this.post.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
       let apiRes = await window.w.fetch(url)
       this.loading = false
       if (apiRes.redirected) {
         let htmlText = await apiRes.text()
-        if (htmlText.search(this.isFavorite ? '加入收藏' : '取消收藏')) {
-          eventBus.emit('merge', {collectCount: this.isFavorite ? (this.collectCount - 1) : (this.collectCount + 1)})
-          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.isFavorite ? '取消成功' : '收藏成功'})
+        if (htmlText.search(this.post.isFavorite ? '加入收藏' : '取消收藏')) {
+          eventBus.emit('merge', {collectCount: this.post.isFavorite ? (this.post.collectCount - 1) : (this.post.collectCount + 1)})
+          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isFavorite ? '取消成功' : '收藏成功'})
           eventBus.emit('refreshOnce', htmlText)
-          eventBus.emit('merge', {isFavorite: !this.isFavorite})
+          eventBus.emit('merge', {isFavorite: !this.post.isFavorite})
           return
         }
       }

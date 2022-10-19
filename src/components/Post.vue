@@ -28,63 +28,18 @@
   </div>
 </template>
 
-<script>
-import Toolbar from "./Toolbar";
-import Point from "./Point";
-import {computed} from "vue";
+<script setup>
+import {onMounted, ref} from "vue";
 
-export default {
-  name: 'post',
-  props: {
-    post: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
-  provide() {
-    return {
-      postUsername: computed(() => this.post.username),
-      postTitle: computed(() => this.post.title),
-      isFavorite: computed(() => this.post.isFavorite),
-      isIgnore: computed(() => this.post.isIgnore),
-      isReport: computed(() => this.post.isReport),
-      postId: computed(() => this.post.id),
-      once: computed(() => this.post.once),
-      replyCount: computed(() => this.post.replyCount),
-      collectCount: computed(() => this.post.collectCount),
-      target: computed(() => this.target),
-    }
-  },
-  components: {
-    Toolbar,
-    Point,
-  },
-  data() {
-    return {
-      mask: false
-    }
-  },
-  watch: {
-    'post.content_rendered': {
-      handler(newVal) {
-        this.$nextTick(() => {
-          if (!this.$refs.content) return
-          let rect = this.$refs.content.getBoundingClientRect()
-          this.mask = rect.height >= 250
-        })
-      },
-      immediate: true
-    }
-  },
-  created() {
-  },
-  mounted() {
-    // console.log(this.post)
-  },
-  methods: {}
-}
+const {post} = defineProps(['post'])
+const mask = ref(false)
+const content = ref(null)
+
+onMounted(() => {
+  if (!content.value) return
+  let rect = content.value.getBoundingClientRect()
+  mask.value = rect.height >= 250
+})
 </script>
 
 <style lang="less">
