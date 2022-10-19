@@ -26,6 +26,7 @@ export default {
     return {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.user.username),
+      post: computed(() => this.current)
     }
   },
   components: {
@@ -97,7 +98,9 @@ export default {
       }
     }
     if (window.isDev) {
-      this.list = data
+      setTimeout(() => {
+        this.list = data
+      }, 500)
     }
     eventBus.on(CMD.SHOW_MSG, (val) => {
       this.msgList.push({...val, id: Date.now()})

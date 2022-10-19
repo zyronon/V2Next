@@ -72,7 +72,7 @@ export default {
       replyInfo: `@${this.modelValue.username} #${this.modelValue.index} `
     }
   },
-  inject: ['once', 'target'],
+  inject: ['post', 'target'],
   watch: {},
   created() {
     // console.log(this.modelValue)
@@ -87,7 +87,7 @@ export default {
       this.modelValue.thankCount--
     },
     hide() {
-      let url = `${window.url}/ignore/reply/${this.modelValue.id}?once=${this.once}`
+      let url = `${window.url}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       this.$emit('remove')
       $.post(url).then(res => {
         console.log('hide：', res)

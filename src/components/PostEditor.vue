@@ -32,10 +32,7 @@ export default {
     },
   },
   inject: [
-    'postUsername',
-    'replyCount',
-    'postId',
-    'once'
+    'post',
   ],
   computed: {
     disabled() {
@@ -61,24 +58,24 @@ export default {
       let item = {
         thankCount: 0,
         isThanked: false,
-        isOp: this.postUsername === window.user.username,
+        isOp: this.post.username === window.user.username,
         id: Date.now(),
         username: window.user.username,
         avatar: window.user.avatar,
         date: '几秒前',
-        index: this.replyCount + 1,
+        index: this.post.replyCount + 1,
         reply_content: this.content || Date.now(),
         children: []
       }
       this.loading = false
-      // eventBus.emit('refreshOnce',)
+      // eventBus.emit('refreshonce',)
       eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
       eventBus.emit('addReply', item)
       this.$emit('addReplyChild', item)
       this.content = this.replyInfo
       return
-      let url = `${window.url}/t/${this.postId}`
-      $.post(url, {content: this.content, once: this.once}).then(
+      let url = `${window.url}/t/${this.post.id}`
+      $.post(url, {content: this.content, once: this.post.once}).then(
           res => {
             this.loading = false
             // console.log('回复', res)

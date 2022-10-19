@@ -1,7 +1,7 @@
 export default [
     {
         avatar: 'https://cdn.v2ex.com/avatar/cdca/41db/41900_normal.png?m=1644293935',
-        "id": "886895",
+        "id": "887913",
         content_rendered: `<div class="topic_content">前段时间入手了 appleTV 发现真香，又因为经常健身，就购买了 fitness+。播放 fitness+时需要链接 apple watch 。现在的问题是，进入 appleTV &gt; fitness &gt; 选择课程点击开始后 &gt; 提示正在链接 apple watch ，然后连接中断退出课程。 而在手机上打开 fitness &gt; fitness+就能正常连接 apple watch 进入运动。<br><br>有遇到类似情况的朋友吗？都是怎么解决的？<br><br>我这边设备的情况是：<br>手机： iphone13 登录了国区 icloud ； appStore 登录了美区 id ；<br>手表：使用手机激活的，appleID 是国区的； appStore 自动同步了美区 id ；<br>apple TV： 登录了美区 id ；</div><div class="subtle">
 <span class="fade">第 1 条附言 &nbsp;·&nbsp; <span title="2022-10-18 14:44:46 +08:00">1 小时 51 分钟前</span></span>
 <div class="sep5"></div>
