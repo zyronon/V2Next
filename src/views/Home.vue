@@ -98,8 +98,12 @@ export default {
       }
     }
     if (window.isDev) {
+      this.list = data
       setTimeout(() => {
-        this.list = data
+        this.list.map(v => {
+          v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
+        })
+
       }, 500)
     }
     eventBus.on(CMD.SHOW_MSG, (val) => {
