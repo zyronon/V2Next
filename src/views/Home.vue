@@ -72,9 +72,6 @@ export default {
   },
   created() {
     let that = this
-    // setTimeout(() => {
-    //   this.list = data
-    // }, 1000)
     window.w.cb = (posts) => {
       posts.map(post => {
         let rIndex = that.list.findIndex(v => v.id == post.id)
@@ -103,7 +100,6 @@ export default {
         this.list.map(v => {
           v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
         })
-
       }, 500)
     }
     eventBus.on(CMD.SHOW_MSG, (val) => {
