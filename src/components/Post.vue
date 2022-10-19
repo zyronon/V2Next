@@ -29,17 +29,28 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {ref, watch} from "vue";
 
 const {post} = defineProps(['post'])
 const mask = ref(false)
 const content = ref(null)
 
-onMounted(() => {
+watch([() => post, () => content.value], () => {
   if (!content.value) return
   let rect = content.value.getBoundingClientRect()
+  //如果有图片，还没加载完，此刻content.value的高度不会包括图片的高度
+  content.value.querySelectorAll('img').forEach(item => {
+    item.addEventListener('load', checkContentHeight)
+  })
   mask.value = rect.height >= 250
-})
+}, {immediate: true, flush: 'post'})
+
+function checkContentHeight() {
+  if (mask.value) return
+  let rect = content.value.getBoundingClientRect()
+  console.log('rect', rect.height)
+  mask.value = rect.height >= 250
+}
 </script>
 
 <style lang="less">

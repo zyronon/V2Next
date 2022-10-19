@@ -48,6 +48,7 @@ onMounted(() => {
     styleObject.top = e.clientY + 20 + 'px'
   })
   window.w.addEventListener('click', e => {
+    if (!tooltip.value) return
     if ((!tooltip.value.contains(e.target)) && show.value) {
       show.value = false
     }
@@ -83,7 +84,7 @@ function decode() {
   background: white;
   min-height: 2.2rem;
   max-width: 20rem;
-  padding:  .8rem;
+  padding: .8rem;
   position: fixed;
   z-index: 9998;
   display: flex;

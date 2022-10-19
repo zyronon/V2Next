@@ -9,9 +9,7 @@
         <div class="post">
           <div class="base-info">
             <a :href="`/member/${post.username}`">
-              <div class="avatar">
-                <img :src="post.avatar" alt="">
-              </div>
+              <img class="avatar" :src="post.avatar" alt="">
             </a>
             <div class="post-nodes">
               <a href="/">V2EX</a>
@@ -265,11 +263,8 @@ export default {
 
           .avatar {
             float: right;
-
-            img {
-              border-radius: .4rem;
-              width: 6.4rem;
-            }
+            border-radius: .4rem;
+            width: 7.3rem;
           }
 
           .post-nodes {
