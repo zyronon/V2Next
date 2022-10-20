@@ -7,10 +7,10 @@ import Home from './views/Home.vue'
 //fetch，host必须相同，不然报跨域
 let appNode
 
-window.isDev = false
 if (import.meta.env.DEV && !window.isDev) {
     window.doc = window.top.document
     window.w = window.top
+    window.win = () => window.top
     window.w.fetch2 = window.top.fetch
     window.$ = window.w.$
     window.url = 'https://www.v2ex.com'

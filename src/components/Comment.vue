@@ -37,7 +37,7 @@
           <div class="my-wrapper">
             <PostEditor v-if="edit"
                         :replyInfo="replyInfo"
-                        @addReplyChild="addReplyChild"/>
+                        :replyFloor="modelValue.floor"/>
           </div>
         </div>
         <Comment v-for="(item,index) in modelValue.children"
@@ -69,10 +69,10 @@ export default {
     return {
       edit: false,
       expand: true,
-      replyInfo: `@${this.modelValue.username} #${this.modelValue.index} `
+      replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
     }
   },
-  inject: ['post', 'target'],
+  inject: ['post'],
   watch: {},
   created() {
     // console.log(this.modelValue)
@@ -103,12 +103,6 @@ export default {
     toggle() {
       this.expand = !this.expand
     },
-    addReplyChild(item) {
-      this.edit = false
-      if (this.target === 0) {
-        this.modelValue.children.push(item)
-      }
-    }
   }
 }
 </script>

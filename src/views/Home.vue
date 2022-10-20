@@ -1,6 +1,6 @@
 <template>
   <div class="posts">
-    <Post @click="showDetail(item,$event)" v-for="item in list" :post="item"/>
+    <Post :class="{visited:readList.has(item.id)}" @click="showDetail(item,$event)" v-for="item in list" :post="item"/>
   </div>
   <PostDetail v-model="show" :post="current" :loading="loading"/>
   <div class="msgs">
@@ -26,7 +26,8 @@ export default {
     return {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.user.username),
-      post: computed(() => this.current)
+      post: computed(() => this.current),
+      allReplyUsers: computed(() => this.current.replies.map(v => v.username)),
     }
   },
   components: {
@@ -56,6 +57,7 @@ export default {
         isReport: false,
       },
       list: [],
+      readList: new Set(),
     }
   },
   computed: {
@@ -71,6 +73,11 @@ export default {
     }
   },
   created() {
+    let local = localStorage.getItem('readList')
+    if (local) {
+      let list = JSON.parse(local)
+      this.readList = new Set(list);
+    }
     let that = this
     window.w.cb = (posts) => {
       posts.map(post => {
@@ -96,11 +103,11 @@ export default {
     }
     if (window.isDev) {
       this.list = data
-      setTimeout(() => {
-        this.list.map(v => {
-          v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
-        })
-      }, 500)
+      // setTimeout(() => {
+      //   this.list.map(v => {
+      //     v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
+      //   })
+      // }, 500)
     }
     eventBus.on(CMD.SHOW_MSG, (val) => {
       this.msgList.push({...val, id: Date.now()})
@@ -124,12 +131,13 @@ export default {
       }
     })
     eventBus.on('addReply', (item) => {
-      this.current.replies.push(item)
-      this.current.replyCount = this.current.replies.length
-      let rIndex = this.list.findIndex(i => i.id === this.current.id)
-      if (rIndex > -1) {
-        this.list[rIndex].replyCount = this.current.replies.length
-      }
+      this.getAllReply(this.current.replies.concat(item))
+      // this.current.replies.push(item)
+      // this.current.replyCount = this.current.replies.length
+      // let rIndex = this.list.findIndex(i => i.id === this.current.id)
+      // if (rIndex > -1) {
+      //   this.list[rIndex].replyCount = this.current.replies.length
+      // }
     })
     eventBus.on('refreshOnce', async (once) => {
       if (once) {
@@ -172,6 +180,9 @@ export default {
     }
   },
   mounted() {
+    window.win().onbeforeunload = () => {
+      localStorage.setItem('readList', JSON.stringify(Array.from(this.readList)))
+    };
   },
   methods: {
     removeMsg(id) {
@@ -192,7 +203,6 @@ export default {
         }
       }
       // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
-
       let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
       let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
       let hasFloor = str.matchAll(floorReg)
@@ -221,7 +231,7 @@ export default {
     },
     findChildren(item, arr, all) {
       const fn = (list, r, item2) => {
-        let rIndex = all.findIndex(v => v.index === r.index)
+        let rIndex = all.findIndex(v => v.floor === r.floor)
         if (rIndex > -1) {
           all[rIndex].isUse = true
         }
@@ -229,7 +239,7 @@ export default {
       }
       // console.log('arr', arr)
       item.children = []
-      // if (item.index ==8)debugger
+      // if (item.floor ==8)debugger
       for (let i = 0; i < arr.length; i++) {
         let r = arr[i]
 
@@ -238,11 +248,11 @@ export default {
 
         let list = arr.slice(i + 1)
         //不知哪个V友的插件，回复的#号是错误的....，所有还要加上一个用户名是不是相同的判断
-        // if (r.replyFloor === item.index && r.replyUsers[0] === item.username) {
+        // if (r.replyFloor === item.floor && r.replyUsers[0] === item.username) {
         //错的就错的吧，反正我自己的不出错就行
 
         if (r.replyFloor !== -1) {
-          if (r.replyFloor === item.index) {
+          if (r.replyFloor === item.floor) {
             fn(list, r, item)
           }
         } else {
@@ -260,7 +270,7 @@ export default {
                 continue
               }
               list.map((v, vi) => {
-                if (v.replyFloor === item.index) {
+                if (v.replyFloor === item.floor) {
                   fn(arr.slice(vi + 1), v, item)
                 }
               })
@@ -281,7 +291,7 @@ export default {
               // 自己：2楼
               // 别人：指定回复1楼
               list.map((v, vi) => {
-                if (v.replyFloor === item.index) {
+                if (v.replyFloor === item.floor) {
                   fn(arr.slice(vi + 1), v, item)
                 }
               })
@@ -320,19 +330,21 @@ export default {
         })
       })
     },
-    getAllReply() {
+    getAllReply(allList) {
       // this.current.repliesMap.keys()
-      let allList = repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
-        pre = pre.concat(i.replyList)
-        return pre
-      }, [])
+      if (!allList) {
+        allList = repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
+          pre = pre.concat(i.replyList)
+          return pre
+        }, [])
+      }
       this.current.replies = allList
+      this.current.replyCount = allList.length
       let rIndex = this.list.findIndex(i => i.id === this.current.id)
       if (rIndex > -1) {
         this.list[rIndex].replyCount = allList.length
       }
       //可能打开的不是列表里面的帖子
-      this.current.replyCount = allList.length
       let replyNestedList = []
       let copy = JSON.parse(JSON.stringify(allList))
       this.getNestedList(copy, replyNestedList)
@@ -371,7 +383,7 @@ export default {
         let avatar = node.querySelector('td img')
         item.avatar = avatar.src
         let no = node.querySelector('.no')
-        item.index = Number(no.innerText)
+        item.floor = Number(no.innerText)
 
         let thank_area = node.querySelector('.thank_area')
         if (thank_area) {
@@ -404,6 +416,7 @@ export default {
           }
         }
       }
+      this.readList.add(post.id)
       repliesMap = []
       // this.current = post
       this.current = JSON.parse(JSON.stringify(post))

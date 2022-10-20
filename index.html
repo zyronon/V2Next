@@ -11,8 +11,9 @@
 <body>
 <div id="app"></div>
 <script>
+    window.isDev = false
     // $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
-    if (window.top.document !== window.document) {
+    if (window.top.document !== window.document && !window.isDev) {
         let w = window.top
         let doc = window.top.document
         if (!w.init) {
@@ -87,7 +88,6 @@
                 );
             }
         }
-
 
 
         //开发时自动更新window.top head里面添加的vue style

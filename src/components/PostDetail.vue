@@ -115,11 +115,6 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  provide() {
-    return {
-      target: computed(() => this.target),
-    }
-  },
   props: {
     modelValue: false,
     loading: false,
@@ -145,11 +140,10 @@ export default {
     replies() {
       if (this.target === 0) return this.post.nestedReplies
       if (this.target === 1) {
-        let copy = JSON.parse(JSON.stringify(this.post.replies))
-        return copy.sort((a, b) => b.thankCount - a.thankCount)
+        return this.post.nestedReplies.sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.target === 2) return this.post.replies
-    }
+    },
   },
   watch: {
     modelValue(newVal) {

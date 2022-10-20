@@ -24,15 +24,17 @@ import {CMD} from "@/utils/type";
 export default {
   name: "PostEditor",
   props: {
-    replyInfo: {
-      type: String,
+    replyInfo: '',
+    replyFloor: {
+      type: Number,
       default() {
-        return ''
+        return -1
       }
-    },
+    }
   },
   inject: [
     'post',
+    'allReplyUsers'
   ],
   computed: {
     disabled() {
@@ -53,7 +55,7 @@ export default {
   },
   methods: {
     async submit() {
-      if (!this.content || this.loading) return
+      if (this.disabled || this.loading) return
       this.loading = true
       let item = {
         thankCount: 0,
@@ -63,27 +65,36 @@ export default {
         username: window.user.username,
         avatar: window.user.avatar,
         date: '几秒前',
-        index: this.post.replyCount + 1,
+        floor: this.post.replyCount + 1,
         reply_content: this.content || Date.now(),
-        children: []
+        children: [],
+        replyUsers: [],
+        replyFloor: this.replyFloor
       }
       this.loading = false
-      // eventBus.emit('refreshonce',)
-      eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-      eventBus.emit('addReply', item)
-      this.$emit('addReplyChild', item)
-      this.content = this.replyInfo
-      return
+      let matchUsers = this.content.match(/@([\w]+?[\s])/g)
+      if (matchUsers) {
+        matchUsers.map(i => {
+          let username = i.replace('@', '').replace(' ', '')
+          item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
+        })
+      }
+      // this.loading = false
+      // eventBus.emit('refreshOnce',)
+      // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+      // eventBus.emit('addReply', item)
+      // this.content = this.replyInfo
+      // return console.log('item', item)
+
       let url = `${window.url}/t/${this.post.id}`
       $.post(url, {content: this.content, once: this.post.once}).then(
           res => {
-            this.loading = false
             // console.log('回复', res)
+            this.loading = false
+            this.content = this.replyInfo
             eventBus.emit('refreshOnce', res)
             eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
             eventBus.emit('addReply', item)
-            this.$emit('addReplyChild', item)
-            this.content = this.replyInfo
           },
           err => {
             this.loading = false

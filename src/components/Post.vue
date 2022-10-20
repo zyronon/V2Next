@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post card">
     <div class="base-info">
       <div class="left">
         <a :href="`/member/${post.username}`">
@@ -8,15 +8,15 @@
           </div>
         </a>
         <div class="right">
-          <div class="top">
+          <div class="title">
+            <a :href="`t/${post.id}`">{{ post.title }}</a>
+          </div>
+          <div class="bottom">
             <a :href="post.nodeUrl" class="my-node">{{ post.node }}</a>
             &nbsp;&nbsp;·&nbsp;&nbsp;
             <a class="username" :href="`/member/${post.username}`">{{ post.username }}</a>
             &nbsp;&nbsp;·&nbsp;&nbsp;
             <span class="date">{{ post.date }}</span>
-          </div>
-          <div class="title">
-            <a :href="`t/${post.id}`">{{ post.title }}</a>
           </div>
         </div>
       </div>
@@ -71,22 +71,44 @@ p {
   font-size: 1.4rem;
   cursor: pointer;
   background: white;
-  margin-top: 1.1rem;
-  border: 1px solid @border;
-  border-radius: @border-radius;
   text-align: start;
   padding: 1rem;
   overflow: hidden;
 
+  &.table {
+    border-bottom: 1px solid @border;
+
+    .post-content-wrapper {
+      display: none;
+    }
+
+    .title {
+      a {
+        font-size: 1.6rem!important;
+      }
+    }
+  }
+
+  &.card {
+    margin-top: 1.1rem;
+    border: 1px solid @border;
+    border-radius: @border-radius;
+
+    &:hover {
+      border: 1px solid @border-hover;
+    }
+  }
+
   &.visited {
     .title a {
+      color: #afb9c1 !important;
+    }
+
+    .post-content-wrapper {
       opacity: .6;
     }
   }
 
-  &:hover {
-    border: 1px solid @border-hover;
-  }
 
   .base-info {
     box-sizing: border-box;
@@ -112,28 +134,29 @@ p {
         flex-direction: column;
         justify-content: space-between;
 
-        .top {
+        .title {
+          display: inline;
+          align-items: center;
+
+          a {
+            color: black;
+            font-size: 1.8rem;
+            text-decoration: none;
+          }
+        }
+
+        .bottom {
           font-size: 1.2rem;
           line-height: 1.2rem;
           display: flex;
           align-items: center;
         }
 
-        .title {
-          display: inline;
-          align-items: center;
-
-          a {
-            color: black !important;
-            font-size: 2rem;
-            text-decoration: none;
-          }
-        }
       }
     }
 
     .count {
-      margin-top: 2rem;
+      margin-top: 1.8rem;
       line-height: 12px;
       font-weight: 700;
       color: #fff;
@@ -158,6 +181,7 @@ p {
     color: black;
     position: relative;
     line-break: anywhere;
+    font-size: 1.4rem;
 
     &.mask {
       -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
