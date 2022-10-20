@@ -16,7 +16,7 @@
     &nbsp;&nbsp;&nbsp;
     <div v-if="comment.isOp" class="op">OP</div>
     <div class="date">{{ comment.date }}</div>
-    <div class="index" :class="{isDev}">{{ comment.index }}</div>
+    <div class="floor" :class="{isDev}">{{ comment.floor }}</div>
   </div>
 </template>
 <script>
@@ -58,7 +58,7 @@ export default {
   //  }
   //}
 
-  .index {
+  .floor {
     position: absolute;
     right: 0;
     font-size: 1.2rem;
