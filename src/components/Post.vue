@@ -1,5 +1,5 @@
 <template>
-  <div class="post card">
+  <div class="post">
     <div class="base-info">
       <div class="left">
         <a :href="`/member/${post.username}`">
