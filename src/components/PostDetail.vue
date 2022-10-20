@@ -6,91 +6,96 @@
        @click="$emit('update:modelValue',false)">
     <div class="main" @click.stop="stop">
       <div class="left">
-        <div class="post">
-          <div class="base-info">
-            <a :href="`/member/${post.username}`">
-              <img class="avatar" :src="post.avatar" alt="">
-            </a>
-            <div class="post-nodes">
-              <a href="/">V2EX</a>
-              <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
-              <a :href="post.nodeUrl">{{ post.node }}</a>
-            </div>
-            <div class="title" v-html="post.title"></div>
-            <div class="post-author">
-              <div class="username">
-                <a :href="`/member/${post.username}`">{{ post.username }}</a>
+        <div class="left-wrapper">
+          <div class="post">
+            <div class="base-info">
+              <a :href="`/member/${post.username}`">
+                <img class="avatar" :src="post.avatar" alt="">
+              </a>
+              <div class="post-nodes">
+                <a href="/">V2EX</a>
+                <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
+                <a :href="post.nodeUrl">{{ post.node }}</a>
               </div>
-              &nbsp;&nbsp;·&nbsp;&nbsp;
-              <div class="date">{{ post.date }}</div>
-              &nbsp;&nbsp;·&nbsp;&nbsp;
-              <div class="date">{{ post.clickCount }}次点击</div>
+              <div class="title" v-html="post.title"></div>
+              <div class="post-author">
+                <div class="username">
+                  <a :href="`/member/${post.username}`">{{ post.username }}</a>
+                </div>
+                &nbsp;&nbsp;·&nbsp;&nbsp;
+                <div class="date">{{ post.date }}</div>
+                &nbsp;&nbsp;·&nbsp;&nbsp;
+                <div class="date">{{ post.clickCount }}次点击</div>
+              </div>
             </div>
-          </div>
-          <div class="line"></div>
-          <div class="content">
-            <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
-            <BaseHtmlRender :html="post.subtlesHtml"/>
-          </div>
-          <div class="toolbar-wrapper">
-            <Point
-                @addThank="addThank"
-                @recallThank="recallThank"
-                :item="{
+            <div class="line"></div>
+            <div class="content">
+              <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
+              <BaseHtmlRender :html="post.subtlesHtml"/>
+            </div>
+            <div class="toolbar-wrapper">
+              <Point
+                  @addThank="addThank"
+                  @recallThank="recallThank"
+                  :item="{
                 isThanked:post.isThanked,
                 thankCount:post.thankCount,
                 username:post.username
               }"
-                :api-url="'topic/'+post.id"/>
-            <Toolbar :post="post" :replyCount="post.replyCount"/>
-          </div>
-        </div>
-        <div class="post-wrapper2">
-          <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
-          <div class="sort-select">
-            <div class="target" @click.stop="showSortOption = true">
-              <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
-              <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
-                      stroke-linejoin="round"/>
-              </svg>
+                  :api-url="'topic/'+post.id"/>
+              <Toolbar :post="post" :replyCount="post.replyCount"/>
             </div>
-            <div class="options" v-if="showSortOption">
-              <div class="option"
-                   :class="{active:target === item.value}"
-                   @click="changeOption(item)"
-                   v-for="item in sortOptions">
-                {{ item.label }}
+          </div>
+          <div class="post-wrapper2">
+            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
+            <div class="sort-select">
+              <div class="target" @click.stop="showSortOption = true">
+                <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
+                <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
+                        stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="options" v-if="showSortOption">
+                <div class="option"
+                     :class="{active:target === item.value}"
+                     @click="changeOption(item)"
+                     v-for="item in sortOptions">
+                  {{ item.label }}
+                </div>
               </div>
             </div>
+            <div class="line"></div>
           </div>
-          <div class="line"></div>
-        </div>
-        <div v-if="loading" class="loading-w">
-          <div class="loading-c"></div>
-        </div>
-        <template v-else>
-          <div class="comments" v-if="replies.length">
-            <Comment v-for="(item,index) in replies"
-                     @remove="remove(index)"
-                     v-model="replies[index]" :key="index"/>
+          <div v-if="loading" class="loading-w">
+            <div class="loading-c"></div>
           </div>
-          <div v-else class="empty">
-            <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="#4a90e2" stroke="#4a90e2" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M23 21H25.0025" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-              <path d="M33.001 21H34.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-              <path d="M13.001 21H14.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <div class="t1">
-              暂无评论
+          <template v-else>
+            <div class="comments" v-if="replies.length">
+              <Comment v-for="(item,index) in replies"
+                       @remove="remove(index)"
+                       v-model="replies[index]" :key="index"/>
             </div>
-            <div>
-              第一个分享你的想法！
+            <div v-else class="empty">
+              <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="#4a90e2" stroke="#4a90e2" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M23 21H25.0025" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+                <path d="M33.001 21H34.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+                <path d="M13.001 21H14.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div class="t1">
+                暂无评论
+              </div>
+              <div>
+                第一个分享你的想法！
+              </div>
             </div>
-          </div>
-        </template>
+          </template>
+        </div>
+      </div>
+      <div class="right" ref="right">
+
       </div>
     </div>
     <div class="scroll-top button" @click.stop="scrollTop">
@@ -154,8 +159,16 @@ export default {
     }
   },
   created() {
+
   },
   mounted() {
+    let Rightbar = window.doc.querySelector('#Rightbar')
+    if (Rightbar) {
+      this.$refs.right.append(Rightbar.cloneNode(true))
+    }
+  },
+  unmounted() {
+    this.$refs.right.innerHTML = ''
   },
   methods: {
     clone(val) {
@@ -224,26 +237,31 @@ export default {
   overflow: auto;
   font-size: 1.4rem;
 
-  @width: 55vw;
+  @width: 77rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 
   .main {
-    padding: 6rem 15rem;
     display: flex;
-    margin: auto;
-    width: @width;
-    box-sizing: border-box;
+    padding: 6rem 12rem 10rem 12rem;
+    //margin: auto;
+    //box-sizing: border-box;
     min-height: 100%;
     background: #e2e2e2;
 
     > .left {
-      flex: 1;
-      max-width: 100%;
-      background: white;
-      border-radius: @border-radius;
-      padding-bottom: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      width: @width;
+
+      .left-wrapper {
+        width: 100%;
+        background: white;
+        border-radius: @border-radius;
+        padding-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
       .post {
         width: 100%;
@@ -387,20 +405,42 @@ export default {
         }
       }
     }
+
+    > .right {
+      //width: 27rem;
+      //height: 20rem;
+      //background: red;
+      margin-left: 2rem;
+      margin-top: -2rem;
+    }
   }
 
   @media screen and (max-width: 1500px) {
-    @width: 70vw;
+    @width: 65vw;
     .main {
       padding: 8rem;
-      width: @width;
+
+      > .left {
+        width: @width;
+      }
+
+      > .right {
+        display: none;
+      }
     }
   }
   @media screen and (max-width: 1280px) {
     @width: 75vw;
     .main {
       padding: 5rem;
-      width: @width;
+
+      > .left {
+        width: @width;
+      }
+
+      > .right {
+        display: none;
+      }
     }
   }
 
