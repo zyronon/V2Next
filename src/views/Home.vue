@@ -155,9 +155,7 @@ export default {
       //   })
       // }, 500)
     }
-
     // this.getReplyInfo()
-
     let href = window.doc.location.href
     let r = href.match(/t\/([\d]+)/)
     if (r) {

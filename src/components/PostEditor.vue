@@ -17,105 +17,91 @@
   </div>
 </template>
 
-<script>
-import eventBus from "@/eventBus";
-import {CMD} from "@/utils/type";
+<script setup>
+import {computed, inject, onBeforeUnmount, onMounted, ref} from "vue";
+import eventBus from "../eventBus";
+import {CMD} from "../utils/type";
 
-export default {
-  name: "PostEditor",
-  props: {
-    replyInfo: '',
-    replyFloor: {
-      type: Number,
-      default() {
-        return -1
-      }
-    }
-  },
-  inject: [
-    'post',
-    'allReplyUsers'
-  ],
-  computed: {
-    disabled() {
-      if (this.content) {
-        return this.content === this.replyInfo
-      } else {
-        return true
-      }
-    }
-  },
-  data() {
-    return {
-      isFocus: false,
-      editorId: 'editorId_' + Date.now(),
-      content: this.replyInfo,
-      loading: false,
-    }
-  },
-  methods: {
-    async submit() {
-      if (this.disabled || this.loading) return
-      this.loading = true
-      let item = {
-        thankCount: 0,
-        isThanked: false,
-        isOp: this.post.username === window.user.username,
-        id: Date.now(),
-        username: window.user.username,
-        avatar: window.user.avatar,
-        date: '几秒前',
-        floor: this.post.replyCount + 1,
-        reply_content: this.content || Date.now(),
-        children: [],
-        replyUsers: [],
-        replyFloor: this.replyFloor
-      }
-      this.loading = false
-      let matchUsers = this.content.match(/@([\w]+?[\s])/g)
-      if (matchUsers) {
-        matchUsers.map(i => {
-          let username = i.replace('@', '').replace(' ', '')
-          item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
-        })
-      }
-      // this.loading = false
-      // eventBus.emit('refreshOnce',)
-      // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-      // eventBus.emit('addReply', item)
-      // this.content = this.replyInfo
-      // return console.log('item', item)
+const {replyInfo, replyFloor} = defineProps(['replyInfo', 'replyFloor'])
+const post = inject('post')
+const allReplyUsers = inject('allReplyUsers')
+const isFocus = ref(false)
+const loading = ref(false)
+const editorId = ref('editorId_' + Date.now())
+const content = ref(replyInfo)
+const txt = ref(null)
 
-      let url = `${window.url}/t/${this.post.id}`
-      $.post(url, {content: this.content, once: this.post.once}).then(
-          res => {
-            // console.log('回复', res)
-            this.loading = false
-            this.content = this.replyInfo
-            eventBus.emit('refreshOnce', res)
-            eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-            eventBus.emit('addReply', item)
-          },
-          err => {
-            this.loading = false
-            eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
-          }
-      )
-    },
-  },
-  mounted() {
-    $(`.${this.editorId}`).each(function () {
-      this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-    }).on("input", function () {
-      this.style.height = 0;
-      this.style.height = (this.scrollHeight) + "px";
-    });
-    this.$refs.txt.focus()
-  },
-  beforeUnmount() {
-    $(`.${this.editorId}`).off()
-  },
+const disabled = computed(() => {
+  if (content.value) {
+    return content.value === replyInfo
+  } else {
+    return true
+  }
+})
+
+async function submit() {
+  if (disabled.value || loading.value) return
+  loading.value = true
+  let item = {
+    thankCount: 0,
+    isThanked: false,
+    isOp: post.value.username === window.user.username,
+    id: Date.now(),
+    username: window.user.username,
+    avatar: window.user.avatar,
+    date: '几秒前',
+    floor: post.value.replyCount + 1,
+    reply_content: content.value || Date.now(),
+    children: [],
+    replyUsers: [],
+    replyFloor: replyFloor || -1
+  }
+  loading.value = false
+  return console.log(item)
+  let matchUsers = content.value.match(/@([\w]+?[\s])/g)
+  if (matchUsers) {
+    matchUsers.map(i => {
+      let username = i.replace('@', '').replace(' ', '')
+      item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
+    })
+  }
+  // this.loading = false
+  // eventBus.emit('refreshOnce',)
+  // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+  // eventBus.emit('addReply', item)
+  // this.content = this.replyInfo
+  // return console.log('item', item)
+
+  let url = `${window.url}/t/${this.post.id}`
+  $.post(url, {content: content.value, once: post.once}).then(
+      res => {
+        // console.log('回复', res)
+        loading.value = false
+        content.value = replyInfo
+        eventBus.emit('refreshOnce', res)
+        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+        eventBus.emit('addReply', item)
+      },
+      err => {
+        this.loading = false
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
+      }
+  )
 }
+
+onMounted(() => {
+  $(`.${editorId.value}`).each(function () {
+    this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+  }).on("input", function () {
+    this.style.height = 0;
+    this.style.height = (this.scrollHeight) + "px";
+  });
+  txt.value && txt.value.focus()
+})
+onBeforeUnmount(() => {
+  $(`.${editorId.value}`).off()
+})
+
 </script>
 
 <style scoped lang="less">
