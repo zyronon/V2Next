@@ -425,6 +425,10 @@ export default {
       border: 1px solid #ccc;
       background-color: #fff;
       box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
+      overflow: auto;
+      max-height: 30rem;
+      box-sizing: content-box;
+
 
       .call-user {
         border-top: 1px solid #ccc;
@@ -432,6 +436,7 @@ export default {
         display: flex;
         padding: 0 1rem;
         align-items: center;
+        cursor: pointer;
         font-size: 14px;
       }
     }
