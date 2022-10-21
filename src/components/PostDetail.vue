@@ -95,7 +95,10 @@
         </div>
       </div>
       <div class="right" ref="right">
+      </div>
 
+      <div class="call-users">
+        <div class="call-user" v-for="i in 10">Adsfasfd</div>
       </div>
     </div>
     <div class="scroll-top button" @click.stop="scrollTop">
@@ -249,6 +252,7 @@ export default {
     //box-sizing: border-box;
     min-height: 100%;
     background: #e2e2e2;
+    position: relative;
 
     > .left {
       width: @width;
@@ -413,6 +417,25 @@ export default {
       margin-left: 2rem;
       margin-top: -2rem;
     }
+
+    .call-users {
+      z-index: 9;
+      position: absolute;
+      top: 12rem;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
+
+      .call-user {
+        border-top: 1px solid #ccc;
+        height: 3rem;
+        display: flex;
+        padding: 0 1rem;
+        align-items: center;
+        font-size: 14px;
+      }
+    }
+
   }
 
   @media screen and (max-width: 1500px) {
