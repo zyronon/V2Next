@@ -97,8 +97,15 @@
       <div class="right" ref="right">
       </div>
 
-      <div class="call-users">
-        <div class="call-user" v-for="i in 10">Adsfasfd</div>
+      <div class="call-list"
+           :style="callStyle"
+           v-if="showCallList && filterCallList.length">
+        <div class="call-item"
+             @click="setCall(item)"
+             :class="{select:index === selectCallIndex}"
+             v-for="(item,index) in filterCallList">
+          <a>{{ item }}</a>
+        </div>
       </div>
     </div>
     <div class="scroll-top button" @click.stop="scrollTop">
@@ -113,6 +120,8 @@ import {computed,} from "vue";
 import Point from "./Point";
 import Toolbar from "./Toolbar";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
+import eventBus from "@/eventBus";
+import {CMD} from "@/utils/type";
 
 export default {
   name: "detail",
@@ -123,15 +132,10 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
+  inject: ['allReplyUsers', 'post'],
   props: {
     modelValue: false,
     loading: false,
-    post: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
   },
   data() {
     return {
@@ -141,10 +145,26 @@ export default {
         {value: 0, label: '楼中楼'},
         {value: 1, label: '感谢'},
         {value: 2, label: 'V2原版'},
-      ]
+      ],
+      selectCallIndex: 0,
+      showCallList: false,
+      replyText: '',
+      callStyle: {
+        top: 0,
+        left: 0
+      }
     }
   },
   computed: {
+    filterCallList() {
+      if (this.showCallList) {
+        if (this.replyText) {
+          return this.allReplyUsers.filter(i => i.search(this.replyText) > -1)
+        }
+        return this.allReplyUsers
+      }
+      return []
+    },
     replies() {
       if (this.target === 0) return this.post.nestedReplies
       if (this.target === 1) {
@@ -161,19 +181,67 @@ export default {
       }
     }
   },
-  created() {
-
-  },
   mounted() {
+    window.win().addEventListener('keydown', this.onKeyDown)
     let Rightbar = window.doc.querySelector('#Rightbar')
     if (Rightbar) {
       this.$refs.right.append(Rightbar.cloneNode(true))
     }
+    eventBus.on(CMD.SHOW_CALL, (val) => {
+      if (val.show) {
+        // console.log('va', val)
+        this.showCallList = true
+        this.replyText = val.text
+        this.callStyle.top = val.y + 'px'
+        this.callStyle.left = val.x + 'px'
+        if (this.selectCallIndex > this.filterCallList.length) {
+          this.selectCallIndex = 0
+        }
+      } else {
+        this.replyText = ''
+        this.showCallList = false
+        this.selectCallIndex = 0
+      }
+    })
   },
-  unmounted() {
+  beforeUnmount() {
     this.$refs.right.innerHTML = ''
+    window.win().removeEventListener('keydown', this.onKeyDown)
+    eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    setCall(e) {
+      if (e) {
+
+      }
+      eventBus.emit(CMD.SET_CALL, e)
+      this.showCallList = false
+    },
+    onKeyDown(e) {
+      if (!this.modelValue) return
+      if (!this.showCallList) return
+      //enter
+      if (e.keyCode === 13) {
+        this.setCall(this.filterCallList[this.selectCallIndex])
+        e.preventDefault()
+      }
+      //上
+      if (e.keyCode === 38) {
+        this.selectCallIndex--
+        if (this.selectCallIndex < 0) {
+          this.selectCallIndex = this.filterCallList.length - 1
+        }
+        e.preventDefault()
+      }
+      //下
+      if (e.keyCode === 40) {
+        this.selectCallIndex++
+        if (this.selectCallIndex > (this.filterCallList.length - 1)) {
+          this.selectCallIndex = 0
+        }
+        e.preventDefault()
+      }
+    },
     clone(val) {
       return JSON.parse(JSON.stringify(val))
     },
@@ -418,19 +486,19 @@ export default {
       margin-top: -2rem;
     }
 
-    .call-users {
+    .call-list {
       z-index: 9;
       position: absolute;
       top: 12rem;
       border: 1px solid #ccc;
       background-color: #fff;
       box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
-      overflow: auto;
+      overflow: hidden;
       max-height: 30rem;
+      min-width: 8rem;
       box-sizing: content-box;
 
-
-      .call-user {
+      .call-item {
         border-top: 1px solid #ccc;
         height: 3rem;
         display: flex;
@@ -438,9 +506,22 @@ export default {
         align-items: center;
         cursor: pointer;
         font-size: 14px;
+        box-sizing: border-box;
+
+        .select {
+          background-color: #f0f0f0;
+          text-decoration: none;
+        }
+
+        &:hover {
+          .select();
+        }
+
+        &.select {
+          .select();
+        }
       }
     }
-
   }
 
   @media screen and (max-width: 1500px) {

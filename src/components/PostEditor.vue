@@ -4,8 +4,10 @@
               ref="txt"
               placeholder="请尽量让自己的回复能够对别人有帮助"
               @focus="isFocus = true"
-              @blur="isFocus = false"
+              @blur="onBlur"
               :class="editorId"
+              @input="onInput"
+              @keydown="onKeydown"
               v-model="content"></textarea>
     <textarea class="hide" :class="editorId"></textarea>
     <div class="toolbar">
@@ -18,14 +20,15 @@
 </template>
 
 <script setup>
-import {computed, inject, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
+import {debounce} from "@/utils";
 
 const {replyInfo, replyFloor} = defineProps(['replyInfo', 'replyFloor'])
 const post = inject('post')
 const allReplyUsers = inject('allReplyUsers')
-const isFocus = ref(false)
+let isFocus = ref(false)
 const loading = ref(false)
 const editorId = ref('editorId_' + Date.now())
 const content = ref(replyInfo)
@@ -38,6 +41,149 @@ const disabled = computed(() => {
     return true
   }
 })
+
+function getSelectionCoords(win) {
+  win = win || window;
+  var doc = win.document;
+  var sel = doc.selection, range, rects, rect;
+  var x = 0, y = 0;
+  if (sel) {
+    if (sel.type != "Control") {
+      range = sel.createRange();
+      range.collapse(true);
+      x = range.boundingLeft;
+      y = range.boundingTop;
+    }
+  } else if (win.getSelection) {
+    sel = win.getSelection();
+    if (sel.rangeCount) {
+      range = sel.getRangeAt(0).cloneRange();
+      if (range.getClientRects) {
+        range.collapse(true);
+        rects = range.getClientRects();
+        if (rects.length > 0) {
+          rect = rects[0];
+        }
+        // 光标在行首时，rect为undefined
+        if (rect) {
+          x = rect.left;
+          y = rect.top;
+        }
+      }
+      // Fall back to inserting a temporary element
+      if ((x == 0 && y == 0) || rect === undefined) {
+        var span = doc.createElement("span");
+        if (span.getClientRects) {
+          // Ensure span has dimensions and position by
+          // adding a zero-width space character
+          span.appendChild(doc.createTextNode("\u200b"));
+          range.insertNode(span);
+          rect = span.getClientRects()[0];
+          x = rect.left;
+          y = rect.top;
+          var spanParent = span.parentNode;
+          spanParent.removeChild(span);
+
+          // Glue any broken text nodes back together
+          spanParent.normalize();
+        }
+      }
+    }
+  }
+  return {x: x, y: y};
+}
+
+function off() {
+  eventBus.emit(CMD.SHOW_CALL, {show: false})
+  eventBus.off(CMD.SET_CALL)
+}
+
+function show(text) {
+  console.log('show')
+  let r = getSelectionCoords(window.win())
+  // console.log('r', r)
+  eventBus.emit(CMD.SHOW_CALL, {show: true, ...r, text})
+  eventBus.off(CMD.SET_CALL)
+  eventBus.on(CMD.SET_CALL, e => {
+    let cursorPos = txt.value.selectionStart
+    let start = content.value.slice(0, cursorPos)
+    let end = content.value.slice(cursorPos, content.value.length)
+    let lastCallPos = start.lastIndexOf('@')
+    console.log('e', e)
+    start = content.value.slice(0, lastCallPos + 1)
+    content.value = start + e + ' ' + end
+    eventBus.off(CMD.SET_CALL)
+  })
+}
+
+// const show = debounce(_show, 500)
+
+function onKeydown(e) {
+  let code = e.keyCode
+  switch (code) {
+    case 37:
+    case 38:
+    case 39:
+    case 40:
+      setTimeout(() => onInput({data: ''}), 100)
+      break
+  }
+}
+
+function onInput(e) {
+  let cursorPos = txt.value.selectionStart
+  if (!content.value) return
+  // console.log('cursorPos', cursorPos, content.value)
+  // console.log('e.data', e.data)
+  if (e.data === ' ') {
+    return off()
+  }
+  if (e.data === '@') {
+    if (content.value.length !== 1) {
+      if (content.value[cursorPos - 2] === ' ' || content.value[cursorPos - 2] === '\n') {
+        return show('')
+      }
+    } else {
+      return show('')
+    }
+    off()
+  } else {
+    // console.log('当前光标位置', cursorPos)
+    let judgeStr = content.value.slice(0, cursorPos)
+    // console.log('判断的字符串', judgeStr)
+    let lastCallPos = judgeStr.lastIndexOf('@')
+    console.log('最后一个@的位置', lastCallPos)
+    if (lastCallPos === -1) {
+      return off()
+    }
+    let callStr = judgeStr.slice(lastCallPos, cursorPos)
+    // console.log('callStr', callStr)
+    let hasSpace = callStr.includes(' ')
+    // console.log('是否有空格', hasSpace)
+    if (hasSpace) {
+      off()
+    } else {
+      if (lastCallPos === 0) {
+        return show(callStr.replace('@', ''))
+      }
+      if (content.value.length !== 1) {
+        if (content.value[lastCallPos - 1] === ' ' || content.value[lastCallPos - 1] === '\n') {
+          return show(callStr.replace('@', ''))
+        }
+      } else {
+        return show(callStr.replace('@', ''))
+      }
+      off()
+      // show(callStr.replace('@', ''))
+    }
+  }
+}
+
+function onBlur() {
+  // eventBus.emit(CMD.SHOW_CALL, {show: false})
+  // eventBus.off(CMD.SET_CALL)
+  isFocus.value = false
+}
 
 async function submit() {
   if (disabled.value || loading.value) return
@@ -56,8 +202,8 @@ async function submit() {
     replyUsers: [],
     replyFloor: replyFloor || -1
   }
-  loading.value = false
-  return console.log(item)
+  // loading.value = false
+  // return console.log(item)
   let matchUsers = content.value.match(/@([\w]+?[\s])/g)
   if (matchUsers) {
     matchUsers.map(i => {
@@ -72,7 +218,7 @@ async function submit() {
   // this.content = this.replyInfo
   // return console.log('item', item)
 
-  let url = `${window.url}/t/${this.post.id}`
+  let url = `${window.url}/t/${post.id}`
   $.post(url, {content: content.value, once: post.once}).then(
       res => {
         // console.log('回复', res)
@@ -83,7 +229,7 @@ async function submit() {
         eventBus.emit('addReply', item)
       },
       err => {
-        this.loading = false
+        loading.value = false
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
       }
   )
