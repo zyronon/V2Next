@@ -103,7 +103,7 @@
         <div class="call-item"
              @click="setCall(item)"
              :class="{select:index === selectCallIndex}"
-             v-for="(item,index) in filterCallList">
+             v-for="(item,index) in filterCallList.slice(0,10)">
           <a>{{ item }}</a>
         </div>
       </div>
@@ -220,6 +220,7 @@ export default {
     onKeyDown(e) {
       if (!this.modelValue) return
       if (!this.showCallList) return
+      let length = this.filterCallList.slice(0, 10).length
       //enter
       if (e.keyCode === 13) {
         this.setCall(this.filterCallList[this.selectCallIndex])
@@ -229,14 +230,14 @@ export default {
       if (e.keyCode === 38) {
         this.selectCallIndex--
         if (this.selectCallIndex < 0) {
-          this.selectCallIndex = this.filterCallList.length - 1
+          this.selectCallIndex = length - 1
         }
         e.preventDefault()
       }
       //下
       if (e.keyCode === 40) {
         this.selectCallIndex++
-        if (this.selectCallIndex > (this.filterCallList.length - 1)) {
+        if (this.selectCallIndex > (length - 1)) {
           this.selectCallIndex = 0
         }
         e.preventDefault()
