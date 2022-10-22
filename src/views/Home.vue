@@ -61,7 +61,7 @@ export default {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.user.username),
       post: computed(() => this.current),
-      allReplyUsers: computed(() => this.current.replies.map(v => v.username)),
+      allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
     }
   },
   components: {
@@ -669,6 +669,11 @@ export default {
     &.active {
       background: #40a9ff;
       color: white;
+
+      &:hover {
+        background: #40a9ff;
+        opacity: .8;
+      }
     }
 
     &:hover {
