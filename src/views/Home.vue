@@ -36,7 +36,7 @@
       card:viewType === 'card',
       }" @click="showDetail(item,$event)" v-for="item in list" :post="item"/>
   </div>
-  <PostDetail v-model="show" :post="current" :loading="loading"/>
+  <PostDetail v-model="show" :loading="loading"/>
   <div class="msgs">
     <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
   </div>

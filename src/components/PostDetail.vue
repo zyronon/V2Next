@@ -192,9 +192,11 @@ export default {
         // console.log('va', val)
         this.showCallList = true
         this.replyText = val.text
-        this.callStyle.top = val.y + 'px'
-        this.callStyle.left = val.x + 'px'
-        if (this.selectCallIndex > this.filterCallList.length) {
+        //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
+        //left要减去父级的left，原理同上
+        this.callStyle.top = val.top + $('.post-detail').scrollTop() + 'px'
+        this.callStyle.left = val.left - $('.main')[0].getBoundingClientRect().left + 10 + 'px'
+        if (this.selectCallIndex >= this.filterCallList.length) {
           this.selectCallIndex = 0
         }
       } else {
@@ -316,7 +318,7 @@ export default {
 
   .main {
     display: flex;
-    padding: 6rem 12rem 10rem 12rem;
+    padding: 6rem 12rem 15rem 12rem;
     //margin: auto;
     //box-sizing: border-box;
     min-height: 100%;
@@ -529,6 +531,7 @@ export default {
     @width: 65vw;
     .main {
       padding: 8rem;
+      padding-bottom: 15rem;
 
       > .left {
         width: @width;
@@ -543,6 +546,7 @@ export default {
     @width: 75vw;
     .main {
       padding: 5rem;
+      padding-bottom: 15rem;
 
       > .left {
         width: @width;
