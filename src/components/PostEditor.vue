@@ -1,7 +1,7 @@
 <template>
   <div class="post-editor-wrapper" :class="{isFocus}">
     <textarea class="post-editor"
-              ref="txt"
+              ref="txtRef"
               placeholder="请尽量让自己的回复能够对别人有帮助"
               @focus="isFocus = true"
               @blur="onBlur"
@@ -24,6 +24,7 @@ import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
 import {debounce} from "@/utils";
+import {getPosition} from "@/utils/getCursorPos";
 
 const {replyInfo, replyFloor} = defineProps(['replyInfo', 'replyFloor'])
 const post = inject('post')
@@ -32,7 +33,7 @@ let isFocus = ref(false)
 const loading = ref(false)
 const editorId = ref('editorId_' + Date.now())
 const content = ref(replyInfo)
-const txt = ref(null)
+const txtRef = ref(null)
 
 const disabled = computed(() => {
   if (content.value) {
@@ -42,76 +43,30 @@ const disabled = computed(() => {
   }
 })
 
-function getSelectionCoords(win) {
-  win = win || window;
-  var doc = win.document;
-  var sel = doc.selection, range, rects, rect;
-  var x = 0, y = 0;
-  if (sel) {
-    if (sel.type != "Control") {
-      range = sel.createRange();
-      range.collapse(true);
-      x = range.boundingLeft;
-      y = range.boundingTop;
-    }
-  } else if (win.getSelection) {
-    sel = win.getSelection();
-    if (sel.rangeCount) {
-      range = sel.getRangeAt(0).cloneRange();
-      if (range.getClientRects) {
-        range.collapse(true);
-        rects = range.getClientRects();
-        if (rects.length > 0) {
-          rect = rects[0];
-        }
-        // 光标在行首时，rect为undefined
-        if (rect) {
-          x = rect.left;
-          y = rect.top;
-        }
-      }
-      // Fall back to inserting a temporary element
-      if ((x == 0 && y == 0) || rect === undefined) {
-        var span = doc.createElement("span");
-        if (span.getClientRects) {
-          // Ensure span has dimensions and position by
-          // adding a zero-width space character
-          span.appendChild(doc.createTextNode("\u200b"));
-          range.insertNode(span);
-          rect = span.getClientRects()[0];
-          x = rect.left;
-          y = rect.top;
-          var spanParent = span.parentNode;
-          spanParent.removeChild(span);
-
-          // Glue any broken text nodes back together
-          spanParent.normalize();
-        }
-      }
-    }
-  }
-  return {x: x, y: y};
-}
-
 function off() {
   eventBus.emit(CMD.SHOW_CALL, {show: false})
   eventBus.off(CMD.SET_CALL)
 }
 
 function show(text) {
-  console.log('show')
-  let r = getSelectionCoords(window.win())
-  // console.log('r', r)
+  // console.log('show')
+  let r = getPosition(txtRef.value)
+  // return console.log('r',r)
   eventBus.emit(CMD.SHOW_CALL, {show: true, ...r, text})
   eventBus.off(CMD.SET_CALL)
   eventBus.on(CMD.SET_CALL, e => {
-    let cursorPos = txt.value.selectionStart
+    let cursorPos = txtRef.value.selectionStart
     let start = content.value.slice(0, cursorPos)
     let end = content.value.slice(cursorPos, content.value.length)
     let lastCallPos = start.lastIndexOf('@')
-    console.log('e', e)
+    // console.log('e', e)
     start = content.value.slice(0, lastCallPos + 1)
     content.value = start + e + ' ' + end
+    let moveCursorPos = start.length + e.length + 1
+    // console.log(moveCursorPos)
+    setTimeout(()=>{
+      txtRef.value.setSelectionRange(moveCursorPos,moveCursorPos);
+    })
     eventBus.off(CMD.SET_CALL)
   })
 }
@@ -121,6 +76,13 @@ function show(text) {
 function onKeydown(e) {
   let code = e.keyCode
   switch (code) {
+      //删除
+    case 8:
+      //如果最后一个字符是@，那么就关闭
+      if (content.value === '@') {
+        off()
+      }
+      break
     case 37:
     case 38:
     case 39:
@@ -131,7 +93,7 @@ function onKeydown(e) {
 }
 
 function onInput(e) {
-  let cursorPos = txt.value.selectionStart
+  let cursorPos = txtRef.value.selectionStart
   if (!content.value) return
   // console.log('cursorPos', cursorPos, content.value)
   // console.log('e.data', e.data)
@@ -152,7 +114,7 @@ function onInput(e) {
     let judgeStr = content.value.slice(0, cursorPos)
     // console.log('判断的字符串', judgeStr)
     let lastCallPos = judgeStr.lastIndexOf('@')
-    console.log('最后一个@的位置', lastCallPos)
+    // console.log('最后一个@的位置', lastCallPos)
     if (lastCallPos === -1) {
       return off()
     }
@@ -242,7 +204,7 @@ onMounted(() => {
     this.style.height = 0;
     this.style.height = (this.scrollHeight) + "px";
   });
-  txt.value && txt.value.focus()
+  txtRef.value && txtRef.value.focus()
 })
 onBeforeUnmount(() => {
   $(`.${editorId.value}`).off()
