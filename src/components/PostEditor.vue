@@ -10,6 +10,10 @@
               @keydown="onKeydown"
               v-model="content"></textarea>
     <textarea class="hide" :class="editorId"></textarea>
+    <div class="get-cursor">
+      <span v-html="cursorHtml"></span>
+      <span class="cursor" ref="cursorRef">|</span>
+    </div>
     <div class="toolbar">
       <div class="button"
            :class="{disabled,loading}"
@@ -23,8 +27,6 @@
 import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
-import {debounce} from "@/utils";
-import {getPosition} from "@/utils/getCursorPos";
 
 const {replyInfo, replyFloor} = defineProps(['replyInfo', 'replyFloor'])
 const post = inject('post')
@@ -34,6 +36,18 @@ const loading = ref(false)
 const editorId = ref('editorId_' + Date.now())
 const content = ref(replyInfo)
 const txtRef = ref(null)
+const cursorRef = ref(null)
+const none = ref('<span style="white-space:pre-wrap;"> </span>')
+
+const cursorHtml = computed(() => {
+  if (!txtRef.value || !content.value) return ''
+  let index = txtRef.value?.selectionStart || 0
+  return content.value.substring(0, index)
+      .replace(/</g, '<')
+      .replace(/>/g, '>')
+      .replace(/\n/g, '<br/>')
+      .replace(/\s/g, none.value);
+})
 
 const disabled = computed(() => {
   if (content.value) {
@@ -50,9 +64,10 @@ function off() {
 
 function show(text) {
   // console.log('show')
-  let r = getPosition(txtRef.value)
-  // return console.log('r',r)
-  eventBus.emit(CMD.SHOW_CALL, {show: true, ...r, text})
+  // let r = getPosition(txtRef.value)
+  let r = cursorRef.value.getBoundingClientRect()
+  // console.log('r', r)
+  eventBus.emit(CMD.SHOW_CALL, {show: true, top: r.top, left: r.left, text})
   eventBus.off(CMD.SET_CALL)
   eventBus.on(CMD.SET_CALL, e => {
     let cursorPos = txtRef.value.selectionStart
@@ -64,8 +79,8 @@ function show(text) {
     content.value = start + e + ' ' + end
     let moveCursorPos = start.length + e.length + 1
     // console.log(moveCursorPos)
-    setTimeout(()=>{
-      txtRef.value.setSelectionRange(moveCursorPos,moveCursorPos);
+    setTimeout(() => {
+      txtRef.value.setSelectionRange(moveCursorPos, moveCursorPos);
     })
     eventBus.off(CMD.SET_CALL)
   })
@@ -180,8 +195,8 @@ async function submit() {
   // this.content = this.replyInfo
   // return console.log('item', item)
 
-  let url = `${window.url}/t/${post.id}`
-  $.post(url, {content: content.value, once: post.once}).then(
+  let url = `${window.url}/t/${post.value.id}`
+  $.post(url, {content: content.value, once: post.value.once}).then(
       res => {
         // console.log('回复', res)
         loading.value = false
@@ -252,6 +267,13 @@ onBeforeUnmount(() => {
     width: 100%;
     position: relative;
     background: rgb(246, 247, 248);
+  }
+
+  .get-cursor {
+    .post-editor();
+    position: absolute;
+    top: 0;
+    z-index: -100;
   }
 }
 

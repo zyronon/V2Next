@@ -194,7 +194,7 @@ export default {
         this.replyText = val.text
         //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
         //left要减去父级的left，原理同上
-        this.callStyle.top = val.top + $('.post-detail').scrollTop() + 'px'
+        this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
         this.callStyle.left = val.left - $('.main')[0].getBoundingClientRect().left + 10 + 'px'
         if (this.selectCallIndex >= this.filterCallList.length) {
           this.selectCallIndex = 0
