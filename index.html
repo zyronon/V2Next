@@ -11,125 +11,127 @@
 <body>
 <div id="app"></div>
 <script>
-    console.log(location)
-    console.log()
-    if (window.top[0]) {
-        window.isDev = false
-    }else {
-        window.isDev = true
-    }
-    //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
-    if (window.top.document !== window.document && !window.isDev) {
-        let w = window.top
-        let doc = window.top.document
-        if (!w.init) {
-            w.init = true
+  console.log(location)
+  console.log()
+  if (window.top[0]) {
+    window.isDev = false
+  } else {
+    window.isDev = true
+  }
+  //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
+  if (window.top.document !== window.document && !window.isDev) {
+    let w = window.top
+    let doc = window.top.document
+    if (!w.init) {
+      w.init = true
 
-            w.cb = null
-            let $section = document.createElement('section')
-            $section.id = 'app'
-            let box = $('#Wrapper #Main .box:first', doc)
-            let href = w.location.href
-            let r = href.match(/t\/([\d]+)/)
-            if (r) {
-                box.after($section)
+      w.cb = null
+      let $section = document.createElement('section')
+      $section.id = 'app'
+      let box = $('#Wrapper #Main .box:first', doc)
+      let href = w.location.href
+      let r = href.match(/t\/([\d]+)/)
+      if (r) {
+        box.after($section)
+      } else {
+        box.css({background: 'transparent', 'box-shadow': 'unset'})
+        let wrapper = box.find('.item:first')
+        wrapper.after($section)
+
+        let list = []
+        let apiList = []
+        let listItemNode = doc.querySelectorAll('.item',)
+        // listItemNode = Array.from(listItemNode)
+        // listItemNode.slice(1, 5).forEach(itemNode => {
+        listItemNode.forEach(itemNode => {
+          let item = {replies: []}
+          let bg = itemNode.style['background-image']
+          item.bg = bg
+          let item_title = itemNode.querySelector('.item_title a')
+          let href = item_title.href
+          item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+          item.title = item_title.innerText
+
+          let topic_info = itemNode.querySelector('.topic_info')
+          let userNode = topic_info.querySelector('strong a')
+          item.username = userNode.innerText
+          let timeNode = itemNode.querySelector('.topic_info span')
+          item.date = timeNode.innerText
+          let tagNode = topic_info.querySelector('.node')
+          item.node = tagNode.innerText
+          let countNode = itemNode.querySelector('.count_livid')
+          item.replyCount = countNode ? countNode.innerText : 0
+          itemNode.remove()
+
+          let url = w.location.origin + '/api/topics/show.json?id=' + item.id
+          // console.log(url)
+          apiList.push($.get(url))
+          list.push(item)
+        })
+        w.postList = list
+        console.log(list)
+
+        let count = 0
+
+        async function sleep(time) {
+          return new Promise(resolve => {
+            console.log('等待vue加载完成,第' + count + '次', Date.now())
+            setTimeout(resolve, time)
+          })
+        }
+
+        Promise.allSettled(apiList).then(
+          async (results) => {
+            let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+            if (w.cb) {
+              w.cb(res)
             } else {
-                box.css({background: 'transparent', 'box-shadow': 'unset'})
-                let wrapper = box.find('.item:first')
-                wrapper.after($section)
-
-                let list = []
-                let apiList = []
-                let listItemNode = doc.querySelectorAll('.item',)
-                // listItemNode = Array.from(listItemNode)
-                // listItemNode.slice(1, 5).forEach(itemNode => {
-                listItemNode.forEach(itemNode => {
-                    let item = {replies: []}
-                    let item_title = itemNode.querySelector('.item_title a')
-                    let href = item_title.href
-                    item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-                    item.title = item_title.innerText
-
-                    let topic_info = itemNode.querySelector('.topic_info')
-                    let userNode = topic_info.querySelector('strong a')
-                    item.username = userNode.innerText
-                    let timeNode = itemNode.querySelector('.topic_info span')
-                    item.date = timeNode.innerText
-                    let tagNode = topic_info.querySelector('.node')
-                    item.node = tagNode.innerText
-                    let countNode = itemNode.querySelector('.count_livid')
-                    item.replyCount = countNode ? countNode.innerText : 0
-                    itemNode.remove()
-
-                    let url = w.location.origin + '/api/topics/show.json?id=' + item.id
-                    // console.log(url)
-                    apiList.push($.get(url))
-                    list.push(item)
-                })
-                w.postList = list
-                // console.log(list)
-
-                let count = 0
-
-                async function sleep(time) {
-                    return new Promise(resolve => {
-                        console.log('等待vue加载完成,第' + count + '次', Date.now())
-                        setTimeout(resolve, time)
-                    })
-                }
-
-                Promise.allSettled(apiList).then(
-                    async (results) => {
-                        let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-                        if (w.cb) {
-                            w.cb(res)
-                        } else {
-                            while ((!w.cb) && count < 20) {
-                                await sleep(500)
-                                count++
-                            }
-                            w.cb && w.cb(res)
-                        }
-                    }
-                );
+              while ((!w.cb) && count < 20) {
+                await sleep(500)
+                count++
+              }
+              w.cb && w.cb(res)
             }
-        }
-
-
-        //开发时自动更新window.top head里面添加的vue style
-        function getStyle(html) {
-            let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
-            if (reg) {
-                return reg[0]
-            }
-            return `<style></style>`
-        }
-
-        function removeVueStyle() {
-            let title = $('title:eq(1)', doc.head)
-            while (title.next().length) {
-                title.next().remove()
-            }
-            title.remove()
-        }
-
-        window.onbeforeunload = removeVueStyle
-
-        let observe = new MutationObserver(() => {
-            removeVueStyle()
-
-            let headHtml = window.document.head.innerHTML
-            let reg = getStyle(headHtml)
-            $(doc.head).append($(`<head>${reg}</head>`))
-        });
-        observe.observe(window.document.head, {
-            attributes: true, //目标节点的属性变化
-            childList: true, //目标节点的子节点的新增和删除
-            characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
-            subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
-        });// 后面介绍config的配置
-
+          }
+        );
+      }
     }
+
+
+    //开发时自动更新window.top head里面添加的vue style
+    function getStyle(html) {
+      let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
+      if (reg) {
+        return reg[0]
+      }
+      return `<style></style>`
+    }
+
+    function removeVueStyle() {
+      let title = $('title:eq(1)', doc.head)
+      while (title.next().length) {
+        title.next().remove()
+      }
+      title.remove()
+    }
+
+    window.onbeforeunload = removeVueStyle
+
+    let observe = new MutationObserver(() => {
+      removeVueStyle()
+
+      let headHtml = window.document.head.innerHTML
+      let reg = getStyle(headHtml)
+      $(doc.head).append($(`<head>${reg}</head>`))
+    });
+    observe.observe(window.document.head, {
+      attributes: true, //目标节点的属性变化
+      childList: true, //目标节点的子节点的新增和删除
+      characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
+      subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
+    });// 后面介绍config的配置
+
+  }
 </script>
 <script type="module" src="/src/main.js"></script>
 </body>

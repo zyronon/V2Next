@@ -132,13 +132,14 @@ a {
 
 .tool {
     position: relative;
-    margin-right: .4rem;
+    margin-right: .6rem;
     display: flex;
     align-items: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     border-radius: .2rem;
     cursor: pointer;
+    padding: .5rem;
 
     &::before {
         content: ' ';
@@ -166,8 +167,10 @@ a {
     }
 
     > svg {
-        width: 2rem;
-        padding: .6rem;
+        width: 2rem !important;
+        height: 2rem !important;
+        box-sizing: border-box;
+        padding: .2rem;
         border-radius: .2rem;
     }
 

@@ -398,7 +398,7 @@ export default {
       let copy = JSON.parse(JSON.stringify(allList))
       this.getNestedList(copy, replyNestedList)
       // console.log(copy)
-      console.log('replyNestedList', replyNestedList)
+      // console.log('replyNestedList', replyNestedList)
       this.current.nestedReplies = replyNestedList
     },
     parseReply(nodes, i) {
