@@ -66,10 +66,6 @@
             </div>
             <div class="line"></div>
           </div>
-
-          <div class="editor-wrapper">
-            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
-          </div>
           <div v-if="loading" class="loading-w">
             <div class="loading-c"></div>
           </div>
@@ -97,6 +93,10 @@
               </div>
             </div>
           </template>
+          <div class="editor-wrapper">
+            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
+          </div>
+
         </div>
       </div>
       <div class="right" ref="right">
@@ -104,7 +104,6 @@
           回到顶部
         </div>
       </div>
-
       <div class="call-list"
            :style="callStyle"
            v-if="showCallList && filterCallList.length">
@@ -407,6 +406,8 @@ export default {
         background: white;
         width: 100%;
         padding: 1rem;
+        box-sizing: border-box;
+        margin-top: 2rem;
       }
 
       .post-wrapper2 {
@@ -473,7 +474,10 @@ export default {
       }
 
       .comment-wrapper {
-
+        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+        border-radius: @border-radius;
+        background: white;
+        width: 100%;
       }
 
       .comments {
@@ -588,7 +592,6 @@ export default {
 
   .scroll-top {
     position: fixed;
-    //right: 30%;
     bottom: 3rem;
     z-index: 99;
   }
