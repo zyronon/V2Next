@@ -53,6 +53,22 @@ import Base64Tooltip from "@/components/Base64Tooltip";
 import {CMD} from "@/utils/type";
 import {computed} from "vue";
 
+const initPost = {
+  replies: [],
+  nestedReplies: [],
+  username: '',
+  title: '',
+  id: '',
+  once: '',
+  replyCount: 0,
+  clickCount: 0,
+  thankCount: 0,
+  collectCount: 0,
+  isFavorite: false,
+  isIgnore: false,
+  isThanked: false,
+  isReport: false,
+}
 let repliesMap = []
 export default {
   name: 'home',
@@ -78,19 +94,7 @@ export default {
         // {type: 'success', text: '123', id: Date.now()}
       ],
       show: false,
-      current: {
-        replies: [],
-        nestedReplies: [],
-        username: '',
-        title: '',
-        id: '',
-        once: '',
-        replyCount: 0,
-        collectCount: 0,
-        isFavorite: false,
-        isIgnore: false,
-        isReport: false,
-      },
+      current: initPost,
       list: [],
       readList: new Set(),
     }
@@ -467,17 +471,7 @@ export default {
       }
       this.readList.add(post.id)
       repliesMap = []
-      // this.current = post
-      this.current = JSON.parse(JSON.stringify(post))
-      this.current.isFavorite = false
-      this.current.isThanked = false
-      this.current.isIgnore = false
-      this.current.once = ''
-      this.current.replies = []
-      this.current.nestedReplies = []
-      this.current.clickCount = 0
-      this.current.collectCount = 0
-      this.current.thankCount = 0
+      this.current = Object.assign(JSON.parse(JSON.stringify(initPost)), JSON.parse(JSON.stringify(post)))
       this.show = true
       this.loading = true
 
@@ -611,6 +605,11 @@ export default {
       // console.log(box)
       let cells = box.querySelectorAll('.cell')
       cells = Array.from(cells)
+
+      //获取创建时间
+      let snow = cells[0].querySelector('.snow')
+      that.current.createDate = snow?.nextSibling.nodeValue.trim() || ''
+
       if (!cells[1].id) {
         that.parseReply(cells.slice(2), 0)
         let pages = cells[1].querySelectorAll('a')
