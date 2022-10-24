@@ -7,7 +7,7 @@
     <div class="main" @click.stop="stop">
       <div class="left">
         <div class="left-wrapper">
-          <div class="post">
+          <div class="my-box post-wrapper">
             <div class="base-info">
               <a :href="`/member/${post.username}`">
                 <img class="avatar" :src="post.avatar" alt="">
@@ -28,10 +28,9 @@
                 <div class="date">{{ post.clickCount }}次点击</div>
               </div>
             </div>
-            <div class="line"></div>
             <div class="content">
-              <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
-              <BaseHtmlRender :html="post.subtlesHtml"/>
+              <BaseHtmlRender v-if="post.content_rendered" :html="post.content_rendered" class="baseContent"/>
+              <BaseHtmlRender v-if="post.subtlesHtml" :html="post.subtlesHtml"/>
             </div>
             <div class="toolbar-wrapper">
               <Point
@@ -46,57 +45,75 @@
               <Toolbar/>
             </div>
           </div>
-          <div class="post-wrapper2">
-            <div class="sort-select">
-              <div class="target" @click.stop="showSortOption = true">
-                <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
-                <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
-                        stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="options" v-if="showSortOption">
-                <div class="option"
-                     :class="{active:target === item.value}"
-                     @click="changeOption(item)"
-                     v-for="item in sortOptions">
-                  {{ item.label }}
+          <div class="my-box" v-if="loading">
+            <div class="my-cell flex">
+                <span class="gray">{{ post.replyCount }} 条回复
+                 <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
+                </span>
+              <div class="sort-select">
+                <div class="target" @click.stop="showSortOption = true">
+                  <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
+                  <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
+                          stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="options" v-if="showSortOption">
+                  <div class="option"
+                       :class="{active:target === item.value}"
+                       @click="changeOption(item)"
+                       v-for="item in sortOptions">
+                    {{ item.label }}
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="line"></div>
-          </div>
-          <div v-if="loading" class="loading-w">
-            <div class="loading-c"></div>
+            <div class="loading-wrapper">
+              <div class="loading-c"></div>
+            </div>
           </div>
           <template v-else>
-            <div class="comment-wrapper" v-if="replies.length">
+            <div class="my-box comment-wrapper" v-if="replies.length">
+              <div class="my-cell flex">
+                <span class="gray">{{ post.replyCount }} 条回复
+                 <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
+                </span>
+                <div class="sort-select">
+                  <div class="target" @click.stop="showSortOption = true">
+                    <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
+                    <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
+                            stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="options" v-if="showSortOption">
+                    <div class="option"
+                         :class="{active:target === item.value}"
+                         @click="changeOption(item)"
+                         v-for="item in sortOptions">
+                      {{ item.label }}
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="comments">
                 <Comment v-for="(item,index) in replies"
                          @remove="remove(index)"
                          v-model="replies[index]" :key="index"/>
               </div>
             </div>
-            <div v-else class="empty">
-              <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="#4a90e2" stroke="#4a90e2" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M23 21H25.0025" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-                <path d="M33.001 21H34.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-                <path d="M13.001 21H14.9999" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              <div class="t1">
-                暂无评论
-              </div>
-              <div>
-                第一个分享你的想法！
+            <div v-else id="no-comments-yet">目前尚无回复</div>
+          </template>
+          <div class="my-box editor-wrapper">
+            <div class="my-cell flex">
+              <span>添加一条新回复</span>
+              <div class="notice-right">
+                <a class="float">取消回复框停靠</a>
+                <a @click="scrollTop">回到顶部</a>
               </div>
             </div>
-          </template>
-          <div class="editor-wrapper">
-            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
+            <PostEditor useType="reply-post" v-if="modelValue" @addReplyChild="addReplyChild"/>
           </div>
-
         </div>
       </div>
       <div class="right" ref="right">
@@ -120,7 +137,6 @@
 <script>
 import Comment from './Comment'
 import PostEditor from './PostEditor'
-import {computed,} from "vue";
 import Point from "./Point";
 import Toolbar from "./Toolbar";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
@@ -303,6 +319,26 @@ export default {
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
 
+.line {
+  border-bottom: 1px solid @border;
+}
+
+.my-box {
+  box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+  border-radius: @border-radius;
+  background: white;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.my-cell {
+  padding: 1rem;
+  font-size: 1.4rem;
+  line-height: 150%;
+  text-align: left;
+  border-bottom: 1px solid @border;
+}
+
 .post-detail {
   text-align: start;
   position: fixed;
@@ -340,14 +376,7 @@ export default {
         align-items: center;
       }
 
-      .post {
-        border-radius: @border-radius;
-        background: white;
-        overflow: hidden;
-        width: 100%;
-        //display: flex;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+      .post-wrapper {
 
         .base-info {
           padding: 1rem;
@@ -381,8 +410,17 @@ export default {
           color: black;
           word-break: break-word;
           line-height: 1.6;
+          border-bottom: 1px solid gainsboro;
+
+          &:empty {
+            border-bottom: none;
+          }
 
           .baseContent {
+            &:empty {
+              padding: 0;
+            }
+
             padding: 1rem;
           }
         }
@@ -391,7 +429,6 @@ export default {
           height: 4rem;
           padding-left: .6rem;
           display: flex;
-          border-top: 1px solid gainsboro;
           //background: linear-gradient(to bottom, #eee 0, #ccc 100%);
 
           .point {
@@ -401,108 +438,87 @@ export default {
       }
 
       .editor-wrapper {
-        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
-        border-radius: @border-radius;
-        background: white;
-        width: 100%;
-        padding: 1rem;
-        box-sizing: border-box;
-        margin-top: 2rem;
-      }
 
-      .post-wrapper2 {
-        width: 90%;
-
-        .line {
-          border-bottom: 1px solid @border;
-          width: 100%;
+        .float {
+          margin-right: 2rem;
         }
 
-        .sort-select {
-          margin-top: 3rem;
-          margin-bottom: 1rem;
-          position: relative;
-
-          .target {
-            color: #0079d3;
-            font-size: 1.2rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-
-            svg {
-              @width: 1.4rem;
-              width: @width;
-              height: @width;
-              margin-left: .5rem;
-            }
-          }
-
-          .options {
-            box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
-            background: white;
-            z-index: 9998;
-            border-radius: .5rem;
-            cursor: pointer;
-            font-size: 1.4rem;
-            position: absolute;
-            top: 2.6rem;
-            left: 2.7rem;
-            color: @link-color;
-
-            .option {
-              padding: .8rem 1.4rem;
-
-              &.active {
-                color: #0079d3;
-              }
-
-              &:hover {
-                background: #e9f5fd;
-              }
-            }
-          }
+        :deep(.post-editor-wrapper) {
+          padding: @space;
         }
-      }
-
-      .loading-w {
-        height: 30rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
 
       .comment-wrapper {
-        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
-        border-radius: @border-radius;
-        background: white;
-        width: 100%;
-      }
+        padding-bottom: 1.8rem;
 
-      .comments {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0 1rem;
-      }
-
-      .empty {
-        color: #ccc;
-        font-weight: normal;
-        height: 30rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        div {
-          margin-top: 2rem;
+        .comments {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 0 1rem;
         }
 
-        .t1 {
-          font-size: 1.6rem;
+      }
+
+      .sort-select {
+        position: relative;
+
+        .target {
+          color: #0079d3;
+          font-size: 1.2rem;
           font-weight: bold;
+          display: inline-flex;
+          align-items: center;
+          cursor: pointer;
+
+          svg {
+            @width: 1.4rem;
+            width: @width;
+            height: @width;
+            margin-left: .5rem;
+          }
         }
+
+        .options {
+          box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
+          background: white;
+          z-index: 9998;
+          border-radius: .5rem;
+          cursor: pointer;
+          font-size: 1.4rem;
+          position: absolute;
+          top: 2.6rem;
+          left: 2.7rem;
+          width: 8rem;
+          color: @link-color;
+
+          .option {
+            padding: .8rem 1.4rem;
+
+            &.active {
+              color: #0079d3;
+            }
+
+            &:hover {
+              background: #e9f5fd;
+            }
+          }
+        }
+      }
+
+      .loading-wrapper {
+        height: 20rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #no-comments-yet {
+        color: #a9a9a9;
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 2rem;
+        box-sizing: border-box;
       }
     }
 

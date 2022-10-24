@@ -1,5 +1,5 @@
 <template>
-  <div class="post-editor-wrapper reply-post" :class="{isFocus}">
+  <div class="post-editor-wrapper" :class="editorClass">
     <textarea class="post-editor"
               ref="txtRef"
               @focus="isFocus = true"
@@ -27,7 +27,16 @@ import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
 
-const {replyInfo, replyFloor} = defineProps(['replyInfo', 'replyFloor'])
+const {replyInfo, replyFloor, useType} = defineProps({
+  replyInfo: null,
+  replyFloor: null,
+  useType: {
+    type: String,
+    default() {
+      return 'reply-comment'
+    }
+  }
+})
 const post = inject('post')
 const allReplyUsers = inject('allReplyUsers')
 let isFocus = ref(false)
@@ -38,6 +47,9 @@ const txtRef = ref(null)
 const cursorRef = ref(null)
 const none = ref('<span style="white-space:pre-wrap;"> </span>')
 
+const editorClass = computed(() => {
+  return [useType, isFocus.value ? 'isFocus' : '']
+})
 const cursorHtml = computed(() => {
   if (!txtRef.value || !content.value) return ''
   let index = txtRef.value?.selectionStart || 0
@@ -252,19 +264,20 @@ onBeforeUnmount(() => {
   &.reply-comment {
     border: 1px solid @border;
     border-radius: .4rem;
+    overflow: hidden;
 
     &.isFocus {
       border: 1px solid @border-hover;
     }
 
-    .toolbar{
+    .toolbar {
       background: rgb(246, 247, 248);
     }
   }
 
 
   .post-editor {
-    transition: all .3s;
+    transition: border .3s;
     width: 100%;
     max-width: 100%;
     padding: .6rem 1.4rem;
