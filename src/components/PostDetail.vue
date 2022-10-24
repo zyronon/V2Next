@@ -429,11 +429,8 @@ export default {
           height: 4rem;
           padding-left: .6rem;
           display: flex;
+          align-items: center;
           //background: linear-gradient(to bottom, #eee 0, #ccc 100%);
-
-          .point {
-            margin-right: 1rem;
-          }
         }
       }
 
