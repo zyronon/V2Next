@@ -2,19 +2,18 @@
   <div class="post-editor-wrapper" :class="{isFocus}">
     <textarea class="post-editor"
               ref="txtRef"
-              placeholder="请尽量让自己的回复能够对别人有帮助"
               @focus="isFocus = true"
               @blur="onBlur"
               :class="editorId"
               @input="onInput"
               @keydown="onKeydown"
               v-model="content"></textarea>
-    <textarea class="hide" :class="editorId"></textarea>
     <div class="get-cursor">
       <span v-html="cursorHtml"></span>
       <span class="cursor" ref="cursorRef">|</span>
     </div>
     <div class="toolbar">
+      <span>请尽量让自己的回复能够对别人有帮助</span>
       <div class="button"
            :class="{disabled,loading}"
            @click="submit">回复
@@ -243,11 +242,6 @@ onBeforeUnmount(() => {
     border: 1px solid @border-hover;
   }
 
-  .hide {
-    position: absolute;
-    left: -9999px;
-  }
-
   .post-editor {
     width: 100%;
     max-width: 100%;
@@ -258,15 +252,23 @@ onBeforeUnmount(() => {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 1.4rem;
     min-height: 13rem;
+    resize: none;
   }
 
   .toolbar {
     box-sizing: border-box;
-    text-align: end;
     padding: .5rem 1rem;
     width: 100%;
     position: relative;
     background: rgb(246, 247, 248);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      color: gray;
+      font-size: 1.2rem;
+    }
   }
 
   .get-cursor {

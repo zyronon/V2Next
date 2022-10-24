@@ -6,7 +6,7 @@
       <div class="right">
         <div class="w">
           <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
-          <div class="toolbar">
+          <div v-if="true" class="toolbar">
             <Point
                 :item="{
                     isThanked:modelValue.isThanked,

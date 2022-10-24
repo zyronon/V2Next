@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post" :style="postStyle">
     <div class="base-info">
       <div class="left">
         <a :href="`/member/${post.username}`">
@@ -29,11 +29,22 @@
 </template>
 
 <script setup>
-import {ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 
 const {post} = defineProps(['post'])
 const mask = ref(false)
 const content = ref(null)
+const postStyle = computed(() => {
+  if (post.bg) {
+    return {
+      backgroundImage: post.bg,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '20px 20px',
+      backgroundPosition: 'right top'
+    }
+  }
+  return {}
+})
 
 watch([() => post, () => content.value], () => {
   if (!content.value) return
@@ -48,7 +59,7 @@ watch([() => post, () => content.value], () => {
 function checkContentHeight() {
   if (mask.value) return
   let rect = content.value.getBoundingClientRect()
-  console.log('rect', rect.height)
+  // console.log('rect', rect.height)
   mask.value = rect.height >= 250
 }
 </script>
@@ -84,7 +95,7 @@ p {
 
     .title {
       a {
-        font-size: 1.6rem!important;
+        font-size: 1.6rem !important;
       }
     }
   }

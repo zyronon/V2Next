@@ -1,5 +1,4 @@
 import {createApp} from 'vue'
-// const { createApp } = Vue
 import './assets/less/index.less'
 import Home from './views/Home.vue'
 

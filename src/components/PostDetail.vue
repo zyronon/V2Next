@@ -43,11 +43,10 @@
                 username:post.username
               }"
                   :api-url="'topic/'+post.id"/>
-              <Toolbar :post="post" :replyCount="post.replyCount"/>
+              <Toolbar/>
             </div>
           </div>
           <div class="post-wrapper2">
-            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
             <div class="sort-select">
               <div class="target" @click.stop="showSortOption = true">
                 <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
@@ -67,14 +66,20 @@
             </div>
             <div class="line"></div>
           </div>
+
+          <div class="editor-wrapper">
+            <PostEditor v-if="modelValue" @addReplyChild="addReplyChild"/>
+          </div>
           <div v-if="loading" class="loading-w">
             <div class="loading-c"></div>
           </div>
           <template v-else>
-            <div class="comments" v-if="replies.length">
-              <Comment v-for="(item,index) in replies"
-                       @remove="remove(index)"
-                       v-model="replies[index]" :key="index"/>
+            <div class="comment-wrapper" v-if="replies.length">
+              <div class="comments">
+                <Comment v-for="(item,index) in replies"
+                         @remove="remove(index)"
+                         v-model="replies[index]" :key="index"/>
+              </div>
             </div>
             <div v-else class="empty">
               <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,6 +100,9 @@
         </div>
       </div>
       <div class="right" ref="right">
+        <div class="scroll-top button" @click.stop="scrollTop">
+          回到顶部
+        </div>
       </div>
 
       <div class="call-list"
@@ -107,9 +115,6 @@
           <a>{{ item }}</a>
         </div>
       </div>
-    </div>
-    <div class="scroll-top button" @click.stop="scrollTop">
-      回到顶部
     </div>
   </div>
 </template>
@@ -330,8 +335,6 @@ export default {
 
       .left-wrapper {
         width: 100%;
-        background: white;
-        border-radius: @border-radius;
         padding-bottom: 2rem;
         display: flex;
         flex-direction: column;
@@ -339,9 +342,13 @@ export default {
       }
 
       .post {
+        border-radius: @border-radius;
+        background: white;
+        overflow: hidden;
         width: 100%;
         //display: flex;
         margin-bottom: 2rem;
+        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
 
         .base-info {
           padding: 1rem;
@@ -351,7 +358,7 @@ export default {
           .avatar {
             float: right;
             border-radius: .4rem;
-            width: 7.3rem;
+            height: 7.3rem;
           }
 
           .post-nodes {
@@ -382,14 +389,24 @@ export default {
         }
 
         .toolbar-wrapper {
-          width: 90%;
-          margin-left: 5%;
+          height: 4rem;
+          padding-left: .6rem;
           display: flex;
+          border-top: 1px solid gainsboro;
+          //background: linear-gradient(to bottom, #eee 0, #ccc 100%);
 
           .point {
             margin-right: 1rem;
           }
         }
+      }
+
+      .editor-wrapper {
+        box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+        border-radius: @border-radius;
+        background: white;
+        width: 100%;
+        padding: 1rem;
       }
 
       .post-wrapper2 {
@@ -455,6 +472,10 @@ export default {
         align-items: center;
       }
 
+      .comment-wrapper {
+
+      }
+
       .comments {
         width: 100%;
         box-sizing: border-box;
@@ -487,6 +508,9 @@ export default {
       //background: red;
       margin-left: 2rem;
       margin-top: -2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .call-list {
@@ -522,6 +546,10 @@ export default {
 
         &.select {
           .select();
+        }
+
+        &:nth-child(1) {
+          border-top: 1px solid transparent;
         }
       }
     }
@@ -560,8 +588,9 @@ export default {
 
   .scroll-top {
     position: fixed;
-    right: 5%;
-    bottom: 10%;
+    //right: 30%;
+    bottom: 3rem;
+    z-index: 99;
   }
 }
 </style>
