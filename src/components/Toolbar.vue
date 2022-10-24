@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <div class="tool" :class="post.once?'no-hover':''">
+    <div class="tool" >
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round"/>
@@ -8,7 +8,7 @@
         <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
         <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <span>{{ post.replyCount }}条回复</span>
+      <span>回复</span>
     </div>
     <div v-if="post.once" class="tool" :class="{loading}" @click="toggleFavorite">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">

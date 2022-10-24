@@ -18,7 +18,7 @@
                 :api-url="'reply/'+modelValue.id"
             />
             <div class="tool" @click="edit = !edit">
-              <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
@@ -161,39 +161,6 @@ export default {
           display: flex;
           align-items: center;
           color: #929596;
-
-          .tool {
-            margin: 0 .4rem;
-            cursor: pointer;
-            height: 3.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: .2rem;
-
-            > svg {
-              width: 2rem;
-              padding: .4rem .6rem;
-              border-radius: .2rem;
-            }
-
-            span {
-              margin: 0 .4rem;
-            }
-
-            &:nth-child(2) {
-              span {
-                margin: 0;
-                margin-right: .6rem;
-              }
-            }
-
-            &:hover {
-              background: rgb(232, 232, 232);
-            }
-          }
 
         }
       }
