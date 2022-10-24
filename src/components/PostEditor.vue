@@ -1,5 +1,5 @@
 <template>
-  <div class="post-editor-wrapper" :class="{isFocus}">
+  <div class="post-editor-wrapper reply-post" :class="{isFocus}">
     <textarea class="post-editor"
               ref="txtRef"
               @focus="isFocus = true"
@@ -231,18 +231,40 @@ onBeforeUnmount(() => {
 
 .post-editor-wrapper {
   width: 100%;
-  border-radius: .4rem;
-  border: 1px solid @border;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   transition: all .3s;
 
-  &.isFocus {
-    border: 1px solid @border-hover;
+  &.reply-post {
+    .post-editor {
+      border: 1px solid @border;
+      border-radius: .4rem;
+    }
+
+    &.isFocus {
+      .post-editor {
+        border: 1px solid @border-hover;
+      }
+    }
   }
 
+  &.reply-comment {
+    border: 1px solid @border;
+    border-radius: .4rem;
+
+    &.isFocus {
+      border: 1px solid @border-hover;
+    }
+
+    .toolbar{
+      background: rgb(246, 247, 248);
+    }
+  }
+
+
   .post-editor {
+    transition: all .3s;
     width: 100%;
     max-width: 100%;
     padding: .6rem 1.4rem;
@@ -260,14 +282,13 @@ onBeforeUnmount(() => {
     padding: .5rem 1rem;
     width: 100%;
     position: relative;
-    background: rgb(246, 247, 248);
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     span {
       color: gray;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
   }
 
