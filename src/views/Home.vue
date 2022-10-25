@@ -146,7 +146,7 @@ export default {
     if (window.win().postList) {
       this.list = window.win().postList
     }
-    if (window.isFrame) {
+    if (!window.isFrame) {
       this.list = data
       // setTimeout(() => {
       //   this.list.map(v => {
@@ -155,11 +155,12 @@ export default {
       // }, 500)
     }
     // this.getReplyInfo()
-    let href = window.doc.location.href
-    let r = href.match(/t\/([\d]+)/)
-    if (r) {
-      // this.showDetail({id: r[1]}, null, $(window.doc.body), window.doc.documentElement.outerHTML)
-      this.showDetail({id: r[1]}, null)
+    if (window.type === 'post') {
+      if (window.isFrame) {
+        this.showDetail({id: window.pageData.id}, null, $(window.doc.body), window.doc.documentElement.outerHTML)
+      } else {
+        this.showDetail({id: window.pageData.id}, null)
+      }
     }
     this.initEvent()
   },
