@@ -28,9 +28,9 @@
                 <div class="date">{{ post.clickCount }}次点击</div>
               </div>
             </div>
-            <div class="content">
-              <BaseHtmlRender v-if="post.content_rendered" :html="post.content_rendered" class="baseContent"/>
-              <BaseHtmlRender v-if="post.subtlesHtml" :html="post.subtlesHtml"/>
+            <div class="content" v-if="post.content_rendered||post.subtlesHtml">
+              <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
+              <BaseHtmlRender :html="post.subtlesHtml"/>
             </div>
             <div class="toolbar-wrapper">
               <Point
@@ -42,7 +42,7 @@
                 username:post.username
               }"
                   :api-url="'topic/'+post.id"/>
-              <Toolbar/>
+              <Toolbar  @reply="isSticky = !isSticky"/>
             </div>
           </div>
           <div class="my-box" v-if="loading">
@@ -104,15 +104,20 @@
             </div>
             <div v-else id="no-comments-yet">目前尚无回复</div>
           </template>
-          <div class="my-box editor-wrapper">
+          <div class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
             <div class="my-cell flex">
               <span>添加一条新回复</span>
               <div class="notice-right">
-                <a class="float">取消回复框停靠</a>
+                <a class="float" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
                 <a @click="scrollTop">回到顶部</a>
               </div>
             </div>
-            <PostEditor useType="reply-post" v-if="modelValue" @addReplyChild="addReplyChild"/>
+            <div class="w">
+              <PostEditor
+                  useType="reply-post"
+                  @click="isSticky = true"
+                  @addReplyChild="addReplyChild"/>
+            </div>
           </div>
         </div>
       </div>
@@ -160,6 +165,7 @@ export default {
   data() {
     return {
       showSortOption: false,
+      isSticky: false,
       target: 0,
       sortOptions: [
         {value: 0, label: '楼中楼'},
@@ -202,6 +208,13 @@ export default {
     }
   },
   mounted() {
+    const observer = new IntersectionObserver(
+        ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
+        {threshold: [1]}
+    );
+
+    observer.observe(this.$refs.replyBox);
+
     window.win().addEventListener('keydown', this.onKeyDown)
     let Rightbar = window.doc.querySelector('#Rightbar')
     if (Rightbar) {
@@ -315,6 +328,16 @@ export default {
     max-width: 100%;
   }
 }
+
+.sticky {
+  position: sticky;
+  bottom: -2px;
+}
+
+.sticky[stuck] {
+  box-shadow: 0 2px 20px rgb(0 0 0 / 35%)!important;
+}
+
 </style>
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
@@ -410,17 +433,9 @@ export default {
           color: black;
           word-break: break-word;
           line-height: 1.6;
-          border-bottom: 1px solid gainsboro;
-
-          &:empty {
-            border-bottom: none;
-          }
+          border-bottom: 1px solid @border;
 
           .baseContent {
-            &:empty {
-              padding: 0;
-            }
-
             padding: 1rem;
           }
         }
@@ -434,13 +449,14 @@ export default {
         }
       }
 
+
       .editor-wrapper {
 
         .float {
           margin-right: 2rem;
         }
 
-        :deep(.post-editor-wrapper) {
+        .w {
           padding: @space;
         }
       }

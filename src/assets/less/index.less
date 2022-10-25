@@ -22,6 +22,14 @@ html, body {
   }
 }
 
+.sticky {
+  position: sticky;
+  bottom: 0;
+}
+
+.sticky[stuck] {
+  box-shadow: 0 2px 20px rgb(0 0 0 / 35%);
+}
 .date {
   font-size: 1.2rem;
   color: @date-color;
@@ -43,13 +51,7 @@ a {
   margin-bottom: 1rem;
 
   .subtle {
-    margin-top: 1rem;
-    background-color: #fffff9;
-    border-left: 3px solid #fffbc1;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.6;
-    text-align: left;
+    border-bottom: none;
 
     .fade {
       color: @date-color;
