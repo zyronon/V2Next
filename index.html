@@ -14,22 +14,29 @@
   console.log(location)
   console.log()
   if (window.top[0]) {
-    window.isDev = false
+    window.win = () => window.top
+    window.url = 'https://www.v2ex.com'
+    // window.url = location.origin
+    window.isFrame = false
   } else {
-    window.isDev = true
+    window.win = () => window
+    window.url = 'https://www.v2ex.com'
+    // window.url = location.origin
+    window.isFrame = true
   }
-  //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
-  if (window.top.document !== window.document && !window.isDev) {
-    let w = window.top
-    let doc = window.top.document
-    if (!w.init) {
-      w.init = true
+  window.doc = window.win().document
+  window.user = {}
 
-      w.cb = null
+  //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
+  if (window.top.document !== window.document && !window.isFrame) {
+    if (! window.win().init) {
+      window.win().init = true
+
+      window.win().cb = null
       let $section = document.createElement('section')
       $section.id = 'app'
-      let box = $('#Wrapper #Main .box:first', doc)
-      let href = w.location.href
+      let box = $('#Wrapper #Main .box:first', window.doc)
+      let href =  window.win().location.href
       let r = href.match(/t\/([\d]+)/)
       if (r) {
         box.after($section)
@@ -63,12 +70,12 @@
           item.replyCount = countNode ? countNode.innerText : 0
           itemNode.remove()
 
-          let url = w.location.origin + '/api/topics/show.json?id=' + item.id
+          let url =  window.win().location.origin + '/api/topics/show.json?id=' + item.id
           // console.log(url)
           apiList.push($.get(url))
           list.push(item)
         })
-        w.postList = list
+        window.win().postList = list
         console.log(list)
 
         let count = 0
@@ -83,14 +90,14 @@
         Promise.allSettled(apiList).then(
           async (results) => {
             let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-            if (w.cb) {
-              w.cb(res)
+            if ( window.win().cb) {
+              window.win().cb(res)
             } else {
-              while ((!w.cb) && count < 20) {
+              while ((! window.win().cb) && count < 20) {
                 await sleep(500)
                 count++
               }
-              w.cb && w.cb(res)
+              window.win().cb &&  window.win().cb(res)
             }
           }
         );
@@ -108,7 +115,7 @@
     }
 
     function removeVueStyle() {
-      let title = $('title:eq(1)', doc.head)
+      let title = $('title:eq(1)', window.doc.head)
       while (title.next().length) {
         title.next().remove()
       }
@@ -122,7 +129,7 @@
 
       let headHtml = window.document.head.innerHTML
       let reg = getStyle(headHtml)
-      $(doc.head).append($(`<head>${reg}</head>`))
+      $(window.doc.head).append($(`<head>${reg}</head>`))
     });
     observe.observe(window.document.head, {
       attributes: true, //目标节点的属性变化

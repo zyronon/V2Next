@@ -134,14 +134,14 @@ export default {
     tweet() {
       let username = window.user.username
       let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
-      window.w.open(url, '_blank', 'width=550,height=370');
+      window.win().open(url, '_blank', 'width=550,height=370');
     },
     report() {
       if (!this.isLogin) return
       if (this.post.isReport) return
       let username = window.user.username
       let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
-      window.w.open(url, '_blank', 'width=550,height=370');
+      window.win().open(url, '_blank', 'width=550,height=370');
     },
     async toggleIgnore() {
       let url = `${window.url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
@@ -150,7 +150,7 @@ export default {
       } else {
         eventBus.emit('ignore')
       }
-      let apiRes = await window.w.fetch(url)
+      let apiRes = await window.win().fetch(url)
       if (apiRes.redirected) {
         if (this.post.isIgnore) {
           eventBus.emit('refreshOnce')
@@ -167,7 +167,7 @@ export default {
       // return eventBus.emit('merge', 'isFavorite')
       this.loading = true
       let url = `${window.url}/${this.post.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
-      let apiRes = await window.w.fetch(url)
+      let apiRes = await window.win().fetch(url)
       this.loading = false
       if (apiRes.redirected) {
         let htmlText = await apiRes.text()

@@ -130,7 +130,7 @@ export default {
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     };
     let that = this
-    window.w.cb = (posts) => {
+    window.win().cb = (posts) => {
       posts.map(post => {
         let rIndex = that.list.findIndex(v => v.id == post.id)
         if (rIndex > -1) {
@@ -143,16 +143,10 @@ export default {
         }
       })
     }
-    if (window.w.postList) {
-      this.list = window.w.postList
-      let read = localStorage.getItem('read')
-      if (read) {
-        read = JSON.parse(read)
-        read.map()
-        // this.list =
-      }
+    if (window.win().postList) {
+      this.list = window.win().postList
     }
-    if (window.isDev) {
+    if (window.isFrame) {
       this.list = data
       // setTimeout(() => {
       //   this.list.map(v => {
@@ -479,12 +473,12 @@ export default {
 
       let that = this
       let url = window.url + '/t/' + post.id
-      window.w.history.pushState({}, 0, '/t/' + post.id);
+      window.win().history.pushState({}, 0, '/t/' + post.id);
       let promiseList = []
       if (!body) {
         //ajax不能判断是否跳转
         // $.get(url + '?p=1').then((res, textStatus, xhr) => {
-        let apiRes = await window.w.fetch2(url + '?p=1')
+        let apiRes = await window.win().fetch(url + '?p=1')
         //如果是重定向了，那么就是没权限
         if (apiRes.redirected) {
           eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有权限'})

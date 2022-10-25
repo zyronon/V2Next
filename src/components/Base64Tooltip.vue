@@ -47,7 +47,7 @@ onMounted(() => {
     styleObject.left = e.clientX + 'px'
     styleObject.top = e.clientY + 20 + 'px'
   })
-  window.w.addEventListener('click', e => {
+  window.win().addEventListener('click', e => {
     if (!tooltip.value) return
     if ((!tooltip.value.contains(e.target)) && show.value) {
       show.value = false
@@ -58,8 +58,8 @@ onMounted(() => {
 })
 
 function copy() {
-  if (window.w.navigator.clipboard) {
-    window.w.navigator.clipboard.writeText(decodeText.value);
+  if (window.win().navigator.clipboard) {
+    window.win().navigator.clipboard.writeText(decodeText.value);
     eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '复制成功'})
   } else {
     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '复制失败！浏览器不支持！'})
