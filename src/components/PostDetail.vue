@@ -42,7 +42,7 @@
                 username:post.username
               }"
                   :api-url="'topic/'+post.id"/>
-              <Toolbar  @reply="isSticky = !isSticky"/>
+              <Toolbar @reply="isSticky = !isSticky"/>
             </div>
           </div>
           <div class="my-box" v-if="loading">
@@ -157,7 +157,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post'],
+  inject: ['allReplyUsers', 'post','clone'],
   props: {
     modelValue: false,
     loading: false,
@@ -194,7 +194,7 @@ export default {
     replies() {
       if (this.target === 0) return this.post.nestedReplies
       if (this.target === 1) {
-        return this.post.nestedReplies.sort((a, b) => b.thankCount - a.thankCount)
+        return this.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.target === 2) return this.post.replies
     },
@@ -278,9 +278,6 @@ export default {
         e.preventDefault()
       }
     },
-    clone(val) {
-      return JSON.parse(JSON.stringify(val))
-    },
     changeOption(item) {
       this.showSortOption = false;
       this.target = item.value
@@ -335,7 +332,7 @@ export default {
 }
 
 .sticky[stuck] {
-  box-shadow: 0 2px 20px rgb(0 0 0 / 35%)!important;
+  box-shadow: 0 2px 20px rgb(0 0 0 / 35%) !important;
 }
 
 </style>

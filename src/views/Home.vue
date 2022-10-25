@@ -76,6 +76,7 @@ export default {
     return {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.user.username),
+      clone: this.clone,
       post: computed(() => this.current),
       allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
     }
@@ -169,7 +170,6 @@ export default {
     this.initEvent()
   },
   mounted() {
-
   },
   methods: {
     initEvent() {
@@ -471,7 +471,7 @@ export default {
       }
       this.readList.add(post.id)
       repliesMap = []
-      this.current = Object.assign(JSON.parse(JSON.stringify(initPost)), JSON.parse(JSON.stringify(post)))
+      this.current = Object.assign(this.clone(initPost), this.clone(post))
       this.show = true
       this.loading = true
 
@@ -632,7 +632,10 @@ export default {
         this.loading = false
         // console.log(this.current.repliesMap)
       }
-    }
+    },
+    clone(val) {
+      return JSON.parse(JSON.stringify(val))
+    },
   },
 }
 </script>
