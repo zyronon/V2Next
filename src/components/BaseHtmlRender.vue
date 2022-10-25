@@ -5,7 +5,7 @@ import {CMD} from "@/utils/type";
 const props = defineProps(['html'])
 
 function mouseup(e) {
-  let selectionText = window.w.getSelection().toString()
+  let selectionText = window.win().getSelection().toString()
   // console.log(selectionText)
   if (selectionText) {
     let r = selectionText.match(/([A-Za-z0-9+/=]+)/g)
