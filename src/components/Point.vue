@@ -62,7 +62,7 @@ export default {
           this.$emit('recallThank')
           eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
         }
-        eventBus.emit('refreshOnce', res.once)
+        eventBus.emit(CMD.REFRESH_ONCE, res.once)
 
       }, err => {
         this.$emit('recallThank')

@@ -8,6 +8,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 889129 有附言的
 
 # 点击图片无反应 https://www.v2ex.com/t/886814
+# getNestedList调用过多的问题
 
 回复自己的帖子失效 https://www.v2ex.com/t/887103 p
 youtube视频不能沾满 704240 p 在v站内可以

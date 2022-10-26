@@ -36,6 +36,7 @@
           </div>
           <div class="my-wrapper">
             <PostEditor v-if="edit"
+                        @close="edit = false"
                         :replyInfo="replyInfo"
                         :replyFloor="modelValue.floor"/>
           </div>
@@ -91,7 +92,7 @@ export default {
       this.$emit('remove')
       $.post(url).then(res => {
         console.log('hide：', res)
-        eventBus.emit('refreshOnce')
+        eventBus.emit(CMD.REFRESH_ONCE)
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '隐藏成功'})
       }, err => {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '隐藏成功,仅本次有效（接口调用失败！）'})

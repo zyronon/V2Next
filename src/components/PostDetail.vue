@@ -206,7 +206,7 @@ export default {
         this.$refs.detail.scrollTo({top: 0})
         window.doc.body.style.overflow = 'unset'
         if (window.pageType === 'home') {
-          window.history.back();
+          // window.history.back();
         }
       }
     }
