@@ -99,6 +99,7 @@ export default {
       // show: true,
       current: initPost,
       list: [],
+      list2: [],
       readList: new Set(),
     }
   },
@@ -107,9 +108,27 @@ export default {
       return import.meta.env.DEV
     }
   },
+  watch: {
+    'current.replies': {
+      handler(newVal) {
+        console.log('watch', newVal)
+        this.current.replyCount = newVal.length
+        this.current.nestedReplies = window.parse.getNestedList(newVal)
+        if (this.list) {
+          let rIndex = this.list.findIndex(i => i.id === this.current.id)
+          if (rIndex > -1) {
+            this.list[rIndex].replyCount = newVal.length
+          }
+        }
+      },
+      deep: true
+    }
+  },
   created() {
+    console.log('create')
     let that = this
-    window.win().cb = ({type, value}) => {
+    console.log(this.list)
+    window.cb = ({type, value}) => {
       console.log('回调的类型', type, new Date())
       if (type === 'list') {
         value.map(post => {
@@ -134,6 +153,14 @@ export default {
         this.loading = false
       }
     }
+
+    //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
+    if (window.pageData.post) {
+      window.doc.body.style.overflow = 'hidden'
+      this.current = Object.assign(this.clone(initPost), this.clone(window.pageData.post))
+      this.loading = false
+    }
+
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
       let config = JSON.parse(configStr)
@@ -143,6 +170,8 @@ export default {
       }
     }
     window.win().onbeforeunload = () => {
+      console.log('onbeforeunload')
+      // window.win().cb = null
       let config = {
         username: window.user.username ?? '',
         viewType: this.viewType,
@@ -151,7 +180,7 @@ export default {
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     };
     if (window.isFrame) {
-      this.list = window.win().postList
+      this.list = window.postList
       // setTimeout(() => {
       //   this.list.map(v => {
       //     v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
@@ -170,7 +199,9 @@ export default {
     }
     this.initEvent()
   },
-  mounted() {
+  beforeUnmount() {
+    console.log('unmounted')
+    eventBus.clear()
   },
   methods: {
     initEvent() {
@@ -195,45 +226,43 @@ export default {
           this.list[rIndex] = Object.assign(this.list[rIndex], val)
         }
       })
-      eventBus.on('addReply', (item) => {
-        this.current.replies.concat(item)
-        // this.current.replies.push(item)
-        // this.current.replyCount = this.current.replies.length
-        // let rIndex = this.list.findIndex(i => i.id === this.current.id)
-        // if (rIndex > -1) {
-        //   this.list[rIndex].replyCount = this.current.replies.length
-        // }
+      eventBus.on(CMD.ADD_REPLY, (item) => {
+        this.current.replies.push(item)
       })
-      eventBus.on('refreshOnce', async (once) => {
+      eventBus.on(CMD.REFRESH_ONCE, async (once) => {
         if (once) {
           if (typeof once === 'string') {
             let res = once.match(/var once = "([\d]+)";/)
             if (res && res[1]) {
               this.current.once = Number(res[1])
-              console.log('接口返回了once-str', this.current.once)
+              // console.log('接口返回了once-str', this.current.once)
               return
             }
           }
           if (typeof once === 'number') {
             this.current.once = once
-            console.log('接口返回了once-number', this.current.once)
+            // console.log('接口返回了once-number', this.current.once)
             return
           }
         }
-        let that = this
-        let url = window.url + '/t/' + this.current.id
-        $.get(url + '?p=1').then(res => {
-          let hasPermission = res.search('你要查看的页面需要先登录')
-          if (hasPermission > -1) {
-            eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有权限'})
-          } else {
-            let once = res.match(/var once = "([\d]+)";/)
-            // console.log(once)
-            if (once && once[1]) {
-              that.current.once = once[1]
-            }
-          }
+        window.win().fetchOnce().then(r => {
+          // console.log('通过fetchOnce接口拿once', r)
+          this.current.once = r
         })
+        // let that = this
+        // let url = window.url + '/t/' + this.current.id
+        // $.get(url + '?p=1').then(res => {
+        //   let hasPermission = res.search('你要查看的页面需要先登录')
+        //   if (hasPermission > -1) {
+        //     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有权限'})
+        //   } else {
+        //     let once = res.match(/var once = "([\d]+)";/)
+        //     // console.log(once)
+        //     if (once && once[1]) {
+        //       that.current.once = once[1]
+        //     }
+        //   }
+        // })
       })
     },
     svgColor(type) {
@@ -265,7 +294,7 @@ export default {
           this.clone(post))
       this.show = true
       this.loading = true
-      window.win().history.pushState({}, 0, '/t/' + post.id);
+      // window.win().history.pushState({}, 0, '/t/' + post.id);
       window.doc.body.style.overflow = 'hidden'
 
       let url = window.url + '/t/' + post.id
@@ -289,7 +318,7 @@ export default {
 
       this.current = await window.parse.parsePost(this.current, body, htmlText)
       this.loading = false
-      console.log('post2', this.current)
+      console.log('当前帖子', this.current)
     },
     clone(val) {
       return JSON.parse(JSON.stringify(val))

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -106,12 +106,13 @@
         }
       }
 
-      //Rightbar
       let Rightbar = body.find('#Rightbar')
       if (Rightbar.length) {
         post.RightbarHTML = Rightbar[0].innerHTML
+        //让修改背景的样式失效
+        post.RightbarHTML = post.RightbarHTML.replace('type="text/css"', 'type="text/css1"')
       }
-      console.log('基本信息', post)
+      // console.log('基本信息', post)
       return post
     },
     async parsePostReplies(post = {}, body, htmlText, pageNo = 1) {
@@ -119,8 +120,7 @@
         return post
       }
 
-      let box = body.find('#Main .box')[1]
-      // console.log(box)
+      let box = body.find('#Main > .box')[1]
       let cells = box.querySelectorAll('.cell')
       cells = Array.from(cells)
 
@@ -151,14 +151,14 @@
             promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
           })
           Promise.allSettled(promiseList).then(
-            (results) => {
-              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replies = this.getAllReply(repliesMap)
-              post.replies = replies
-              post.replyCount = replies.length
-              post.nestedReplies = this.getNestedList(replies)
-              resolve(post)
-            }
+              (results) => {
+                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+                let replies = this.getAllReply(repliesMap)
+                post.replies = replies
+                post.replyCount = replies.length
+                post.nestedReplies = this.getNestedList(replies)
+                resolve(post)
+              }
           );
         })
       }
@@ -189,7 +189,7 @@
           id: node.id.replace('r_', '')
         }
         let reply_content = node.querySelector('.reply_content')
-        // console.log(reply_content)
+        // console.log('reply_content',reply_content)
         item.reply_content = reply_content.innerHTML
         item.reply_text = reply_content.innerText
 
@@ -274,11 +274,8 @@
       }, [])
     },
     getNestedList(allList = []) {
-      // todo 注意同步列表数据
-      // let rIndex = this.list.findIndex(i => i.id === this.current.id)
-      // if (rIndex > -1) {
-      //   this.list[rIndex].replyCount = allList.length
-      // }
+      if (!allList.length) return []
+      console.log('getNestedList')
       let list = JSON.parse(JSON.stringify(allList))
       let nestedList = []
       list.map((item, index) => {
@@ -377,6 +374,8 @@
     window.url = 'https://www.v2ex.com'
     // window.url = location.origin
     window.isFrame = true
+    //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
+    window.$ = window.win().$
   } else {
     window.win = () => window
     window.url = 'https://www.v2ex.com'
@@ -385,6 +384,9 @@
   }
   window.doc = window.win().document
   window.user = {}
+  window.cb = null
+  window.postList = []
+
   let top2 = $('.tools .top:eq(1)', window.doc).text()
   if (top2 !== '注册') {
     window.user = {
@@ -413,19 +415,19 @@
   async function cbChecker(val, count = 0) {
     async function sleep(time) {
       return new Promise(resolve => {
-        console.log('等待vue加载完成,第' + count + '次', Date.now())
+        // console.log('等待vue加载完成,第' + count + '次', Date.now())
         setTimeout(resolve, time)
       })
     }
 
-    if (window.win().cb) {
-      window.win().cb(val)
+    if (window.cb) {
+      window.cb(val)
     } else {
-      while ((!window.win().cb) && count < 20) {
+      while ((!window.cb) && count < 20) {
         await sleep(500)
         count++
       }
-      window.win().cb && window.win().cb(val)
+      window.cb && window.cb(val)
     }
   }
 
@@ -434,33 +436,32 @@
       break
     case 'post':
       window.parse.parsePostContent(
-        {id: window.pageData.id},
-        $(window.doc.body),
-        window.doc.documentElement.outerHTML
+          {id: window.pageData.id},
+          $(window.doc.body),
+          window.doc.documentElement.outerHTML
       ).then(async res => {
-        console.log('详情页-基本信息解析完成', new Date())
+        // console.log('详情页-基本信息解析完成', new Date())
         await cbChecker({type: 'postContent', value: res}, 0)
+        window.pageData.post = res
       })
 
       window.parse.parsePostReplies(
-        {id: window.pageData.id},
-        $(window.doc.body),
-        window.doc.documentElement.outerHTML,
-        window.pageData.pageNo
+          {id: window.pageData.id},
+          $(window.doc.body),
+          window.doc.documentElement.outerHTML,
+          window.pageData.pageNo
       ).then(async res => {
-        console.log('详情页-回复解析完成', new Date())
+        // console.log('详情页-回复解析完成', new Date())
         await cbChecker({type: 'postReplies', value: res}, 0)
+        window.pageData.post = Object.assign(window.pageData.post, res)
       })
       break
   }
-
 
   //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
   if (window.isFrame) {
     if (!window.win().init) {
       window.win().init = true
-      window.win().cb = null
-      window.win().postList = []
       let $section = document.createElement('section')
       $section.id = 'app'
       let box = $('#Wrapper #Main .box:first', window.doc)
@@ -503,12 +504,12 @@
           apiList.push($.get(url))
           list.push(item)
         })
-        window.win().postList = list
+        window.postList = list
 
         Promise.allSettled(apiList).then(async (results) => {
-            let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-            await cbChecker({type: 'list', value: res})
-          }
+              let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+              await cbChecker({type: 'list', value: res})
+            }
         );
       }
     }

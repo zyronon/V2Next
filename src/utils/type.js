@@ -3,4 +3,6 @@ export const CMD = {
     SHOW_MSG:'SHOW_MSG',
     SET_CALL:'SET_CALL',
     SHOW_CALL:'SHOW_CALL',
+    REFRESH_ONCE:'REFRESH_ONCE',
+    ADD_REPLY:'ADD_REPLY',
 }

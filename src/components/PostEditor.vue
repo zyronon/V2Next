@@ -27,7 +27,7 @@ import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
 
-const {replyInfo, replyFloor, useType} = defineProps({
+const {replyInfo, replyFloor, useType, isShow} = defineProps({
   replyInfo: null,
   replyFloor: null,
   useType: {
@@ -37,6 +37,8 @@ const {replyInfo, replyFloor, useType} = defineProps({
     }
   }
 })
+const emits = defineEmits(['close'])
+
 const post = inject('post')
 const allReplyUsers = inject('allReplyUsers')
 let isFocus = ref(false)
@@ -67,6 +69,65 @@ const disabled = computed(() => {
     return true
   }
 })
+
+async function submit() {
+  if (disabled.value || loading.value) return
+  loading.value = true
+  let item = {
+    thankCount: 0,
+    isThanked: false,
+    isOp: post.value.username === window.user.username,
+    id: Date.now(),
+    username: window.user.username,
+    avatar: window.user.avatar,
+    date: '几秒前',
+    floor: post.value.replyCount + 1,
+    reply_content: content.value || Date.now(),
+    children: [],
+    replyUsers: [],
+    replyFloor: replyFloor || -1
+  }
+  // loading.value = false
+  // return console.log(item)
+  let matchUsers = content.value.match(/@([\w]+?[\s])/g)
+  if (matchUsers) {
+    matchUsers.map(i => {
+      let username = i.replace('@', '').replace(' ', '')
+      item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
+    })
+  }
+  loading.value = false
+  content.value = replyInfo
+
+  eventBus.emit(CMD.REFRESH_ONCE,)
+  eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+  eventBus.emit(CMD.ADD_REPLY, item)
+  emits('close')
+  return console.log('item', item)
+
+  let url = `${window.url}/t/${post.value.id}`
+  $.post(url, {content: content.value, once: post.value.once}).then(
+      res => {
+        // console.log('回复', res)
+        loading.value = false
+        let r = res.search('你上一条回复的内容和这条相同')
+        console.log('r', r)
+        if (r > -1) {
+          return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
+        }
+        content.value = replyInfo
+        emits('close')
+        eventBus.emit(CMD.REFRESH_ONCE, res)
+        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+        eventBus.emit(CMD.ADD_REPLY, item)
+      },
+      err => {
+        loading.value = false
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
+      }
+  )
+}
+
 
 function off() {
   eventBus.emit(CMD.SHOW_CALL, {show: false})
@@ -173,55 +234,6 @@ function onBlur() {
   isFocus.value = false
 }
 
-async function submit() {
-  if (disabled.value || loading.value) return
-  loading.value = true
-  let item = {
-    thankCount: 0,
-    isThanked: false,
-    isOp: post.value.username === window.user.username,
-    id: Date.now(),
-    username: window.user.username,
-    avatar: window.user.avatar,
-    date: '几秒前',
-    floor: post.value.replyCount + 1,
-    reply_content: content.value || Date.now(),
-    children: [],
-    replyUsers: [],
-    replyFloor: replyFloor || -1
-  }
-  // loading.value = false
-  // return console.log(item)
-  let matchUsers = content.value.match(/@([\w]+?[\s])/g)
-  if (matchUsers) {
-    matchUsers.map(i => {
-      let username = i.replace('@', '').replace(' ', '')
-      item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
-    })
-  }
-  // this.loading = false
-  // eventBus.emit('refreshOnce',)
-  // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-  // eventBus.emit('addReply', item)
-  // this.content = this.replyInfo
-  // return console.log('item', item)
-
-  let url = `${window.url}/t/${post.value.id}`
-  $.post(url, {content: content.value, once: post.value.once}).then(
-      res => {
-        // console.log('回复', res)
-        loading.value = false
-        content.value = replyInfo
-        eventBus.emit('refreshOnce', res)
-        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-        eventBus.emit('addReply', item)
-      },
-      err => {
-        loading.value = false
-        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
-      }
-  )
-}
 
 onMounted(() => {
   $(`.${editorId.value}`).each(function () {

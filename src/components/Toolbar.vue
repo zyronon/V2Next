@@ -153,7 +153,7 @@ export default {
       let apiRes = await window.win().fetch(url)
       if (apiRes.redirected) {
         if (this.post.isIgnore) {
-          eventBus.emit('refreshOnce')
+          eventBus.emit(CMD.REFRESH_ONCE)
         }
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
         eventBus.emit('merge', {isIgnore: !this.post.isIgnore})
@@ -174,7 +174,7 @@ export default {
         if (htmlText.search(this.post.isFavorite ? '加入收藏' : '取消收藏')) {
           eventBus.emit('merge', {collectCount: this.post.isFavorite ? (this.post.collectCount - 1) : (this.post.collectCount + 1)})
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isFavorite ? '取消成功' : '收藏成功'})
-          eventBus.emit('refreshOnce', htmlText)
+          eventBus.emit(CMD.REFRESH_ONCE, htmlText)
           eventBus.emit('merge', {isFavorite: !this.post.isFavorite})
           return
         }
