@@ -19,9 +19,9 @@ export default [
     },
     {
         avatar: 'https://cdn.v2ex.com/avatar/cdca/41db/41900_normal.png?m=1644293935',
-        "id": "886963",
+        "id": "724408",
         content_rendered: '',
-        "title": "Remote 或者 Base 深圳都可，感兴趣请联系我 TGVnZW5kYXJ5U2hhcms=\n",
+        "title": "内容超级多",
         "node": "经典回顾",
         "username": "经典回顾",
         "date": "几小时前",
