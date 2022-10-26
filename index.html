@@ -11,153 +11,543 @@
 <body>
 <div id="app"></div>
 <script>
-    // console.log(window.top[0])
-    // window.win = () => window
-
-    if (window.top[0]) {
-        window.win = () => window.top
-        window.url = 'https://www.v2ex.com'
-        // window.url = location.origin
-        window.isFrame = true
-    } else {
-        window.win = () => window
-        window.url = 'https://www.v2ex.com'
-        // window.url = location.origin
-        window.isFrame = false
-        // let location = window.win().location
-        // console.log(location)
-    }
-    window.doc = window.win().document
-    window.user = {}
-    let location2 = window.win().location
-    window.type = 'home'
-    window.pageData = {}
-    if (location2.pathname) {
-        let r = location2.pathname.match(/t\/([\d]+)/)
-        if (r) {
-            window.type = 'post'
-            window.pageData.id = r[1]
-            if (location2.search) {
-                let pr = location2.search.match(/\?p=([\d]+)/)
-                if (pr) window.pageData.pageNo = Number(pr[1])
-            }
+  window.parse = {
+    async parsePostContent(post = {}, body, htmlText) {
+      //如果没有正文（点的本站的a标签），才会解析正文
+      if (!post.title) {
+        let main = body.find('#Main')
+        let topic_content = main.find('.topic_content')
+        if (topic_content.length) {
+          post.content_rendered = topic_content.html()
         }
-    }
+        let title = main.find('.header h1')
+        if (title.length) {
+          post.title = title.html()
+        }
+        let a2 = main.find('.header a:eq(2)')
+        if (a2.length) {
+          post.nodeUrl = a2[0].href
+          post.node = a2.text()
+        }
+        let a5 = main.find('.header a:eq(5)')
+        if (a5.length) {
+          post.username = a5.text()
+          post.date = a5.next().text()
+        }
 
-    console.log('type===', window.type, 'pageData===', window.pageData)
+        let avatarNode = main.find('.header .fr img')
+        if (avatarNode.length) {
+          post.avatar = avatarNode[0].src
+        }
+      }
 
-    //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
-    if (window.top.document !== window.document && !window.isFrame) {
-        if (!window.win().init) {
-            window.win().init = true
+      let subtles = body.find('.subtle')
+      if (subtles.length) {
+        post.subtlesHtml = `
+        <div class="subtlesHtml">${Array.from(subtles).reduce((p, i) => {
+          p += `<div class="subtle">${i.innerHTML}</div>`
+          return p
+        }, '')}</div>
+        `
+      }
 
-            window.win().cb = null
-            let $section = document.createElement('section')
-            $section.id = 'app'
-            let box = $('#Wrapper #Main .box:first', window.doc)
-            let href = window.win().location.href
-            let r = href.match(/t\/([\d]+)/)
-            if (r) {
-                box.after($section)
-            } else {
-                box.css({background: 'transparent', 'box-shadow': 'unset'})
-                let wrapper = box.find('.item:first')
-                wrapper.after($section)
+      let once = htmlText.match(/var once = "([\d]+)";/)
+      // console.log(once)
+      if (once && once[1]) {
+        post.once = once[1]
+      }
 
-                let list = []
-                let apiList = []
-                let listItemNode = doc.querySelectorAll('.item',)
-                // listItemNode = Array.from(listItemNode)
-                // listItemNode.slice(1, 5).forEach(itemNode => {
-                listItemNode.forEach(itemNode => {
-                    let item = {replies: []}
-                    let bg = itemNode.style['background-image']
-                    item.bg = bg
-                    let item_title = itemNode.querySelector('.item_title a')
-                    let href = item_title.href
-                    item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-                    item.title = item_title.innerText
+      post.isReport = htmlText.includes('你已对本主题进行了报告')
 
-                    let topic_info = itemNode.querySelector('.topic_info')
-                    let userNode = topic_info.querySelector('strong a')
-                    item.username = userNode.innerText
-                    let timeNode = itemNode.querySelector('.topic_info span')
-                    item.date = timeNode.innerText
-                    let tagNode = topic_info.querySelector('.node')
-                    item.node = tagNode.innerText
-                    let countNode = itemNode.querySelector('.count_livid')
-                    item.replyCount = countNode ? countNode.innerText : 0
-                    itemNode.remove()
+      let topic_buttons = body.find('.topic_buttons')
+      if (topic_buttons.length) {
+        let favoriteNode = topic_buttons.find('.tb:first')
+        if (favoriteNode.length) {
+          post.isFavorite = favoriteNode[0].innerText === '取消收藏'
+        }
+        let ignoreNode = topic_buttons.find('.tb:eq(2)')
+        if (ignoreNode.length) {
+          post.isIgnore = ignoreNode[0].innerText === '取消忽略'
+        }
+        //
+        let thankNode = topic_buttons.find('#topic_thank .tb')
+        if (!thankNode.length) {
+          post.isThanked = true
+        }
 
-                    let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-                    // console.log(url)
-                    apiList.push($.get(url))
-                    list.push(item)
-                })
-                window.win().postList = list
-                console.log(list)
+        let topic_stats = topic_buttons.find('.topic_stats')
+        //topic_stats = $(`<div class="fr topic_stats" style="padding-top: 4px;">9569 次点击 &nbsp;∙&nbsp; 28 人收藏 &nbsp; ∙&nbsp; 1 人感谢 &nbsp; </div>`)
+        //收藏数、感谢数
+        if (topic_stats.length) {
+          let text = topic_stats[0].innerText
+          let reg1 = text.matchAll(/([\d]+)[\s]*人收藏/g)
+          let collectCountReg = [...reg1]
+          if (collectCountReg.length) {
+            post.collectCount = Number(collectCountReg[0][1])
+          }
+          // console.log([...collectCountReg])
+          let reg2 = text.matchAll(/([\d]+)[\s]*人感谢/g)
+          let thankCountReg = [...reg2]
+          if (thankCountReg.length) {
+            post.thankCount = Number(thankCountReg[0][1])
+          }
+          // console.log([...thankCountReg])
+        }
+      }
 
-                let count = 0
+      //点击数
+      let baseInfo = body.find('.header small.gray')
+      if (baseInfo.length) {
+        let text = baseInfo.text()
+        let reg = text.matchAll(/([\d]+)[\s]*次点击/g)
+        let clickCountReg = [...reg]
+        if (clickCountReg.length) {
+          post.clickCount = Number(clickCountReg[0][1])
+        }
+      }
 
-                async function sleep(time) {
-                    return new Promise(resolve => {
-                        console.log('等待vue加载完成,第' + count + '次', Date.now())
-                        setTimeout(resolve, time)
-                    })
+      //Rightbar
+      let Rightbar = body.find('#Rightbar')
+      if (Rightbar.length) {
+        post.RightbarHTML = Rightbar[0].innerHTML
+      }
+      console.log('基本信息', post)
+      return post
+    },
+    async parsePostReplies(post = {}, body, htmlText, pageNo = 1) {
+      if (body.find('#no-comments-yet').length) {
+        return post
+      }
+
+      let box = body.find('#Main .box')[1]
+      // console.log(box)
+      let cells = box.querySelectorAll('.cell')
+      cells = Array.from(cells)
+
+      //获取创建时间
+      let snow = cells[0].querySelector('.snow')
+      post.createDate = snow?.nextSibling.nodeValue.trim() || ''
+
+      let repliesMap = []
+      if (cells[1].id) {
+        repliesMap.push({i: pageNo, replyList: this.parseReplies(cells.slice(1))})
+        let replies = this.getAllReply(repliesMap)
+        post.replies = replies
+        post.replyCount = replies.length
+        post.nestedReplies = this.getNestedList(replies)
+        return post
+      } else {
+        let promiseList = []
+        // console.log(this.current.repliesMap)
+        return new Promise((resolve, reject) => {
+          repliesMap.push({i: pageNo, replyList: this.parseReplies(cells.slice(2, cells.length - 1))})
+
+          let pages = cells[1].querySelectorAll('a')
+          // console.log(pages)
+          let url = window.url + '/t/' + post.id
+          pages.forEach((v, i) => {
+            let currentPageNo = Number(v.innerText)
+            if (currentPageNo === pageNo) return
+            promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
+          })
+          Promise.allSettled(promiseList).then(
+            (results) => {
+              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+              let replies = this.getAllReply(repliesMap)
+              post.replies = replies
+              post.replyCount = replies.length
+              post.nestedReplies = this.getNestedList(replies)
+              resolve(post)
+            }
+          );
+        })
+      }
+    },
+    async parsePost(post = {}, body, htmlText, pageNo = 1) {
+      post = await this.parsePostContent(post, body, htmlText)
+      return await this.parsePostReplies(post, body, htmlText, pageNo)
+    },
+    getOtherPage(url, pageNo) {
+      return new Promise(resolve => {
+        $.get(url).then(res => {
+          let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+          let box = $(s[0]).find('#Main .box')[1]
+          let cells = box.querySelectorAll('.cell')
+          cells = Array.from(cells)
+          resolve({i: pageNo, replyList: this.parseReplies(cells.slice(2, cells.length - 1))})
+        })
+      })
+    },
+    parseReplies(nodes) {
+      let replyList = []
+      nodes.forEach((node, index) => {
+        if (!node.id) return
+        let item = {
+          thankCount: 0,
+          isThanked: false,
+          isOp: false,
+          id: node.id.replace('r_', '')
+        }
+        let reply_content = node.querySelector('.reply_content')
+        // console.log(reply_content)
+        item.reply_content = reply_content.innerHTML
+        item.reply_text = reply_content.innerText
+
+        let {users, floor} = this.parseReplyContent(item.reply_content)
+        item.replyUsers = users
+        item.replyFloor = floor
+        if (index === 5) {
+          // console.log(item)
+          // console.log(reply_content.innerText)
+          // console.log(reply_content.innerHTML)
+        }
+        let ago = node.querySelector('.ago')
+        item.date = ago.innerText
+
+        let userNode = node.querySelector('strong a')
+        item.username = userNode.innerText
+        let avatar = node.querySelector('td img')
+        item.avatar = avatar.src
+        let no = node.querySelector('.no')
+        item.floor = Number(no.innerText)
+
+        let thank_area = node.querySelector('.thank_area')
+        if (thank_area) {
+          item.isThanked = thank_area.classList.contains('thanked')
+        }
+        let small = node.querySelector('.small')
+        if (small) {
+          item.thankCount = Number(small.innerText)
+        }
+        let op = node.querySelector('.op')
+        if (op) {
+          item.isOp = true
+        }
+        // console.log('item', item)
+
+        replyList.push(item)
+      })
+      return replyList
+    },
+    parseReplyContent(str) {
+      if (!str) return
+      let getUsername = (userStr) => {
+        let endIndex = userStr.indexOf('">')
+        if (endIndex > -1) {
+          let user = userStr.substring(0, endIndex)
+          if (!users.find(i => i === user)) {
+            users.push(user)
+          }
+        }
+      }
+      // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
+      let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
+      let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
+      let hasFloor = str.matchAll(floorReg)
+      let res = [...hasFloor]
+      // console.log('总匹配', res)
+      let users = []
+      let floor = -1
+      if (res.length) {
+        floor = Number(res[0][1])
+      } else {
+        let has = str.matchAll(userReg)
+        let res2 = [...has]
+        // console.log('总匹配', res2)
+        if (res2.length > 1) {
+          res2.map(item => {
+            getUsername(item[1])
+          })
+        }
+        if (res2.length === 1) {
+          getUsername(res2[0][1])
+        }
+      }
+      // console.log('用户', users)
+      // console.log('楼层', floor)
+      return {users, floor}
+    },
+    getAllReply(repliesMap = []) {
+      return repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
+        pre = pre.concat(i.replyList)
+        return pre
+      }, [])
+    },
+    getNestedList(allList = []) {
+      // todo 注意同步列表数据
+      // let rIndex = this.list.findIndex(i => i.id === this.current.id)
+      // if (rIndex > -1) {
+      //   this.list[rIndex].replyCount = allList.length
+      // }
+      let list = JSON.parse(JSON.stringify(allList))
+      let nestedList = []
+      list.map((item, index) => {
+        let forList = list.slice(index + 1)
+        if (index === 0) {
+          nestedList.push(this.findChildren(item, forList, list))
+        } else {
+          //这里判断@人数不等于1。那么会把@多个人作为一级楼层，而不会作为楼中楼
+          //如果要把@多个人作为楼中楼，那么这里只需判断人数等于0
+          //然后把子方法里面for里面的第一个else里面的if判断r.replyUsers.length === 1 改为=== 0。然后把逻辑和else对调就可以
+          if ((item.replyUsers.length !== 1) && item.replyFloor === -1) {
+            nestedList.push(this.findChildren(item, forList, list))
+          }
+        }
+      })
+      return nestedList
+    },
+    findChildren(item, arr, all) {
+      const fn = (list, r, item2) => {
+        let rIndex = all.findIndex(v => v.floor === r.floor)
+        if (rIndex > -1) {
+          all[rIndex].isUse = true
+        }
+        item2.children.push(this.findChildren(r, list, all))
+      }
+      // console.log('arr', arr)
+      item.children = []
+      // if (item.floor ==8)debugger
+      for (let i = 0; i < arr.length; i++) {
+        let r = arr[i]
+
+        //如果已被使用，直接跳过
+        if (r.isUse) continue
+
+        let list = arr.slice(i + 1)
+        //不知哪个V友的插件，回复的#号是错误的....，所有还要加上一个用户名是不是相同的判断
+        // if (r.replyFloor === item.floor && r.replyUsers[0] === item.username) {
+        //错的就错的吧，反正我自己的不出错就行
+        //todo 2022-10-26，好像回复被忽略了之后，会占据原来的楼层
+        //但是，未忽略这条回复的人，看到的楼层和忽略回复的人看到的不一样，导致以楼层号来判断会出问题
+
+        if (r.replyFloor !== -1) {
+          if (r.replyFloor === item.floor) {
+            fn(list, r, item)
+          }
+        } else {
+          if (r.replyUsers.length === 1) {
+            //找出自己最近一条正常回复，以那条为搜索终点
+            let rIndex = arr.findIndex(v => v.username === item.username && (r.replyUsers.length === 0 && r.replyFloor === -1))
+            if (rIndex > -1) {
+              list = arr.slice(i + 1, rIndex)
+            }
+            //如果是下一条是同一人的回复，那么跳转循环。children从下一条开始找
+            if (r.username === item.username) {
+              //自己回复自己的特殊情况
+              if (r.replyUsers[0] === item.username) {
+                fn(list, r, item)
+                continue
+              }
+              list.map((v, vi) => {
+                if (v.replyFloor === item.floor) {
+                  fn(arr.slice(vi + 1), v, item)
                 }
-
-                Promise.allSettled(apiList).then(
-                    async (results) => {
-                        let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-                        if (window.win().cb) {
-                            window.win().cb(res)
-                        } else {
-                            while ((!window.win().cb) && count < 20) {
-                                await sleep(500)
-                                count++
-                            }
-                            window.win().cb && window.win().cb(res)
-                        }
-                    }
-                );
+              })
+              break
+            } else {
+              if (r.replyUsers[0] === item.username) {
+                fn(list, r, item)
+              }
             }
-        }
-
-
-        //开发时自动更新window.top head里面添加的vue style
-        function getStyle(html) {
-            let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
-            if (reg) {
-                return reg[0]
+          } else {
+            //如果是下一条是同一人的回复，那么跳转循环。children从下一条开始找
+            if (r.username === item.username) {
+              //有种特殊情况，就是自己连着评论了两条。然后后面的人以#号的方式 回复了自己第一条。
+              //如果检测到下条是自己的回复，直接略过的话就会丢失第一条的所有楼中楼回复
+              //具体如下
+              // 自己：1楼，在for的时候，如果碰到 2楼不能直接跳过，直接略过的话就会丢失第一条的所有楼中楼回复，即3楼。所以应该以3楼为起点
+              //进行楼中楼查找，查找完了再跳过
+              // 自己：2楼
+              // 别人：指定回复1楼
+              list.map((v, vi) => {
+                if (v.replyFloor === item.floor) {
+                  fn(arr.slice(vi + 1), v, item)
+                }
+              })
+              break
             }
-            return `<style></style>`
+          }
         }
-
-        function removeVueStyle() {
-            let title = $('title:eq(1)', window.doc.head)
-            while (title.next().length) {
-                title.next().remove()
-            }
-            title.remove()
-        }
-
-        window.onbeforeunload = removeVueStyle
-
-        let observe = new MutationObserver(() => {
-            removeVueStyle()
-
-            let headHtml = window.document.head.innerHTML
-            let reg = getStyle(headHtml)
-            $(window.doc.head).append($(`<head>${reg}</head>`))
-        });
-        observe.observe(window.document.head, {
-            attributes: true, //目标节点的属性变化
-            childList: true, //目标节点的子节点的新增和删除
-            characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
-            subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
-        });// 后面介绍config的配置
-
+      }
+      return item
+    },
+  }
+  if (window.top[0]) {
+    window.win = () => window.top
+    window.url = 'https://www.v2ex.com'
+    // window.url = location.origin
+    window.isFrame = true
+  } else {
+    window.win = () => window
+    window.url = 'https://www.v2ex.com'
+    // window.url = location.origin
+    window.isFrame = false
+  }
+  window.doc = window.win().document
+  window.user = {}
+  let top2 = $('.tools .top:eq(1)', window.doc).text()
+  if (top2 !== '注册') {
+    window.user = {
+      username: top2,
+      avatar: $('#Rightbar .box:eq(0) .avatar', window.doc).attr('src')
     }
+  }
+
+  let location2 = window.win().location
+  window.pageType = 'home'
+  window.pageData = {pageNo: 1}
+  if (location2.pathname) {
+    let r = location2.pathname.match(/t\/([\d]+)/)
+    if (r) {
+      window.pageType = 'post'
+      window.pageData.id = r[1]
+      if (location2.search) {
+        let pr = location2.search.match(/\?p=([\d]+)/)
+        if (pr) window.pageData.pageNo = Number(pr[1])
+      }
+    }
+  }
+
+  // console.log('type===', window.pageType, 'pageData===', window.pageData)
+
+  async function cbChecker(val, count = 0) {
+    async function sleep(time) {
+      return new Promise(resolve => {
+        console.log('等待vue加载完成,第' + count + '次', Date.now())
+        setTimeout(resolve, time)
+      })
+    }
+
+    if (window.win().cb) {
+      window.win().cb(val)
+    } else {
+      while ((!window.win().cb) && count < 20) {
+        await sleep(500)
+        count++
+      }
+      window.win().cb && window.win().cb(val)
+    }
+  }
+
+  switch (window.pageType) {
+    case 'home':
+      break
+    case 'post':
+      window.parse.parsePostContent(
+        {id: window.pageData.id},
+        $(window.doc.body),
+        window.doc.documentElement.outerHTML
+      ).then(async res => {
+        console.log('详情页-基本信息解析完成', new Date())
+        await cbChecker({type: 'postContent', value: res}, 0)
+      })
+
+      window.parse.parsePostReplies(
+        {id: window.pageData.id},
+        $(window.doc.body),
+        window.doc.documentElement.outerHTML,
+        window.pageData.pageNo
+      ).then(async res => {
+        console.log('详情页-回复解析完成', new Date())
+        await cbChecker({type: 'postReplies', value: res}, 0)
+      })
+      break
+  }
+
+
+  //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
+  if (window.isFrame) {
+    if (!window.win().init) {
+      window.win().init = true
+      window.win().cb = null
+      window.win().postList = []
+      let $section = document.createElement('section')
+      $section.id = 'app'
+      let box = $('#Wrapper #Main .box:first', window.doc)
+      let href = window.win().location.href
+      let r = href.match(/t\/([\d]+)/)
+      if (r) {
+        box.after($section)
+      } else {
+        box.css({background: 'transparent', 'box-shadow': 'unset'})
+        let wrapper = box.find('.item:first')
+        wrapper.after($section)
+
+        let list = []
+        let apiList = []
+        let listItemNode = doc.querySelectorAll('.item',)
+        // listItemNode = Array.from(listItemNode)
+        // listItemNode.slice(1, 5).forEach(itemNode => {
+        listItemNode.forEach(itemNode => {
+          let item = {replies: []}
+          let bg = itemNode.style['background-image']
+          item.bg = bg
+          let item_title = itemNode.querySelector('.item_title a')
+          let href = item_title.href
+          item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+          item.title = item_title.innerText
+
+          let topic_info = itemNode.querySelector('.topic_info')
+          let userNode = topic_info.querySelector('strong a')
+          item.username = userNode.innerText
+          let timeNode = itemNode.querySelector('.topic_info span')
+          item.date = timeNode.innerText
+          let tagNode = topic_info.querySelector('.node')
+          item.node = tagNode.innerText
+          let countNode = itemNode.querySelector('.count_livid')
+          item.replyCount = countNode ? countNode.innerText : 0
+          itemNode.remove()
+
+          let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+          // console.log(url)
+          apiList.push($.get(url))
+          list.push(item)
+        })
+        window.win().postList = list
+
+        Promise.allSettled(apiList).then(async (results) => {
+            let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+            await cbChecker({type: 'list', value: res})
+          }
+        );
+      }
+    }
+
+
+    //开发时自动更新window.top head里面添加的vue style
+    function getStyle(html) {
+      let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
+      if (reg) {
+        return reg[0]
+      }
+      return `<style></style>`
+    }
+
+    function removeVueStyle() {
+      let title = $('title:eq(1)', window.doc.head)
+      while (title.next().length) {
+        title.next().remove()
+      }
+      title.remove()
+    }
+
+    window.onbeforeunload = removeVueStyle
+
+    let observe = new MutationObserver(() => {
+      removeVueStyle()
+
+      let headHtml = window.document.head.innerHTML
+      let reg = getStyle(headHtml)
+      $(window.doc.head).append($(`<head>${reg}</head>`))
+    });
+    observe.observe(window.document.head, {
+      attributes: true, //目标节点的属性变化
+      childList: true, //目标节点的子节点的新增和删除
+      characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
+      subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
+    });// 后面介绍config的配置
+
+  }
 </script>
 <script type="module" src="/src/main.js"></script>
 </body>

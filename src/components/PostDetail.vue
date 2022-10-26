@@ -122,6 +122,7 @@
         </div>
       </div>
       <div class="right" ref="right">
+        <div id="Rightbar" v-html="post.RightbarHTML"></div>
         <div class="scroll-top button" @click.stop="scrollTop">
           回到顶部
         </div>
@@ -157,7 +158,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post','clone'],
+  inject: ['allReplyUsers', 'post', 'clone'],
   props: {
     modelValue: false,
     loading: false,
@@ -204,6 +205,9 @@ export default {
       if (!newVal) {
         this.$refs.detail.scrollTo({top: 0})
         window.doc.body.style.overflow = 'unset'
+        if (window.pageType === 'home') {
+          window.history.back();
+        }
       }
     }
   },
@@ -216,10 +220,10 @@ export default {
     observer.observe(this.$refs.replyBox);
 
     window.win().addEventListener('keydown', this.onKeyDown)
-    let Rightbar = window.doc.querySelector('#Rightbar')
-    if (Rightbar) {
-      this.$refs.right.append(Rightbar.cloneNode(true))
-    }
+    // let Rightbar = window.doc.querySelector('#Rightbar')
+    // if (Rightbar) {
+    //   this.$refs.right.append(Rightbar.cloneNode(true))
+    // }
     eventBus.on(CMD.SHOW_CALL, (val) => {
       if (val.show) {
         // console.log('va', val)
