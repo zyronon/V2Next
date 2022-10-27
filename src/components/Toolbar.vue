@@ -130,14 +130,14 @@ export default {
       }, 500)
     },
     tweet() {
-      let username = window.user.username
+      let username = window.win().user.username
       let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     report() {
       if (!this.isLogin) return
       if (this.post.isReport) return
-      let username = window.user.username
+      let username = window.win().user.username
       let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },

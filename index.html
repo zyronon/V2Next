@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" href="/favicon.ico"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-  <title>Vite App</title>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+    <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -151,14 +151,14 @@
             promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
           })
           Promise.allSettled(promiseList).then(
-              (results) => {
-                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replies = this.getAllReply(repliesMap)
-                post.replies = replies
-                post.replyCount = replies.length
-                post.nestedReplies = this.getNestedList(replies)
-                resolve(post)
-              }
+            (results) => {
+              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+              let replies = this.getAllReply(repliesMap)
+              post.replies = replies
+              post.replyCount = replies.length
+              post.nestedReplies = this.getNestedList(replies)
+              resolve(post)
+            }
           );
         })
       }
@@ -275,7 +275,13 @@
     },
     getNestedList(allList = []) {
       if (!allList.length) return []
-      console.log('getNestedList')
+      if ((Date.now() - window.win().lastCallDate) < 1000) {
+        // console.log('知时间内，重复调用')
+        return null
+      }
+      window.win().lastCallDate = Date.now()
+      // console.log('cal-getNestedList', Date.now())
+      // console.log('getNestedList', allList.length)
       let list = JSON.parse(JSON.stringify(allList))
       let nestedList = []
       list.map((item, index) => {
@@ -383,13 +389,13 @@
     window.isFrame = false
   }
   window.doc = window.win().document
-  window.user = {}
-  window.cb = null
-  window.postList = []
+  window.win().user = {}
+  window.win().cb = null
+  window.win().postList = []
 
   let top2 = $('.tools .top:eq(1)', window.doc).text()
   if (top2 !== '注册') {
-    window.user = {
+    window.win().user = {
       username: top2,
       avatar: $('#Rightbar .box:eq(0) .avatar', window.doc).attr('src')
     }
@@ -420,14 +426,14 @@
       })
     }
 
-    if (window.cb) {
-      window.cb(val)
+    if (window.win().cb) {
+      window.win().cb(val)
     } else {
-      while ((!window.cb) && count < 20) {
+      while ((!window.win().cb) && count < 20) {
         await sleep(500)
         count++
       }
-      window.cb && window.cb(val)
+      window.win().cb && window.win().cb(val)
     }
   }
 
@@ -436,9 +442,9 @@
       break
     case 'post':
       window.parse.parsePostContent(
-          {id: window.pageData.id},
-          $(window.doc.body),
-          window.doc.documentElement.outerHTML
+        {id: window.pageData.id},
+        $(window.doc.body),
+        window.doc.documentElement.outerHTML
       ).then(async res => {
         // console.log('详情页-基本信息解析完成', new Date())
         await cbChecker({type: 'postContent', value: res}, 0)
@@ -446,10 +452,10 @@
       })
 
       window.parse.parsePostReplies(
-          {id: window.pageData.id},
-          $(window.doc.body),
-          window.doc.documentElement.outerHTML,
-          window.pageData.pageNo
+        {id: window.pageData.id},
+        $(window.doc.body),
+        window.doc.documentElement.outerHTML,
+        window.pageData.pageNo
       ).then(async res => {
         // console.log('详情页-回复解析完成', new Date())
         await cbChecker({type: 'postReplies', value: res}, 0)
@@ -504,12 +510,12 @@
           apiList.push($.get(url))
           list.push(item)
         })
-        window.postList = list
+        window.win().postList = list
 
         Promise.allSettled(apiList).then(async (results) => {
-              let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-              await cbChecker({type: 'list', value: res})
-            }
+            let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+            await cbChecker({type: 'list', value: res})
+          }
         );
       }
     }
