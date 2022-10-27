@@ -96,9 +96,10 @@
                   </div>
                 </div>
               </div>
-              <div class="comments">
+              <div class="comments" ref="comments">
                 <Comment v-for="(item,index) in replies"
                          :key="item.floor"
+                         style="border-bottom: 1px solid #e2e2e2;  padding: 1rem;margin-top: 0;"
                          @remove="remove(index)"
                          v-model="replies[index]"/>
               </div>
@@ -149,6 +150,7 @@ import Toolbar from "./Toolbar";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
 import eventBus from "@/eventBus";
 import {CMD} from "@/utils/type";
+import {computed} from "vue";
 
 export default {
   name: "detail",
@@ -160,6 +162,11 @@ export default {
     BaseHtmlRender
   },
   inject: ['allReplyUsers', 'post', 'clone'],
+  provide() {
+    return {
+      postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
+    }
+  },
   props: {
     modelValue: false,
     loading: false,
@@ -175,6 +182,7 @@ export default {
         {value: 2, label: 'V2原版'},
       ],
       selectCallIndex: 0,
+      postDetailWidth: 0,
       showCallList: false,
       replyText: '',
       callStyle: {
@@ -218,7 +226,6 @@ export default {
         ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
         {threshold: [1]}
     );
-
     observer.observe(this.$refs.replyBox);
 
     window.win().addEventListener('keydown', this.onKeyDown)
@@ -252,9 +259,6 @@ export default {
   },
   methods: {
     setCall(e) {
-      if (e) {
-
-      }
       eventBus.emit(CMD.SET_CALL, e)
       this.showCallList = false
     },
@@ -465,14 +469,10 @@ export default {
       }
 
       .comment-wrapper {
-        padding-bottom: 1.8rem;
-
         .comments {
           width: 100%;
           box-sizing: border-box;
-          padding: 0 1rem;
         }
-
       }
 
       .sort-select {
