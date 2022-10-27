@@ -1,23 +1,31 @@
 <template>
   <div class="comment" ref="comment">
     <Author v-model="expand" :comment="modelValue"/>
-    {{ modelValue.level }}
-    <div class="comment-content" v-show="expand" :style="cssStyle">
-      <div class="left line" @click="toggle"></div>
-      <div class="right">
-        <div class="w">
-          <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
-          <div class="my-wrapper">
-            <PostEditor v-if="edit"
-                        @close="edit = false"
-                        :replyInfo="replyInfo"
-                        :replyFloor="modelValue.floor"/>
+    <!--    {{ modelValue.level }}-->
+    <div class="comment-content-w" v-show="expand" :style="cssStyle">
+      <div v-if="cssStyle" class="more ago" @click="expand = !expand">
+        由于嵌套回复层级太深，自动将以下回复移至可见范围
+      </div>
+      <div class="comment-content">
+        <div class="left line" @click="toggle"></div>
+        <div class="right">
+          <div class="w">
+            <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
+            <div class="my-wrapper">
+              <PostEditor v-if="edit"
+                          @close="edit = false"
+                          :replyInfo="replyInfo"
+                          :replyFloor="modelValue.floor"/>
+            </div>
           </div>
+          <Comment v-for="(item,index) in modelValue.children"
+                   v-model="modelValue.children[index]"
+                   @remove="remove(index)"
+                   :key="index"/>
         </div>
-        <Comment v-for="(item,index) in modelValue.children"
-                 v-model="modelValue.children[index]"
-                 @remove="remove(index)"
-                 :key="index"/>
+      </div>
+      <div v-if="cssStyle" class="more ago" @click="expand = !expand">
+        由于嵌套回复层级太深，自动将以上回复移至可见范围
       </div>
     </div>
   </div>
@@ -43,7 +51,7 @@ export default {
       edit: false,
       expand: true,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
-      cssStyle: {}
+      cssStyle: null
     }
   },
   inject: ['post', 'postDetailWidth'],
@@ -55,10 +63,11 @@ export default {
     let rect = this.$refs.comment.getBoundingClientRect()
     let ban = this.postDetailWidth / 2
     if (ban < rect.width && rect.width < ban + 25) {
-      // this.expand = false
-      console.log(rect.width - this.postDetailWidth)
+      this.expand = false
+      // console.log(rect.width - this.postDetailWidth)
       let padding = 2
       this.cssStyle = {
+        padding: '1rem 0',
         width: `calc(${this.postDetailWidth}px - ${padding}rem)`,
         transform: `translateX(calc(${rect.width - this.postDetailWidth}px + ${padding}rem))`
       }
@@ -104,10 +113,18 @@ export default {
   margin-top: 1rem;
   background: white;
 
+  .comment-content-w {
+    background: white;
+
+    .more {
+      text-align: center;
+      margin: 2rem 0;
+    }
+  }
+
   .comment-content {
     display: flex;
     position: relative;
-    background: white;
 
     .line {
       cursor: pointer;
