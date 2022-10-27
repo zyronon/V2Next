@@ -100,7 +100,6 @@
                 <Comment v-for="(item,index) in replies"
                          :key="item.floor"
                          style="border-bottom: 1px solid #e2e2e2;  padding: 1rem;margin-top: 0;"
-                         @remove="remove(index)"
                          v-model="replies[index]"/>
               </div>
             </div>
@@ -117,8 +116,7 @@
             <div class="w">
               <PostEditor
                   useType="reply-post"
-                  @click="isSticky = true"
-                  @addReplyChild="addReplyChild"/>
+                  @click="isSticky = true"/>
             </div>
           </div>
         </div>
@@ -305,20 +303,6 @@ export default {
     recallThank() {
       this.post.isThanked = false
       this.post.thankCount--
-    },
-    remove(index) {
-      if (this.target === 0) {
-        this.post.nestedReplies.splice(index, 1)
-      } else {
-        this.post.replies.splice(index, 1)
-      }
-    },
-    addReplyChild(item) {
-      if (this.target === 0) {
-        this.post.nestedReplies.push(item)
-      } else {
-        this.post.replies.push(item)
-      }
     },
     scrollTop() {
       this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})

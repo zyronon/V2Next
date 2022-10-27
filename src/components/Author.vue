@@ -22,7 +22,7 @@
     </div>
     <div class="Author-right">
       <div class="toolbar">
-        <div class="tool">
+        <div class="tool" @click="$emit('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -32,7 +32,7 @@
           </svg>
           <span>回复</span>
         </div>
-        <div class="tool">
+        <div class="tool" @click="$emit('hide')">
           <span>隐藏</span>
         </div>
         <!--            <div class="tool">-->

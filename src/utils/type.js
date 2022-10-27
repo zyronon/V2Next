@@ -7,4 +7,5 @@ export const CMD = {
     ADD_REPLY:'ADD_REPLY',
     IGNORE:'IGNORE',
     MERGE:'MERGE',
+    REMOVE:'REMOVE',
 }

@@ -122,11 +122,16 @@ export default {
   watch: {
     'current.replies': {
       handler(newVal) {
-        if (!newVal.length) return
-        this.current.replyCount = newVal.length
-        let res = window.parse.getNestedList(newVal)
-        if (res) {
-          this.current.nestedReplies = res
+        if (newVal.length) {
+          this.current.replyCount = newVal.length
+          let res = window.parse.getNestedList(newVal)
+          if (res) {
+            this.current.nestedReplies = res
+          }
+          // console.log('this.current.nestedReplies',this.current.nestedReplies)
+        } else {
+          this.current.replyCount = 0
+          this.current.nestedReplies = []
         }
         if (this.list) {
           let rIndex = this.list.findIndex(i => i.id === this.current.id)
@@ -225,6 +230,20 @@ export default {
   },
   methods: {
     initEvent() {
+      eventBus.on(CMD.REMOVE, (val) => {
+        // console.log('remove', val)
+        let removeIndex = this.current.replies.findIndex(i => i.floor === val)
+        // console.log('removeIndex',removeIndex)
+        if (removeIndex > -1) {
+          this.current.replies.splice(removeIndex, 1)
+        }
+        // console.log('removeIndex',this.current.replies)
+        let rIndex = this.list.findIndex(i => i.id === this.current.id)
+        if (rIndex > -1) {
+          this.list[rIndex] = Object.assign(this.list[rIndex], val)
+        }
+        // this.msgList.push({...val, id: Date.now()})
+      })
       eventBus.on(CMD.SHOW_MSG, (val) => {
         this.msgList.push({...val, id: Date.now()})
       })
@@ -234,10 +253,7 @@ export default {
         if (rIndex > -1) {
           this.list.splice(rIndex, 1)
         }
-        this.current = {
-          replies: [],
-          nestedReplies: [],
-        }
+        this.current = this.clone(initPost)
       })
       eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
