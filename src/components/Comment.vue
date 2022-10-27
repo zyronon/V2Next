@@ -1,8 +1,8 @@
 <template>
   <div class="comment" ref="comment">
     <Author v-model="expand" :comment="modelValue"/>
-    {{modelValue.level}}
-    <div class="comment-content" v-show="expand">
+    {{ modelValue.level }}
+    <div class="comment-content" v-show="expand" :style="cssStyle">
       <div class="left line" @click="toggle"></div>
       <div class="right">
         <div class="w">
@@ -43,6 +43,7 @@ export default {
       edit: false,
       expand: true,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
+      cssStyle: {}
     }
   },
   inject: ['post', 'postDetailWidth'],
@@ -52,8 +53,16 @@ export default {
   },
   mounted() {
     let rect = this.$refs.comment.getBoundingClientRect()
-    if (rect.width < (this.postDetailWidth / 2)) {
-      this.expand = false
+    let ban = this.postDetailWidth / 2
+    if (ban < rect.width && rect.width < ban + 25) {
+      // this.expand = false
+      console.log(rect.width - this.postDetailWidth)
+      let padding = 2
+      this.cssStyle = {
+        width: `calc(${this.postDetailWidth}px - ${padding}rem)`,
+        transform: `translateX(calc(${rect.width - this.postDetailWidth}px + ${padding}rem))`
+      }
+      console.log(this.cssStyle)
     }
   },
   methods: {
@@ -93,10 +102,12 @@ export default {
   width: 100%;
   box-sizing: border-box;
   margin-top: 1rem;
+  background: white;
 
   .comment-content {
     display: flex;
     position: relative;
+    background: white;
 
     .line {
       cursor: pointer;
