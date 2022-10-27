@@ -282,17 +282,20 @@
       window.win().lastCallDate = Date.now()
       // console.log('cal-getNestedList', Date.now())
       // console.log('getNestedList', allList.length)
+
       let list = JSON.parse(JSON.stringify(allList))
       let nestedList = []
       list.map((item, index) => {
         let forList = list.slice(index + 1)
         if (index === 0) {
+          item.level = 0
           nestedList.push(this.findChildren(item, forList, list))
         } else {
           //这里判断@人数不等于1。那么会把@多个人作为一级楼层，而不会作为楼中楼
           //如果要把@多个人作为楼中楼，那么这里只需判断人数等于0
           //然后把子方法里面for里面的第一个else里面的if判断r.replyUsers.length === 1 改为=== 0。然后把逻辑和else对调就可以
           if ((item.replyUsers.length !== 1) && item.replyFloor === -1) {
+            item.level = 0
             nestedList.push(this.findChildren(item, forList, list))
           }
         }
@@ -301,6 +304,7 @@
     },
     findChildren(item, arr, all) {
       const fn = (list, r, item2) => {
+        r.level = item2.level + 1
         let rIndex = all.findIndex(v => v.floor === r.floor)
         if (rIndex > -1) {
           all[rIndex].isUse = true

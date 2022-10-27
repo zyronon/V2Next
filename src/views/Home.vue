@@ -142,7 +142,7 @@ export default {
     console.log('create')
     let that = this
     window.win().cb = ({type, value}) => {
-      console.log('回调的类型', type, new Date())
+      console.log('回调的类型', type, value)
       if (type === 'list') {
         value.map(post => {
           let rIndex = that.list.findIndex(v => v.id == post.id)

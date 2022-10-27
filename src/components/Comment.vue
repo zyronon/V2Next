@@ -1,39 +1,12 @@
 <template>
-  <div class="comment">
+  <div class="comment" ref="comment">
     <Author v-model="expand" :comment="modelValue"/>
+    {{modelValue.level}}
     <div class="comment-content" v-show="expand">
       <div class="left line" @click="toggle"></div>
       <div class="right">
         <div class="w">
           <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
-          <div v-if="true" class="toolbar">
-            <Point
-                :item="{
-                    isThanked:modelValue.isThanked,
-                    thankCount:modelValue.thankCount,
-                    username:modelValue.username
-                }"
-                @addThank="addThank"
-                @recallThank="recallThank"
-                :api-url="'reply/'+modelValue.id"
-            />
-            <div class="tool" @click="edit = !edit">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-                <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-                <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              <span>回复</span>
-            </div>
-            <div class="tool" @click="hide">
-              <span>隐藏</span>
-            </div>
-            <!--            <div class="tool">-->
-            <!--              <span>报告</span>-->
-            <!--            </div>-->
-          </div>
           <div class="my-wrapper">
             <PostEditor v-if="edit"
                         @close="edit = false"
@@ -43,7 +16,6 @@
         </div>
         <Comment v-for="(item,index) in modelValue.children"
                  v-model="modelValue.children[index]"
-                 style="margin-top: .4rem;"
                  @remove="remove(index)"
                  :key="index"/>
       </div>
@@ -73,10 +45,16 @@ export default {
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
     }
   },
-  inject: ['post'],
+  inject: ['post', 'postDetailWidth'],
   watch: {},
   created() {
     // console.log(this.modelValue)
+  },
+  mounted() {
+    let rect = this.$refs.comment.getBoundingClientRect()
+    if (rect.width < (this.postDetailWidth / 2)) {
+      this.expand = false
+    }
   },
   methods: {
     addThank() {
@@ -114,8 +92,7 @@ export default {
 .comment {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 1.8rem;
-
+  margin-top: 1rem;
 
   .comment-content {
     display: flex;
@@ -124,8 +101,8 @@ export default {
     .line {
       cursor: pointer;
       //border-right: 2px solid #ddd;
-      width: 2.2rem;
-      min-width: 2.2rem;
+      width: 2.6rem;
+      min-width: 2.6rem;
       position: relative;
 
       &:after {
@@ -147,7 +124,7 @@ export default {
 
     .right {
       flex: 1;
-      width: calc(100% - 2.2rem);
+      width: calc(100% - 2.6rem);
 
       .w {
         padding-left: 1.7rem;
@@ -157,13 +134,7 @@ export default {
           word-break: break-word;
         }
 
-        .toolbar {
-          margin-top: .5rem;
-          display: flex;
-          align-items: center;
-          color: #929596;
 
-        }
       }
     }
   }
