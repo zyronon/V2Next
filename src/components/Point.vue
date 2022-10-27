@@ -42,12 +42,12 @@ export default {
   },
   computed: {
     disabled() {
-      return (this.item.username === window.user.username) || this.item.isThanked
+      return (this.item.username === window.win().user.username) || this.item.isThanked
     }
   },
   methods: {
     async thank() {
-      if (this.item.username === window.user.username) {
+      if (this.item.username === window.win().user.username) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
       }
       if (this.item.isThanked) {

@@ -33,11 +33,12 @@
       </div>
     </div>
     <div class="posts">
-      <Post :class="{
-      visited:readList.has(item.id),
-      table:viewType === 'table',
-      card:viewType === 'card',
-      }" @click="showPostDetail(item,$event)" v-for="item in list" :post="item"/>
+      <Post
+          v-for="item in list"
+          :viewType="viewType"
+          :post="item"
+          :class="{visited:readList.has(item.id)}"
+          @show="showPostDetail(item,$event)"/>
     </div>
   </template>
   <template v-if="pageType === 'post'">
@@ -84,7 +85,7 @@ export default {
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
-      isLogin: computed(() => !!window.user.username),
+      isLogin: computed(() => !!window.win().user.username),
       pageType: computed(() => this.pageType),
       clone: this.clone,
       post: computed(() => this.current),
@@ -121,9 +122,12 @@ export default {
   watch: {
     'current.replies': {
       handler(newVal) {
-        console.log('watch', newVal)
+        if (!newVal.length) return
         this.current.replyCount = newVal.length
-        this.current.nestedReplies = window.parse.getNestedList(newVal)
+        let res = window.parse.getNestedList(newVal)
+        if (res) {
+          this.current.nestedReplies = res
+        }
         if (this.list) {
           let rIndex = this.list.findIndex(i => i.id === this.current.id)
           if (rIndex > -1) {
@@ -137,8 +141,7 @@ export default {
   created() {
     console.log('create')
     let that = this
-    console.log(this.list)
-    window.cb = ({type, value}) => {
+    window.win().cb = ({type, value}) => {
       console.log('回调的类型', type, new Date())
       if (type === 'list') {
         value.map(post => {
@@ -146,7 +149,6 @@ export default {
           if (rIndex > -1) {
             that.list[rIndex] = Object.assign(that.list[rIndex], {
               content_rendered: post.content_rendered,
-              replyCount: post.replies || 0,
               nodeUrl: post.node.url,
               avatar: post.member.avatar_large,
             })
@@ -164,17 +166,25 @@ export default {
       }
     }
 
-    //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-    if (window.pageData.post) {
-      window.doc.body.style.overflow = 'hidden'
-      this.current = Object.assign(this.clone(initPost), this.clone(window.pageData.post))
-      this.loading = false
+    if (window.win().vue) {
+      console.log('vue', window.win().postList)
+      //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
+      if (window.pageData.post) {
+        window.doc.body.style.overflow = 'hidden'
+        this.current = Object.assign(this.clone(initPost), this.clone(window.pageData.post))
+        this.loading = false
+      }
+      if (window.isFrame) {
+        this.list = window.win().postList
+      } else {
+        this.list = data
+      }
     }
 
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
       let config = JSON.parse(configStr)
-      if (config.username === window.user.username) {
+      if (config.username === window.win().user.username) {
         this.readList = new Set(config.readList);
         this.viewType = config.viewType
       }
@@ -183,14 +193,14 @@ export default {
       console.log('onbeforeunload')
       // window.win().cb = null
       let config = {
-        username: window.user.username ?? '',
+        username: window.win().user.username ?? '',
         viewType: this.viewType,
         readList: Array.from(this.readList)
       }
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     };
     if (window.isFrame) {
-      this.list = window.postList
+      this.list = window.win().postList
       // setTimeout(() => {
       //   this.list.map(v => {
       //     v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`

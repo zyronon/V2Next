@@ -1,43 +1,46 @@
 <template>
-  <div class="post" :style="postStyle">
+  <div class="post" :style="postStyle" :class="props.viewType">
     <div class="base-info">
       <div class="left">
-        <a :href="`/member/${post.username}`">
+        <a :href="`/member/${props.post.username}`">
           <div class="avatar">
-            <img :src="post.avatar" alt="">
+            <img :src="props.post.avatar" alt="">
           </div>
         </a>
         <div class="right">
-          <div class="title">
-            <a :href="`t/${post.id}`">{{ post.title }}</a>
+          <div class="title" @click="$emit('show',$event)">
+            <a :href="`t/${props.post.id}`">{{ props.post.title }}</a>
           </div>
           <div class="bottom">
-            <a :href="post.nodeUrl" class="my-node">{{ post.node }}</a>
+            <a :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
             &nbsp;&nbsp;·&nbsp;&nbsp;
-            <a class="username" :href="`/member/${post.username}`">{{ post.username }}</a>
+            <strong>
+              <a class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
+            </strong>
             &nbsp;&nbsp;·&nbsp;&nbsp;
-            <span class="date">{{ post.date }}</span>
+            <span class="date">{{ props.post.date }}</span>
           </div>
         </div>
       </div>
-      <div class="count" v-if="post.replyCount">{{ post.replyCount }}</div>
+      <div class="count" v-if="props.post.replyCount" @click="$emit('show')">{{ props.post.replyCount }}</div>
     </div>
-    <div class="post-content-wrapper" :class="{mask}" v-if="post.content_rendered">
-      <div v-html="post.content_rendered" ref="content"></div>
+    <div class="post-content-wrapper" :class="{mask}" v-if="props.post.content_rendered">
+      <div v-html="props.post.content_rendered" ref="content" @click="$emit('show',$event)"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 
-const {post} = defineProps(['post'])
+const props = defineProps(['post', 'viewType'])
+// const {post, viewType} = props
 const mask = ref(false)
 const content = ref(null)
 const postStyle = computed(() => {
-  if (post.bg) {
+  if (props.post.bg) {
     return {
-      backgroundImage: post.bg,
+      backgroundImage: props.post.bg,
       backgroundRepeat: 'no-repeat',
       backgroundSize: '20px 20px',
       backgroundPosition: 'right top'
@@ -46,8 +49,9 @@ const postStyle = computed(() => {
   return {}
 })
 
-watch([() => post, () => content.value], () => {
+watch([() => props.post, () => content.value, () => props.viewType], () => {
   if (!content.value) return
+  if (props.viewType === 'table') return;
   let rect = content.value.getBoundingClientRect()
   //如果有图片，还没加载完，此刻content.value的高度不会包括图片的高度
   content.value.querySelectorAll('img').forEach(item => {
@@ -80,7 +84,6 @@ p {
 
 .post {
   font-size: 1.4rem;
-  cursor: pointer;
   background: white;
   text-align: start;
   padding: 1rem;
@@ -95,7 +98,8 @@ p {
 
     .title {
       a {
-        font-size: 1.6rem !important;
+        color: #778087;
+        font-size: 1.6rem;
       }
     }
   }
@@ -104,9 +108,18 @@ p {
     margin-top: 1.1rem;
     border: 1px solid @border;
     border-radius: @border-radius;
+    cursor: pointer;
 
     &:hover {
       border: 1px solid @border-hover;
+    }
+
+    .title {
+      a {
+        color: black;
+        font-size: 1.8rem;
+
+      }
     }
   }
 
@@ -119,7 +132,6 @@ p {
       opacity: .6;
     }
   }
-
 
   .base-info {
     box-sizing: border-box;
@@ -148,12 +160,6 @@ p {
         .title {
           display: inline;
           align-items: center;
-
-          a {
-            color: black;
-            font-size: 1.8rem;
-            text-decoration: none;
-          }
         }
 
         .bottom {
@@ -162,7 +168,6 @@ p {
           display: flex;
           align-items: center;
         }
-
       }
     }
 
@@ -178,6 +183,7 @@ p {
       -webkit-border-radius: 12px;
       border-radius: 12px;
       text-decoration: none;
+      cursor: pointer;
 
       &:hover {
         background-color: #969cb1;

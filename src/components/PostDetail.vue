@@ -100,7 +100,7 @@
                 <Comment v-for="(item,index) in replies"
                          :key="item.floor"
                          @remove="remove(index)"
-                         v-model="replies[index]" />
+                         v-model="replies[index]"/>
               </div>
             </div>
             <div v-else id="no-comments-yet">目前尚无回复</div>
@@ -206,6 +206,7 @@ export default {
       if (!newVal) {
         this.$refs.detail.scrollTo({top: 0})
         window.doc.body.style.overflow = 'unset'
+        this.isSticky = false
         if (window.pageType === 'home') {
           // window.history.back();
         }

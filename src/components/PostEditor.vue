@@ -76,10 +76,10 @@ async function submit() {
   let item = {
     thankCount: 0,
     isThanked: false,
-    isOp: post.value.username === window.user.username,
+    isOp: post.value.username === window.win().user.username,
     id: Date.now(),
-    username: window.user.username,
-    avatar: window.user.avatar,
+    username: window.win().user.username,
+    avatar: window.win().user.avatar,
     date: '几秒前',
     floor: post.value.replyCount + 1,
     reply_content: content.value || Date.now(),
@@ -96,14 +96,14 @@ async function submit() {
       item.reply_content = item.reply_content.replace(username, `<a href="/member/${username}">${username}</a>`)
     })
   }
-  loading.value = false
-  content.value = replyInfo
 
-  eventBus.emit(CMD.REFRESH_ONCE,)
-  eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-  eventBus.emit(CMD.ADD_REPLY, item)
-  emits('close')
-  return console.log('item', item)
+  // loading.value = false
+  // content.value = replyInfo
+  // eventBus.emit(CMD.REFRESH_ONCE,)
+  // eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+  // eventBus.emit(CMD.ADD_REPLY, item)
+  // emits('close')
+  // return console.log('item', item)
 
   let url = `${window.url}/t/${post.value.id}`
   $.post(url, {content: content.value, once: post.value.once}).then(
