@@ -1,6 +1,10 @@
 <template>
   <div class="comment" ref="comment">
-    <Author v-model="expand" :comment="modelValue"/>
+    <Author v-model="expand"
+            :comment="modelValue"
+            @reply="edit = !edit"
+            @hide="hide"
+    />
     <!--    {{ modelValue.level }}-->
     <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
       由于嵌套回复层级太深，自动将后续回复隐藏
@@ -14,12 +18,10 @@
         <div class="right">
           <div class="w">
             <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
-            <div class="my-wrapper">
-              <PostEditor v-if="edit"
-                          @close="edit = false"
-                          :replyInfo="replyInfo"
-                          :replyFloor="modelValue.floor"/>
-            </div>
+            <PostEditor v-if="edit"
+                        @close="edit = false"
+                        :replyInfo="replyInfo"
+                        :replyFloor="modelValue.floor"/>
           </div>
           <Comment v-for="(item,index) in modelValue.children"
                    v-model="modelValue.children[index]"
@@ -88,17 +90,13 @@ export default {
     },
     hide() {
       let url = `${window.url}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
-      this.$emit('remove')
+      eventBus.emit(CMD.REMOVE, this.modelValue.floor)
       $.post(url).then(res => {
-        console.log('hide：', res)
         eventBus.emit(CMD.REFRESH_ONCE)
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '隐藏成功'})
       }, err => {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '隐藏成功,仅本次有效（接口调用失败！）'})
       })
-    },
-    remove(index) {
-      this.modelValue.children.splice(index, 1)
     },
     toggle() {
       this.expand = !this.expand
@@ -163,6 +161,7 @@ export default {
         .text {
           color: black;
           word-break: break-word;
+          margin-bottom: 1rem;
         }
 
 

@@ -276,7 +276,7 @@
     getNestedList(allList = []) {
       if (!allList.length) return []
       if ((Date.now() - window.win().lastCallDate) < 1000) {
-        // console.log('知时间内，重复调用')
+        console.log('知时间内，重复调用')
         return null
       }
       window.win().lastCallDate = Date.now()
