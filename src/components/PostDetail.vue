@@ -98,8 +98,9 @@
               </div>
               <div class="comments">
                 <Comment v-for="(item,index) in replies"
+                         :key="item.floor"
                          @remove="remove(index)"
-                         v-model="replies[index]" :key="index"/>
+                         v-model="replies[index]" />
               </div>
             </div>
             <div v-else id="no-comments-yet">目前尚无回复</div>

@@ -5,4 +5,6 @@ export const CMD = {
     SHOW_CALL:'SHOW_CALL',
     REFRESH_ONCE:'REFRESH_ONCE',
     ADD_REPLY:'ADD_REPLY',
+    IGNORE:'IGNORE',
+    MERGE:'MERGE',
 }

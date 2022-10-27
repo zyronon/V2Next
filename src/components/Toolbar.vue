@@ -101,7 +101,8 @@ export default {
   name: "Toolbar",
   inject: [
     'isLogin',
-    'post'
+    'post',
+    'pageType'
   ],
   data() {
     return {
@@ -111,9 +112,6 @@ export default {
       loading2: false,
       loading3: false,
     }
-  },
-  created() {
-    // console.log(this)
   },
   methods: {
     getColor(val) {
@@ -145,23 +143,38 @@ export default {
     },
     async toggleIgnore() {
       let url = `${window.url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
-      if (this.post.isIgnore) {
+      //如果是帖子详情页，那么直接跳转到首页
+      if (this.pageType === 'post') {
         this.loading2 = true
-      } else {
-        eventBus.emit('ignore')
-      }
-      let apiRes = await window.win().fetch(url)
-      if (apiRes.redirected) {
-        if (this.post.isIgnore) {
-          eventBus.emit(CMD.REFRESH_ONCE)
+        let apiRes = await window.win().fetch(url)
+        if (apiRes.redirected) {
+          if (!this.post.isIgnore) {
+            window.win().location = window.url
+          }
+          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
+          eventBus.emit(CMD.MERGE, {isIgnore: !this.post.isIgnore})
+        } else {
+          eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '忽略失败'})
         }
-        eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
-        eventBus.emit('merge', {isIgnore: !this.post.isIgnore})
         this.loading2 = false
-        return
+      } else {
+        if (this.post.isIgnore) {
+          this.loading2 = true
+        } else {
+          eventBus.emit(CMD.IGNORE)
+        }
+        let apiRes = await window.win().fetch(url)
+        if (apiRes.redirected) {
+          if (this.post.isIgnore) {
+            eventBus.emit(CMD.REFRESH_ONCE)
+          }
+          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
+          eventBus.emit(CMD.MERGE, {isIgnore: !this.post.isIgnore})
+        } else {
+          eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '忽略成功,仅本次有效（接口调用失败！）'})
+        }
+        this.loading2 = false
       }
-      eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '忽略成功,仅本次有效（接口调用失败！）'})
-      this.loading2 = false
     },
     async toggleFavorite() {
       // return eventBus.emit('merge', 'isFavorite')
@@ -172,10 +185,10 @@ export default {
       if (apiRes.redirected) {
         let htmlText = await apiRes.text()
         if (htmlText.search(this.post.isFavorite ? '加入收藏' : '取消收藏')) {
-          eventBus.emit('merge', {collectCount: this.post.isFavorite ? (this.post.collectCount - 1) : (this.post.collectCount + 1)})
+          eventBus.emit(CMD.MERGE, {collectCount: this.post.isFavorite ? (this.post.collectCount - 1) : (this.post.collectCount + 1)})
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isFavorite ? '取消成功' : '收藏成功'})
           eventBus.emit(CMD.REFRESH_ONCE, htmlText)
-          eventBus.emit('merge', {isFavorite: !this.post.isFavorite})
+          eventBus.emit(CMD.MERGE, {isFavorite: !this.post.isFavorite})
           return
         }
       }

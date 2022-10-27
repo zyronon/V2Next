@@ -1,41 +1,50 @@
 <template>
-  <div class="nav" :class="viewType">
-    <div class="nav-item" :class="{active:viewType === 'table'}" @click="viewType = 'table'">
-      <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M42 20H6V28H42V20Z" fill="none" :stroke="svgColor('table')" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M42 35H6V43H42V35Z" fill="none" :stroke="svgColor('table')" stroke-width="4" stroke-linejoin="round"/>
-      </svg>
-      <span>表格</span>
+  <template v-if="pageType === 'home'">
+    <div class="nav" :class="viewType">
+      <div class="nav-item" :class="{active:viewType === 'table'}" @click="viewType = 'table'">
+        <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M42 20H6V28H42V20Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
+                stroke-linejoin="round"/>
+          <path d="M42 35H6V43H42V35Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
+                stroke-linejoin="round"/>
+        </svg>
+        <span>表格</span>
+      </div>
+      <div class="nav-item" :class="{active:viewType === 'card'}" @click="viewType = 'card'">
+        <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
+                stroke-width="4"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 8C6 6.89543 6.89543 6 8 6H40C41.1046 6 42 6.89543 42 8V18H6V8Z" fill="none"
+                :stroke="svgColor('card')"
+                stroke-width="4" stroke-linejoin="round"/>
+          <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z"
+                :fill="svgColor('card')"/>
+          <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z"
+                :fill="svgColor('card')"/>
+          <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M24 14C25.1046 14 26 13.1046 26 12C26 10.8954 25.1046 10 24 10C22.8954 10 22 10.8954 22 12C22 13.1046 22.8954 14 24 14Z"
+                :fill="svgColor('card')"/>
+        </svg>
+        <span>卡片</span>
+      </div>
     </div>
-    <div class="nav-item" :class="{active:viewType === 'card'}" @click="viewType = 'card'">
-      <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
-              stroke-width="4"
-              stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M6 8C6 6.89543 6.89543 6 8 6H40C41.1046 6 42 6.89543 42 8V18H6V8Z" fill="none"
-              :stroke="svgColor('card')"
-              stroke-width="4" stroke-linejoin="round"/>
-        <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z"
-              :fill="svgColor('card')"/>
-        <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z"
-              :fill="svgColor('card')"/>
-        <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M24 14C25.1046 14 26 13.1046 26 12C26 10.8954 25.1046 10 24 10C22.8954 10 22 10.8954 22 12C22 13.1046 22.8954 14 24 14Z"
-              :fill="svgColor('card')"/>
-      </svg>
-      <span>卡片</span>
-    </div>
-  </div>
-  <div class="posts">
-    <Post :class="{
+    <div class="posts">
+      <Post :class="{
       visited:readList.has(item.id),
       table:viewType === 'table',
       card:viewType === 'card',
       }" @click="showPostDetail(item,$event)" v-for="item in list" :post="item"/>
-  </div>
+    </div>
+  </template>
+  <template v-if="pageType === 'post'">
+    <div class="nav">
+      <div @click="show = !show" class="nav-item">展示</div>
+    </div>
+  </template>
   <PostDetail v-model="show" :loading="loading"/>
   <div class="msgs">
     <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
@@ -70,13 +79,13 @@ const initPost = {
   isReport: false,
   RightbarHTML: '',
 }
-let repliesMap = []
 export default {
   name: 'home',
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.user.username),
+      pageType: computed(() => this.pageType),
       clone: this.clone,
       post: computed(() => this.current),
       allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
@@ -92,6 +101,7 @@ export default {
     return {
       viewType: 'card',
       loading: window.pageType === 'post',
+      pageType: window.pageType,
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
@@ -208,7 +218,7 @@ export default {
       eventBus.on(CMD.SHOW_MSG, (val) => {
         this.msgList.push({...val, id: Date.now()})
       })
-      eventBus.on('ignore', () => {
+      eventBus.on(CMD.IGNORE, () => {
         this.show = false
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
@@ -219,7 +229,7 @@ export default {
           nestedReplies: [],
         }
       })
-      eventBus.on('merge', (val) => {
+      eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
