@@ -2,6 +2,9 @@
   <div class="comment" ref="comment">
     <Author v-model="expand" :comment="modelValue"/>
     <!--    {{ modelValue.level }}-->
+    <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
+      由于嵌套回复层级太深，自动将后续回复隐藏
+    </div>
     <div class="comment-content-w" v-show="expand" :style="cssStyle">
       <div v-if="cssStyle" class="more ago" @click="expand = !expand">
         由于嵌套回复层级太深，自动将以下回复移至可见范围
