@@ -15,6 +15,7 @@ if (window.win().vue) {
 }
 
 let vue = createApp(Home)
+window.win().vue = vue
+window.win().appNode = appNode
 vue.config.unwrapInjectedRef = true
 vue.mount(appNode)
-window.win().vue = vue

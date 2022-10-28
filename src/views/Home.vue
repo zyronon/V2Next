@@ -139,6 +139,7 @@ export default {
   },
   created() {
     console.log('create')
+
     let that = this
     window.win().cb = ({type, value}) => {
       console.log('回调的类型', type, value)
@@ -153,6 +154,7 @@ export default {
             })
           }
         })
+        window.win().vueCb && window.win().vueCb()
       }
       if (type === 'postContent') {
         this.saveConfig(this.readList.add(value.id))
@@ -165,7 +167,7 @@ export default {
     }
 
     if (window.win().vue) {
-      console.log('vue', window.win().postList)
+      // console.log('vue', window.win().postList)
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
       if (window.win().pageData?.post) {
         window.win().doc.body.style.overflow = 'hidden'
@@ -196,6 +198,30 @@ export default {
 
     if (window.win().isFrame) {
       this.list = window.win().postList
+
+      if (this.pageType === 'recent') {
+        let lastItem = window.win().appNode.nextElementSibling
+        let ob = window.win().IntersectionObserver
+        const observer = new ob(async (e) => {
+          if (e[0].isIntersecting) {
+            console.log('加载更多')
+            let href = window.win().location.href
+            let r = href.match(/p=([\d]+)/)
+            console.log('r', r)
+            let url = window.win().url + `/recent?p=2`
+            if (r) {
+              url = window.win().url + `/recent?p=${Number(r[1]) + 1}`
+            }
+            console.log('url',url)
+            let apiRes = await window.win().fetch(url)
+            let htmlText = await apiRes.text()
+            console.log(htmlText)
+
+            window.win().history.pushState({}, 0, url);
+          }
+        })
+        observer.observe(lastItem)
+      }
       // setTimeout(() => {
       //   this.list.map(v => {
       //     v.content_rendered = `<p><a href="https://imgur.com/taLDwNr" rel="nofollow"><img class="embedded_image" loading="lazy" referrerpolicy="no-referrer" rel="noreferrer" src="https://i.imgur.com/taLDwNr.png" title="source: imgur.com"></a></p>`
@@ -392,7 +418,7 @@ export default {
 @import "@/assets/less/variable";
 
 .app-home {
-  &.home,&.recent {
+  &.home, &.recent {
     background: rgb(226, 226, 226);
   }
 
