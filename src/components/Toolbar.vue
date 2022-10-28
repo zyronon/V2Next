@@ -131,25 +131,25 @@ export default {
     },
     tweet() {
       let username = window.win().user.username
-      let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
+      let url = `https://twitter.com/share?url=${window.win().url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     report() {
       if (!this.isLogin) return
       if (this.post.isReport) return
       let username = window.win().user.username
-      let url = `https://twitter.com/share?url=${window.url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
+      let url = `https://twitter.com/share?url=${window.win().url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     async toggleIgnore() {
-      let url = `${window.url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
+      let url = `${window.win().url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
       //如果是帖子详情页，那么直接跳转到首页
       if (this.pageType === 'post') {
         this.loading2 = true
         let apiRes = await window.win().fetch(url)
         if (apiRes.redirected) {
           if (!this.post.isIgnore) {
-            window.win().location = window.url
+            window.win().location = window.win().url
           }
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: this.post.isIgnore ? '取消成功' : '忽略成功'})
           eventBus.emit(CMD.MERGE, {isIgnore: !this.post.isIgnore})
@@ -179,7 +179,7 @@ export default {
     async toggleFavorite() {
       // return eventBus.emit('merge', 'isFavorite')
       this.loading = true
-      let url = `${window.url}/${this.post.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
+      let url = `${window.win().url}/${this.post.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`
       let apiRes = await window.win().fetch(url)
       this.loading = false
       if (apiRes.redirected) {

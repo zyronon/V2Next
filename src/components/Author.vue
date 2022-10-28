@@ -40,21 +40,17 @@
         <!--            </div>-->
         <Point
             v-if="!comment.thankCount"
-            :item="{
-                    isThanked:comment.isThanked,
-                    thankCount:comment.thankCount,
-                    username:comment.username
-                }"
+            :item="pointInfo"
+            @addThank="addThank"
+            @recallThank="recallThank"
             :api-url="'reply/'+comment.id"
         />
       </div>
       <Point
           v-if="comment.thankCount"
-          :item="{
-                    isThanked:comment.isThanked,
-                    thankCount:comment.thankCount,
-                    username:comment.username
-                }"
+          :item="pointInfo"
+          @addThank="addThank"
+          @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
       <div class="floor" :class="{isDev}">{{ comment.floor }}</div>
@@ -63,6 +59,8 @@
 </template>
 <script>
 import Point from "./Point";
+import eventBus from "../eventBus";
+import {CMD} from "../utils/type";
 
 export default {
   name: "Author",
@@ -80,10 +78,23 @@ export default {
   data() {
     return {}
   },
-  watch: {},
-  created() {
+  computed: {
+    pointInfo() {
+      return {
+        isThanked: this.comment.isThanked,
+        thankCount: this.comment.thankCount,
+        username: this.comment.username
+      }
+    }
   },
-  methods: {}
+  methods: {
+    addThank() {
+      eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'add'})
+    },
+    recallThank() {
+      eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'recall'})
+    },
+  }
 }
 </script>
 

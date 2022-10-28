@@ -144,7 +144,7 @@
 
           let pages = cells[1].querySelectorAll('a')
           // console.log(pages)
-          let url = window.url + '/t/' + post.id
+          let url = window.win().url + '/t/' + post.id
           pages.forEach((v, i) => {
             let currentPageNo = Number(v.innerText)
             if (currentPageNo === pageNo) return
@@ -281,7 +281,7 @@
       }
       window.win().lastCallDate = Date.now()
       // console.log('cal-getNestedList', Date.now())
-      // console.log('getNestedList', allList.length)
+      console.log('getNestedList，长度', allList.length)
 
       let list = JSON.parse(JSON.stringify(allList))
       let nestedList = []
@@ -381,46 +381,21 @@
   }
   if (window.top[0]) {
     window.win = () => window.top
-    window.url = 'https://www.v2ex.com'
-    // window.url = location.origin
-    window.isFrame = true
+    window.win().url = 'https://www.v2ex.com'
+    // window.win().url = location.origin
+    window.win().isFrame = true
+
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
   } else {
     window.win = () => window
-    window.url = 'https://www.v2ex.com'
-    // window.url = location.origin
-    window.isFrame = false
-  }
-  window.doc = window.win().document
-  window.win().user = {}
-  window.win().cb = null
-  window.win().postList = []
-
-  let top2 = $('.tools .top:eq(1)', window.doc).text()
-  if (top2 !== '注册') {
-    window.win().user = {
-      username: top2,
-      avatar: $('#Rightbar .box:eq(0) .avatar', window.doc).attr('src')
-    }
+    window.win().url = 'https://www.v2ex.com'
+    // window.win().url = location.origin
+    window.win().isFrame = false
   }
 
-  let location2 = window.win().location
-  window.pageType = 'home'
-  window.pageData = {pageNo: 1}
-  if (location2.pathname) {
-    let r = location2.pathname.match(/t\/([\d]+)/)
-    if (r) {
-      window.pageType = 'post'
-      window.pageData.id = r[1]
-      if (location2.search) {
-        let pr = location2.search.match(/\?p=([\d]+)/)
-        if (pr) window.pageData.pageNo = Number(pr[1])
-      }
-    }
-  }
 
-  // console.log('type===', window.pageType, 'pageData===', window.pageData)
+  // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
 
   async function cbChecker(val, count = 0) {
     async function sleep(time) {
@@ -441,89 +416,139 @@
     }
   }
 
-  switch (window.pageType) {
-    case 'home':
-      break
-    case 'post':
-      window.parse.parsePostContent(
-        {id: window.pageData.id},
-        $(window.doc.body),
-        window.doc.documentElement.outerHTML
-      ).then(async res => {
-        // console.log('详情页-基本信息解析完成', new Date())
-        await cbChecker({type: 'postContent', value: res}, 0)
-        window.pageData.post = res
-      })
-
-      window.parse.parsePostReplies(
-        {id: window.pageData.id},
-        $(window.doc.body),
-        window.doc.documentElement.outerHTML,
-        window.pageData.pageNo
-      ).then(async res => {
-        // console.log('详情页-回复解析完成', new Date())
-        await cbChecker({type: 'postReplies', value: res}, 0)
-        window.pageData.post = Object.assign(window.pageData.post, res)
-      })
-      break
-  }
+  console.log('postList', window.win().postList)
+  console.log('init', window.win().init)
 
   //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
-  if (window.isFrame) {
+  if (window.win().isFrame) {
     if (!window.win().init) {
       window.win().init = true
+      window.win().doc = window.win().document
+      window.win().clone = (val) => JSON.parse(JSON.stringify(val))
+      window.win().user = {}
+      window.win().cb = null
+      window.win().postList = []
+      window.win().initPost = {
+        replies: [],
+        nestedReplies: [],
+        username: '',
+        title: '',
+        id: '',
+        once: '',
+        replyCount: 0,
+        clickCount: 0,
+        thankCount: 0,
+        collectCount: 0,
+        isFavorite: false,
+        isIgnore: false,
+        isThanked: false,
+        isReport: false,
+        RightbarHTML: '',
+      }
+
+      let top2 = $('.tools .top:eq(1)', window.win().doc).text()
+      if (top2 !== '注册') {
+        window.win().user = {
+          username: top2,
+          avatar: $('#Rightbar .box:eq(0) .avatar', window.win().doc).attr('src')
+        }
+      }
+
+      let location2 = window.win().location
+      window.win().pageType = 'home'
+      window.win().pageData = {pageNo: 1}
+      if (location2.pathname) {
+        let r = location2.pathname.match(/t\/([\d]+)/)
+        if (r) {
+          window.win().pageType = 'post'
+          window.win().pageData.id = r[1]
+          if (location2.search) {
+            let pr = location2.search.match(/\?p=([\d]+)/)
+            if (pr) window.win().pageData.pageNo = Number(pr[1])
+          }
+        }
+      }
+      if (location2.search) {
+        let r = location2.pathname.includes('?tab=')
+        if (r) window.win().pageType = 'home'
+      }
+
       let $section = document.createElement('section')
       $section.id = 'app'
-      let box = $('#Wrapper #Main .box:first', window.doc)
-      let href = window.win().location.href
-      let r = href.match(/t\/([\d]+)/)
-      if (r) {
-        box.after($section)
-      } else {
-        box.css({background: 'transparent', 'box-shadow': 'unset'})
-        let wrapper = box.find('.item:first')
-        wrapper.after($section)
 
-        let list = []
-        let apiList = []
-        let listItemNode = doc.querySelectorAll('.item',)
-        // listItemNode = Array.from(listItemNode)
-        // listItemNode.slice(1, 5).forEach(itemNode => {
-        listItemNode.forEach(itemNode => {
-          let item = {replies: []}
-          let bg = itemNode.style['background-image']
-          item.bg = bg
-          let item_title = itemNode.querySelector('.item_title a')
-          let href = item_title.href
-          item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-          item.title = item_title.innerText
+      let box = $('#Wrapper #Main .box:first', window.win().doc)
 
-          let topic_info = itemNode.querySelector('.topic_info')
-          let userNode = topic_info.querySelector('strong a')
-          item.username = userNode.innerText
-          let timeNode = itemNode.querySelector('.topic_info span')
-          item.date = timeNode.innerText
-          let tagNode = topic_info.querySelector('.node')
-          item.node = tagNode.innerText
-          let countNode = itemNode.querySelector('.count_livid')
-          item.replyCount = countNode ? countNode.innerText : 0
-          itemNode.remove()
+      switch (window.win().pageType) {
+        case 'home':
 
-          let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-          // console.log(url)
-          apiList.push($.get(url))
-          list.push(item)
-        })
-        window.win().postList = list
+          box.css({background: 'transparent', 'box-shadow': 'unset'})
+          let wrapper = box.find('.item:first')
+          wrapper.after($section)
 
-        Promise.allSettled(apiList).then(async (results) => {
-            let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-            await cbChecker({type: 'list', value: res})
-          }
-        );
+          let list = []
+          let apiList = []
+          let listItemNode = window.win().doc.querySelectorAll('.item',)
+          // listItemNode = Array.from(listItemNode)
+          // listItemNode.slice(1, 5).forEach(itemNode => {
+          listItemNode.forEach(itemNode => {
+            let item = window.win().clone(window.win().initPost)
+            let bg = itemNode.style['background-image']
+            item.bg = bg
+            let item_title = itemNode.querySelector('.item_title a')
+            let href = item_title.href
+            item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+            item.title = item_title.innerText
+
+            let topic_info = itemNode.querySelector('.topic_info')
+            let userNode = topic_info.querySelector('strong a')
+            item.username = userNode.innerText
+            let timeNode = itemNode.querySelector('.topic_info span')
+            item.date = timeNode.innerText
+            let tagNode = topic_info.querySelector('.node')
+            item.node = tagNode.innerText
+            let countNode = itemNode.querySelector('.count_livid')
+            item.replyCount = countNode ? countNode.innerText : 0
+            itemNode.remove()
+
+            let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+            // console.log(url)
+            apiList.push($.get(url))
+            list.push(item)
+          })
+          window.win().postList = list
+
+          Promise.allSettled(apiList).then(async (results) => {
+              let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+              await cbChecker({type: 'list', value: res})
+            }
+          );
+          break
+        case 'post':
+          box.after($section)
+
+          window.parse.parsePostContent(
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML
+          ).then(async res => {
+            // console.log('详情页-基本信息解析完成', new Date())
+            await cbChecker({type: 'postContent', value: res}, 0)
+            window.win().pageData.post = res
+          })
+
+          window.parse.parsePostReplies(
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML,
+            window.win().pageData.pageNo
+          ).then(async res => {
+            // console.log('详情页-回复解析完成', new Date())
+            await cbChecker({type: 'postReplies', value: res}, 0)
+            window.win().pageData.post = Object.assign(window.win().pageData.post, res)
+          })
+          break
       }
     }
-
 
     //开发时自动更新window.top head里面添加的vue style
     function getStyle(html) {
@@ -535,7 +560,7 @@
     }
 
     function removeVueStyle() {
-      let title = $('title:eq(1)', window.doc.head)
+      let title = $('title:eq(1)', window.win().doc.head)
       while (title.next().length) {
         title.next().remove()
       }
@@ -546,18 +571,16 @@
 
     let observe = new MutationObserver(() => {
       removeVueStyle()
-
       let headHtml = window.document.head.innerHTML
       let reg = getStyle(headHtml)
-      $(window.doc.head).append($(`<head>${reg}</head>`))
+      $(window.win().doc.head).append($(`<head>${reg}</head>`))
     });
     observe.observe(window.document.head, {
       attributes: true, //目标节点的属性变化
       childList: true, //目标节点的子节点的新增和删除
       characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
       subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
-    });// 后面介绍config的配置
-
+    });
   }
 </script>
 <script type="module" src="/src/main.js"></script>
