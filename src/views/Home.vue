@@ -87,7 +87,7 @@ export default {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.win().user.username),
       pageType: computed(() => this.pageType),
-      clone: this.clone,
+      clone: window.win().clone,
       post: computed(() => this.current),
       allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
     }
@@ -101,12 +101,12 @@ export default {
   data() {
     return {
       viewType: 'card',
-      loading: window.pageType === 'post',
-      pageType: window.pageType,
+      loading: window.win().pageType === 'post',
+      pageType: window.win().pageType,
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
-      show: window.pageType === 'post',
+      show: window.win().pageType === 'post',
       // show: true,
       current: initPost,
       list: [],
@@ -122,6 +122,7 @@ export default {
   watch: {
     'current.replies': {
       handler(newVal) {
+        console.log('watch')
         if (newVal.length) {
           this.current.replyCount = newVal.length
           let res = window.parse.getNestedList(newVal)
@@ -161,7 +162,7 @@ export default {
         })
       }
       if (type === 'postContent') {
-        window.doc.body.style.overflow = 'hidden'
+        window.win().doc.body.style.overflow = 'hidden'
         this.readList.add(value.id)
         this.current = Object.assign(this.clone(initPost), this.clone(value))
       }
@@ -174,12 +175,12 @@ export default {
     if (window.win().vue) {
       console.log('vue', window.win().postList)
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-      if (window.pageData.post) {
-        window.doc.body.style.overflow = 'hidden'
-        this.current = Object.assign(this.clone(initPost), this.clone(window.pageData.post))
+      if (window.win().pageData.post) {
+        window.win().doc.body.style.overflow = 'hidden'
+        this.current = Object.assign(this.clone(initPost), this.clone(window.win().pageData.post))
         this.loading = false
       }
-      if (window.isFrame) {
+      if (window.win().isFrame) {
         this.list = window.win().postList
       } else {
         this.list = data
@@ -204,7 +205,7 @@ export default {
       }
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     };
-    if (window.isFrame) {
+    if (window.win().isFrame) {
       this.list = window.win().postList
       // setTimeout(() => {
       //   this.list.map(v => {
@@ -216,10 +217,10 @@ export default {
     }
 
     // this.getReplyInfo()
-    if (window.pageType === 'post') {
-      if (window.isFrame) {
+    if (window.win().pageType === 'post') {
+      if (window.win().isFrame) {
       } else {
-        this.showPostDetail({id: window.pageData.id}, null)
+        this.showPostDetail({id: window.win().pageData.id}, null)
       }
     }
     this.initEvent()
@@ -229,7 +230,40 @@ export default {
     eventBus.clear()
   },
   methods: {
+    clone(val) {
+      return window.win().clone(val)
+    },
     initEvent() {
+      eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
+        const {id, type} = val
+        let currentI = this.current.replies.findIndex(i => i.id === id)
+        if (currentI > -1) {
+          this.current.replies[currentI].isThanked = type === 'add'
+          if (type === 'add') {
+            this.current.replies[currentI].thankCount++
+          } else {
+            this.current.replies[currentI].thankCount--
+          }
+        }
+      })
+      eventBus.on(CMD.CHANGE_POST_THANK, (val) => {
+        const {id, type} = val
+        this.current.isThanked = type === 'add'
+        if (type === 'add') {
+          this.current.thankCount++
+        } else {
+          this.current.thankCount--
+        }
+        let currentI = this.list.findIndex(i => i.id === id)
+        if (currentI > -1) {
+          this.list[currentI].isThanked = type === 'add'
+          if (type === 'add') {
+            this.list[currentI].thankCount++
+          } else {
+            this.list[currentI].thankCount++
+          }
+        }
+      })
       eventBus.on(CMD.REMOVE, (val) => {
         // console.log('remove', val)
         let removeIndex = this.current.replies.findIndex(i => i.floor === val)
@@ -286,7 +320,7 @@ export default {
           this.current.once = r
         })
         // let that = this
-        // let url = window.url + '/t/' + this.current.id
+        // let url = window.win().url + '/t/' + this.current.id
         // $.get(url + '?p=1').then(res => {
         //   let hasPermission = res.search('你要查看的页面需要先登录')
         //   if (hasPermission > -1) {
@@ -325,15 +359,15 @@ export default {
       }
       this.readList.add(post.id)
       this.current = Object.assign(
-          this.clone(initPost),
+          window.win().clone(window.win().initPost),
           // {RightbarHTML: this.current.RightbarHTML},
-          this.clone(post))
+          window.win().clone(post))
       this.show = true
       this.loading = true
       // window.win().history.pushState({}, 0, '/t/' + post.id);
-      window.doc.body.style.overflow = 'hidden'
+      window.win().doc.body.style.overflow = 'hidden'
 
-      let url = window.url + '/t/' + post.id
+      let url = window.win().url + '/t/' + post.id
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
       let apiRes = await window.win().fetch(url + '?p=1')
@@ -355,9 +389,6 @@ export default {
       this.current = await window.parse.parsePost(this.current, body, htmlText)
       this.loading = false
       console.log('当前帖子', this.current)
-    },
-    clone(val) {
-      return JSON.parse(JSON.stringify(val))
     },
   },
 }

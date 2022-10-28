@@ -25,7 +25,6 @@
           </div>
           <Comment v-for="(item,index) in modelValue.children"
                    v-model="modelValue.children[index]"
-                   @remove="remove(index)"
                    :key="index"/>
         </div>
       </div>
@@ -67,7 +66,7 @@ export default {
   mounted() {
     let rect = this.$refs.comment.getBoundingClientRect()
     let ban = this.postDetailWidth / 2
-    if (ban < rect.width && rect.width < ban + 25) {
+    if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
       this.expand = false
       // console.log(rect.width - this.postDetailWidth)
       let padding = 2
@@ -76,20 +75,12 @@ export default {
         width: `calc(${this.postDetailWidth}px - ${padding}rem)`,
         transform: `translateX(calc(${rect.width - this.postDetailWidth}px + ${padding}rem))`
       }
-      console.log(this.cssStyle)
+      // console.log(this.cssStyle)
     }
   },
   methods: {
-    addThank() {
-      this.modelValue.isThanked = true
-      this.modelValue.thankCount++
-    },
-    recallThank() {
-      this.modelValue.isThanked = false
-      this.modelValue.thankCount--
-    },
     hide() {
-      let url = `${window.url}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
+      let url = `${window.win().url}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       eventBus.emit(CMD.REMOVE, this.modelValue.floor)
       $.post(url).then(res => {
         eventBus.emit(CMD.REFRESH_ONCE)
@@ -161,10 +152,7 @@ export default {
         .text {
           color: black;
           word-break: break-word;
-          margin-bottom: 1rem;
         }
-
-
       }
     }
   }

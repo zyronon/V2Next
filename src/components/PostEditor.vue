@@ -105,15 +105,17 @@ async function submit() {
   // emits('close')
   // return console.log('item', item)
 
-  let url = `${window.url}/t/${post.value.id}`
+  let url = `${window.win().url}/t/${post.value.id}`
   $.post(url, {content: content.value, once: post.value.once}).then(
       res => {
         // console.log('回复', res)
         loading.value = false
         let r = res.search('你上一条回复的内容和这条相同')
-        console.log('r', r)
-        if (r > -1) {
-          return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
+        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
+
+        let r2 = res.search('创建新回复')
+        if (r2 > -1) {
+          return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
         }
         content.value = replyInfo
         emits('close')

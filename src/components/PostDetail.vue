@@ -211,9 +211,9 @@ export default {
     modelValue(newVal) {
       if (!newVal) {
         this.$refs.detail.scrollTo({top: 0})
-        window.doc.body.style.overflow = 'unset'
+        window.win().doc.body.style.overflow = 'unset'
         this.isSticky = false
-        if (window.pageType === 'home') {
+        if (window.win().pageType === 'home') {
           // window.history.back();
         }
       }
@@ -227,7 +227,7 @@ export default {
     observer.observe(this.$refs.replyBox);
 
     window.win().addEventListener('keydown', this.onKeyDown)
-    // let Rightbar = window.doc.querySelector('#Rightbar')
+    // let Rightbar = window.win().doc.querySelector('#Rightbar')
     // if (Rightbar) {
     //   this.$refs.right.append(Rightbar.cloneNode(true))
     // }
@@ -297,12 +297,10 @@ export default {
       this.showSortOption = false
     },
     addThank() {
-      this.post.isThanked = true
-      this.post.thankCount++
+      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'add'})
     },
     recallThank() {
-      this.post.isThanked = false
-      this.post.thankCount--
+      eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
     },
     scrollTop() {
       this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})

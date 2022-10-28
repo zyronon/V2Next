@@ -54,7 +54,7 @@ onMounted(() => {
     }
   }, {capture: true})
   const fn = () => (show.value && (show.value = false))
-  $('.post-detail', window.doc).on('scroll', fn)
+  $('.post-detail', window.win().doc).on('scroll', fn)
 })
 
 function copy() {
