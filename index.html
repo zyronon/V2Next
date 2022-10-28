@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -165,14 +165,14 @@
             promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
           })
           Promise.allSettled(promiseList).then(
-            (results) => {
-              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replies = this.getAllReply(repliesMap)
-              post.replies = replies
-              post.replyCount = replies.length
-              post.nestedReplies = this.getNestedList(replies)
-              resolve(post)
-            }
+              (results) => {
+                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+                let replies = this.getAllReply(repliesMap)
+                post.replies = replies
+                post.replyCount = replies.length
+                post.nestedReplies = this.getNestedList(replies)
+                resolve(post)
+              }
           );
         })
       }
@@ -392,6 +392,48 @@
       }
       return item
     },
+    parsePostList(htmlText) {
+      let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let body = $(bodyText[0])
+      let box = body.find('#Wrapper #Main .box:first',)
+      let list = []
+      let apiList = []
+      let listItemNode = window.win().doc.querySelectorAll('.item',)
+      // listItemNode = Array.from(listItemNode)
+      // listItemNode.slice(1, 5).forEach(itemNode => {
+      listItemNode.forEach((itemNode, index) => {
+        let item = window.win().clone(window.win().initPost)
+        let bg = itemNode.style['background-image']
+        item.bg = bg
+        let item_title = itemNode.querySelector('.item_title a')
+        let href = item_title.href
+        item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+        item.title = item_title.innerText
+
+        let topic_info = itemNode.querySelector('.topic_info')
+        let userNode = topic_info.querySelector('strong a')
+        item.username = userNode.innerText
+        let timeNode = itemNode.querySelector('.topic_info span')
+        item.date = timeNode.innerText
+        let tagNode = topic_info.querySelector('.node')
+        item.node = tagNode.innerText
+        let countNode = itemNode.querySelector('.count_livid')
+        item.replyCount = countNode ? countNode.innerText : 0
+
+        let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+        // console.log(url)
+        apiList.push($.get(url))
+        list.push(item)
+
+        itemNode.remove()
+      })
+      window.win().postList = list
+
+      Promise.allSettled(apiList).then(async (results) => {
+        let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+        await cbChecker({type: 'list', value: res})
+      });
+    }
   }
   if (window.top[0]) {
     window.win = () => window.top
@@ -442,9 +484,7 @@
         if (pr) window.win().pageData.pageNo = Number(pr[1])
       }
     }
-  }
-  if (location2.pathname) {
-    let r = location2.pathname.includes('/recent')
+    r = location2.pathname.includes('/recent')
     if (r) window.win().pageType = 'recent'
   }
   if (location2.search) {
@@ -462,14 +502,14 @@
 
   // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
 
-  async function cbChecker(val, count = 0) {
-    async function sleep(time) {
-      return new Promise(resolve => {
-        // console.log('等待vue加载完成,第' + count + '次', Date.now())
-        setTimeout(resolve, time)
-      })
-    }
+  async function sleep(time) {
+    return new Promise(resolve => {
+      // console.log('等待vue加载完成,第' + count + '次', Date.now())
+      setTimeout(resolve, time)
+    })
+  }
 
+  async function cbChecker(val, count = 0) {
     if (window.win().cb) {
       window.win().cb(val)
     } else {
@@ -481,14 +521,15 @@
     }
   }
 
-  console.log('postList', window.win().postList)
-  console.log('init', window.win().init)
+  // console.log('postList', window.win().postList)
+  // console.log('init', window.win().init)
 
   //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
   if (window.win().isFrame) {
     if (!window.win().init) {
       window.win().init = true
       window.win().cb = null
+      window.win().vueCb = null
       window.win().postList = []
 
       let $section = document.createElement('section')
@@ -496,59 +537,65 @@
 
       let box = $('#Wrapper #Main .box:first', window.win().doc)
       let wrapper
+
+      const parseList = () => {
+        box.css({'box-shadow': 'unset'})
+        wrapper = box.find('.item:first')
+        wrapper.after($section)
+
+        let list = []
+        let apiList = []
+        let listItemNode = window.win().doc.querySelectorAll('.item',)
+        // listItemNode = Array.from(listItemNode)
+        // listItemNode.slice(1, 5).forEach(itemNode => {
+        listItemNode.forEach((itemNode, index) => {
+          let item = window.win().clone(window.win().initPost)
+          let bg = itemNode.style['background-image']
+          item.bg = bg
+          let item_title = itemNode.querySelector('.item_title a')
+          let href = item_title.href
+          item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+          item.title = item_title.innerText
+
+          let topic_info = itemNode.querySelector('.topic_info')
+          let userNode = topic_info.querySelector('strong a')
+          item.username = userNode.innerText
+          let timeNode = itemNode.querySelector('.topic_info span')
+          item.date = timeNode.innerText
+          let tagNode = topic_info.querySelector('.node')
+          item.node = tagNode.innerText
+          let countNode = itemNode.querySelector('.count_livid')
+          item.replyCount = countNode ? countNode.innerText : 0
+
+          let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+          // console.log(url)
+          apiList.push($.get(url))
+          list.push(item)
+
+          itemNode.remove()
+        })
+        window.win().postList = list
+
+        Promise.allSettled(apiList).then(async (results) => {
+          let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+          await cbChecker({type: 'list', value: res})
+        });
+      }
       switch (window.win().pageType) {
         case 'recent':
+          parseList()
+          break
         case 'home':
           // box.css({background: 'transparent', 'box-shadow': 'unset'})
-          box.css({'box-shadow': 'unset'})
-          wrapper = box.find('.item:first')
-          wrapper.after($section)
-
-          let list = []
-          let apiList = []
-          let listItemNode = window.win().doc.querySelectorAll('.item',)
-          // listItemNode = Array.from(listItemNode)
-          // listItemNode.slice(1, 5).forEach(itemNode => {
-          listItemNode.forEach(itemNode => {
-            let item = window.win().clone(window.win().initPost)
-            let bg = itemNode.style['background-image']
-            item.bg = bg
-            let item_title = itemNode.querySelector('.item_title a')
-            let href = item_title.href
-            item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-            item.title = item_title.innerText
-
-            let topic_info = itemNode.querySelector('.topic_info')
-            let userNode = topic_info.querySelector('strong a')
-            item.username = userNode.innerText
-            let timeNode = itemNode.querySelector('.topic_info span')
-            item.date = timeNode.innerText
-            let tagNode = topic_info.querySelector('.node')
-            item.node = tagNode.innerText
-            let countNode = itemNode.querySelector('.count_livid')
-            item.replyCount = countNode ? countNode.innerText : 0
-            itemNode.remove()
-
-            let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-            // console.log(url)
-            apiList.push($.get(url))
-            list.push(item)
-          })
-          window.win().postList = list
-
-          Promise.allSettled(apiList).then(async (results) => {
-              let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-              await cbChecker({type: 'list', value: res})
-            }
-          );
+          parseList()
           break
         case 'post':
           box.after($section)
 
           window.parse.parsePostContent(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML
+              {id: window.win().pageData.id},
+              $(window.win().doc.body),
+              window.win().doc.documentElement.outerHTML
           ).then(async res => {
             // console.log('详情页-基本信息解析完成', new Date())
             window.win().pageData.post = res
@@ -556,10 +603,10 @@
           })
 
           window.parse.parsePostReplies(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML,
-            window.win().pageData.pageNo
+              {id: window.win().pageData.id},
+              $(window.win().doc.body),
+              window.win().doc.documentElement.outerHTML,
+              window.win().pageData.pageNo
           ).then(async res => {
             // console.log('详情页-回复解析完成', new Date())
             window.win().pageData.post = Object.assign(window.win().pageData.post, res)
