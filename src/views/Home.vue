@@ -2,7 +2,7 @@
   <div class="app-home" :class="[viewType,pageType]">
     <template v-if="pageType === 'home' || pageType === 'recent'">
       <div class="nav" :class="viewType">
-        <div class="nav-item" :class="{active:viewType === 'table'}" @click="viewType = 'table'">
+        <div class="nav-item" :class="{active:viewType === 'table'}" @click="saveConfig(viewType = 'table')">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
                   stroke-linejoin="round"/>
@@ -13,7 +13,7 @@
           </svg>
           <span>表格</span>
         </div>
-        <div class="nav-item" :class="{active:viewType === 'card'}" @click="viewType = 'card'">
+        <div class="nav-item" :class="{active:viewType === 'card'}" @click="saveConfig(viewType = 'card')">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
                   stroke-width="4"
@@ -47,7 +47,7 @@
       <div class="my-box flex f14" style="margin: 1rem 0 0 0;padding: 1rem;">
         <div class="flex">
           自动加载详情页 ：
-          <div class="switch" :class="{active:autoOpenDetail}" @click="autoOpenDetail = !autoOpenDetail"/>
+          <div class="switch" :class="{active:autoOpenDetail}" @click="saveConfig(autoOpenDetail = !autoOpenDetail)"/>
         </div>
         <div class="button" @click="openPostDetail" :class="{loading}">
           点击显示详情页
@@ -72,23 +72,6 @@ import Base64Tooltip from "@/components/Base64Tooltip";
 import {CMD} from "@/utils/type";
 import {computed} from "vue";
 
-const initPost = {
-  replies: [],
-  nestedReplies: [],
-  username: '',
-  title: '',
-  id: '',
-  once: '',
-  replyCount: 0,
-  clickCount: 0,
-  thankCount: 0,
-  collectCount: 0,
-  isFavorite: false,
-  isIgnore: false,
-  isThanked: false,
-  isReport: false,
-  RightbarHTML: '',
-}
 export default {
   name: 'home',
   provide() {
@@ -118,7 +101,7 @@ export default {
       show: false,
       autoOpenDetail: false,
       // show: true,
-      current: initPost,
+      current: window.win().initPost,
       list: [],
       list2: [],
       readList: new Set(),
@@ -172,8 +155,8 @@ export default {
         })
       }
       if (type === 'postContent') {
-        this.readList.add(value.id)
-        this.current = Object.assign(this.clone(initPost), this.clone(value))
+        this.saveConfig(this.readList.add(value.id))
+        this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
       }
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, this.clone(value))
@@ -186,7 +169,7 @@ export default {
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
       if (window.win().pageData?.post) {
         window.win().doc.body.style.overflow = 'hidden'
-        this.current = Object.assign(this.clone(initPost), this.clone(window.win().pageData.post))
+        this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
         this.loading = false
       }
       if (window.win().isFrame) {
@@ -203,21 +186,13 @@ export default {
         this.readList = new Set(config.readList);
         this.viewType = config.viewType
         this.autoOpenDetail = config.autoOpenDetail || false
-        if (this.autoOpenDetail) {
+        if (this.autoOpenDetail && this.pageType === 'post') {
           this.show = true
           window.win().doc.body.style.overflow = 'hidden'
         }
       }
     }
-    window.win().onbeforeunload = () => {
-      let config = {
-        username: window.win().user.username ?? '',
-        viewType: this.viewType,
-        readList: Array.from(this.readList),
-        autoOpenDetail: this.autoOpenDetail
-      }
-      window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
-    };
+    window.win().onbeforeunload = this.saveConfig
 
     if (window.win().isFrame) {
       this.list = window.win().postList
@@ -237,6 +212,15 @@ export default {
     eventBus.clear()
   },
   methods: {
+    saveConfig() {
+      let config = {
+        username: window.win().user.username ?? '',
+        viewType: this.viewType,
+        readList: Array.from(this.readList),
+        autoOpenDetail: this.autoOpenDetail
+      }
+      window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
+    },
     clone(val) {
       return window.win().clone(val)
     },
@@ -294,7 +278,7 @@ export default {
         if (rIndex > -1) {
           this.list.splice(rIndex, 1)
         }
-        this.current = this.clone(initPost)
+        this.current = this.clone(window.win().initPost)
       })
       eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
@@ -368,7 +352,7 @@ export default {
           }
         }
       }
-      this.readList.add(post.id)
+      this.saveConfig(this.readList.add(post.id))
       this.current = Object.assign(
           window.win().clone(window.win().initPost),
           // {RightbarHTML: this.current.RightbarHTML},
@@ -408,15 +392,14 @@ export default {
 @import "@/assets/less/variable";
 
 .app-home {
-  &.home {
+  &.home,&.recent {
     background: rgb(226, 226, 226);
   }
 
   &.card {
-    padding-top: 1rem;
+    padding: 1rem 0;
   }
 }
-
 
 .nav {
   font-size: 1.4rem;

@@ -11,6 +11,20 @@
 <body>
 <div id="app"></div>
 <script>
+  // ==UserScript==
+  // @name         New Userscript
+  // @namespace    http://tampermonkey.net/
+  // @version      0.1
+  // @description  try to take over the world!
+  // @author       You
+  // @match        https://*.v2ex.com/
+  // @match        https://*.v2ex.com/?tab=*
+  // @match        https://*.v2ex.com/t/*
+  // @match        https://*.v2ex.com/recent
+  // @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
+  // @grant        none
+  // ==/UserScript==
+
   window.parse = {
     async parsePostContent(post = {}, body, htmlText) {
       //如果没有正文（点的本站的a标签），才会解析正文
@@ -276,8 +290,8 @@
     getNestedList(allList = []) {
       if (!allList.length) return []
       if ((Date.now() - window.win().lastCallDate) < 1000) {
-        console.log('知时间内，重复调用')
-        return null
+        console.log('短时间内，重复调用')
+        // return null
       }
       window.win().lastCallDate = Date.now()
       // console.log('cal-getNestedList', Date.now())
