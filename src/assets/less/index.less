@@ -270,3 +270,62 @@ a {
     align-items: center;
   }
 }
+
+.line {
+  border-bottom: 1px solid @border;
+}
+
+.my-box {
+  box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+  border-radius: @border-radius;
+  background: white;
+  margin-bottom: 2rem;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.my-cell {
+  padding: 1rem;
+  font-size: 1.4rem;
+  line-height: 150%;
+  text-align: left;
+  border-bottom: 1px solid @border;
+}
+
+.f14 {
+  font-size: 1.4rem;
+}
+
+.switch {
+  width: 4.5rem;
+  height: 2.2rem;
+  border-radius: 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: @date-color;
+  transition: all .3s;
+
+  &.active {
+    background: @blue-color;
+
+    &::before {
+      right: .2rem;
+      //left: unset;
+    }
+  }
+
+  &::before {
+    position: absolute;
+    content: ' ';
+    transition: all .3s;
+    @w: 1.8rem;
+    right: calc(100% - @w - .2rem);
+    //left: .2rem;
+    width: @w;
+    height: @w;
+    border-radius: 50%;
+    background: white;
+  }
+}

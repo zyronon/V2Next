@@ -394,6 +394,57 @@
     window.win().isFrame = false
   }
 
+  window.win().initPost = {
+    replies: [],
+    nestedReplies: [],
+    username: '',
+    title: '',
+    id: '',
+    once: '',
+    replyCount: 0,
+    clickCount: 0,
+    thankCount: 0,
+    collectCount: 0,
+    isFavorite: false,
+    isIgnore: false,
+    isThanked: false,
+    isReport: false,
+    RightbarHTML: '',
+  }
+  window.win().doc = window.win().document
+  window.win().clone = (val) => JSON.parse(JSON.stringify(val))
+  window.win().user = {}
+  window.win().pageType = 'home'
+  window.win().pageData = {pageNo: 1}
+
+  let location2 = window.win().location
+  if (location2.pathname) {
+    let r = location2.pathname.match(/t\/([\d]+)/)
+    if (r) {
+      window.win().pageType = 'post'
+      window.win().pageData.id = r[1]
+      if (location2.search) {
+        let pr = location2.search.match(/\?p=([\d]+)/)
+        if (pr) window.win().pageData.pageNo = Number(pr[1])
+      }
+    }
+  }
+  if (location2.pathname) {
+    let r = location2.pathname.includes('/recent')
+    if (r) window.win().pageType = 'recent'
+  }
+  if (location2.search) {
+    let r = location2.pathname.includes('?tab=')
+    if (r) window.win().pageType = 'home'
+  }
+
+  let top2 = $('.tools .top:eq(1)', window.win().doc).text()
+  if (top2 !== '注册') {
+    window.win().user = {
+      username: top2,
+      avatar: $('#Rightbar .box:eq(0) .avatar', window.win().doc).attr('src')
+    }
+  }
 
   // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
 
@@ -423,66 +474,20 @@
   if (window.win().isFrame) {
     if (!window.win().init) {
       window.win().init = true
-      window.win().doc = window.win().document
-      window.win().clone = (val) => JSON.parse(JSON.stringify(val))
-      window.win().user = {}
       window.win().cb = null
       window.win().postList = []
-      window.win().initPost = {
-        replies: [],
-        nestedReplies: [],
-        username: '',
-        title: '',
-        id: '',
-        once: '',
-        replyCount: 0,
-        clickCount: 0,
-        thankCount: 0,
-        collectCount: 0,
-        isFavorite: false,
-        isIgnore: false,
-        isThanked: false,
-        isReport: false,
-        RightbarHTML: '',
-      }
-
-      let top2 = $('.tools .top:eq(1)', window.win().doc).text()
-      if (top2 !== '注册') {
-        window.win().user = {
-          username: top2,
-          avatar: $('#Rightbar .box:eq(0) .avatar', window.win().doc).attr('src')
-        }
-      }
-
-      let location2 = window.win().location
-      window.win().pageType = 'home'
-      window.win().pageData = {pageNo: 1}
-      if (location2.pathname) {
-        let r = location2.pathname.match(/t\/([\d]+)/)
-        if (r) {
-          window.win().pageType = 'post'
-          window.win().pageData.id = r[1]
-          if (location2.search) {
-            let pr = location2.search.match(/\?p=([\d]+)/)
-            if (pr) window.win().pageData.pageNo = Number(pr[1])
-          }
-        }
-      }
-      if (location2.search) {
-        let r = location2.pathname.includes('?tab=')
-        if (r) window.win().pageType = 'home'
-      }
 
       let $section = document.createElement('section')
       $section.id = 'app'
 
       let box = $('#Wrapper #Main .box:first', window.win().doc)
-
+      let wrapper
       switch (window.win().pageType) {
+        case 'recent':
         case 'home':
-
-          box.css({background: 'transparent', 'box-shadow': 'unset'})
-          let wrapper = box.find('.item:first')
+          // box.css({background: 'transparent', 'box-shadow': 'unset'})
+          box.css({'box-shadow': 'unset'})
+          wrapper = box.find('.item:first')
           wrapper.after($section)
 
           let list = []
@@ -532,8 +537,8 @@
             window.win().doc.documentElement.outerHTML
           ).then(async res => {
             // console.log('详情页-基本信息解析完成', new Date())
-            await cbChecker({type: 'postContent', value: res}, 0)
             window.win().pageData.post = res
+            await cbChecker({type: 'postContent', value: res}, 0)
           })
 
           window.parse.parsePostReplies(
@@ -543,8 +548,8 @@
             window.win().pageData.pageNo
           ).then(async res => {
             // console.log('详情页-回复解析完成', new Date())
-            await cbChecker({type: 'postReplies', value: res}, 0)
             window.win().pageData.post = Object.assign(window.win().pageData.post, res)
+            await cbChecker({type: 'postReplies', value: res}, 0)
           })
           break
       }
