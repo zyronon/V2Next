@@ -14,7 +14,7 @@
         由于嵌套回复层级太深，自动将以下回复移至可见范围
       </div>
       <div class="comment-content">
-        <div class="left line" @click="toggle"></div>
+        <div class="left expand-line" @click="toggle"></div>
         <div class="right">
           <div class="w">
             <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
@@ -118,7 +118,7 @@ export default {
     display: flex;
     position: relative;
 
-    .line {
+    .expand-line {
       cursor: pointer;
       //border-right: 2px solid #ddd;
       width: 2.6rem;

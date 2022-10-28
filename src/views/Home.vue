@@ -1,56 +1,65 @@
 <template>
-  <template v-if="pageType === 'home'">
-    <div class="nav" :class="viewType">
-      <div class="nav-item" :class="{active:viewType === 'table'}" @click="viewType = 'table'">
-        <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4" stroke-linejoin="round"/>
-          <path d="M42 20H6V28H42V20Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
-                stroke-linejoin="round"/>
-          <path d="M42 35H6V43H42V35Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
-                stroke-linejoin="round"/>
-        </svg>
-        <span>表格</span>
+  <div class="app-home" :class="[viewType,pageType]">
+    <template v-if="pageType === 'home' || pageType === 'recent'">
+      <div class="nav" :class="viewType">
+        <div class="nav-item" :class="{active:viewType === 'table'}" @click="viewType = 'table'">
+          <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
+                  stroke-linejoin="round"/>
+            <path d="M42 20H6V28H42V20Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
+                  stroke-linejoin="round"/>
+            <path d="M42 35H6V43H42V35Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
+                  stroke-linejoin="round"/>
+          </svg>
+          <span>表格</span>
+        </div>
+        <div class="nav-item" :class="{active:viewType === 'card'}" @click="viewType = 'card'">
+          <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
+                  stroke-width="4"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 8C6 6.89543 6.89543 6 8 6H40C41.1046 6 42 6.89543 42 8V18H6V8Z" fill="none"
+                  :stroke="svgColor('card')"
+                  stroke-width="4" stroke-linejoin="round"/>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z"
+                  :fill="svgColor('card')"/>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z"
+                  :fill="svgColor('card')"/>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M24 14C25.1046 14 26 13.1046 26 12C26 10.8954 25.1046 10 24 10C22.8954 10 22 10.8954 22 12C22 13.1046 22.8954 14 24 14Z"
+                  :fill="svgColor('card')"/>
+          </svg>
+          <span>卡片</span>
+        </div>
       </div>
-      <div class="nav-item" :class="{active:viewType === 'card'}" @click="viewType = 'card'">
-        <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
-                stroke-width="4"
-                stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6 8C6 6.89543 6.89543 6 8 6H40C41.1046 6 42 6.89543 42 8V18H6V8Z" fill="none"
-                :stroke="svgColor('card')"
-                stroke-width="4" stroke-linejoin="round"/>
-          <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z"
-                :fill="svgColor('card')"/>
-          <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z"
-                :fill="svgColor('card')"/>
-          <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M24 14C25.1046 14 26 13.1046 26 12C26 10.8954 25.1046 10 24 10C22.8954 10 22 10.8954 22 12C22 13.1046 22.8954 14 24 14Z"
-                :fill="svgColor('card')"/>
-        </svg>
-        <span>卡片</span>
+      <div class="posts">
+        <Post
+            v-for="item in list"
+            :viewType="viewType"
+            :post="item"
+            :class="{visited:readList.has(item.id)}"
+            @show="getPostDetail(item,$event)"/>
       </div>
+    </template>
+    <template v-if="pageType === 'post'">
+      <div class="my-box flex f14" style="margin: 1rem 0 0 0;padding: 1rem;">
+        <div class="flex">
+          自动加载详情页 ：
+          <div class="switch" :class="{active:autoOpenDetail}" @click="autoOpenDetail = !autoOpenDetail"/>
+        </div>
+        <div class="button" @click="openPostDetail" :class="{loading}">
+          点击显示详情页
+        </div>
+      </div>
+    </template>
+    <PostDetail v-model="show" :loading="loading"/>
+    <div class="msgs">
+      <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
     </div>
-    <div class="posts">
-      <Post
-          v-for="item in list"
-          :viewType="viewType"
-          :post="item"
-          :class="{visited:readList.has(item.id)}"
-          @show="showPostDetail(item,$event)"/>
-    </div>
-  </template>
-  <template v-if="pageType === 'post'">
-    <div class="nav">
-      <div @click="show = !show" class="nav-item">展示</div>
-    </div>
-  </template>
-  <PostDetail v-model="show" :loading="loading"/>
-  <div class="msgs">
-    <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
+    <Base64Tooltip/>
   </div>
-  <Base64Tooltip/>
 </template>
 
 <script>
@@ -106,7 +115,8 @@ export default {
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
-      show: window.win().pageType === 'post',
+      show: false,
+      autoOpenDetail: false,
       // show: true,
       current: initPost,
       list: [],
@@ -162,7 +172,6 @@ export default {
         })
       }
       if (type === 'postContent') {
-        window.win().doc.body.style.overflow = 'hidden'
         this.readList.add(value.id)
         this.current = Object.assign(this.clone(initPost), this.clone(value))
       }
@@ -175,7 +184,7 @@ export default {
     if (window.win().vue) {
       console.log('vue', window.win().postList)
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-      if (window.win().pageData.post) {
+      if (window.win().pageData?.post) {
         window.win().doc.body.style.overflow = 'hidden'
         this.current = Object.assign(this.clone(initPost), this.clone(window.win().pageData.post))
         this.loading = false
@@ -193,18 +202,23 @@ export default {
       if (config.username === window.win().user.username) {
         this.readList = new Set(config.readList);
         this.viewType = config.viewType
+        this.autoOpenDetail = config.autoOpenDetail || false
+        if (this.autoOpenDetail) {
+          this.show = true
+          window.win().doc.body.style.overflow = 'hidden'
+        }
       }
     }
     window.win().onbeforeunload = () => {
-      console.log('onbeforeunload')
-      // window.win().cb = null
       let config = {
         username: window.win().user.username ?? '',
         viewType: this.viewType,
-        readList: Array.from(this.readList)
+        readList: Array.from(this.readList),
+        autoOpenDetail: this.autoOpenDetail
       }
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     };
+
     if (window.win().isFrame) {
       this.list = window.win().postList
       // setTimeout(() => {
@@ -216,13 +230,6 @@ export default {
       this.list = data
     }
 
-    // this.getReplyInfo()
-    if (window.win().pageType === 'post') {
-      if (window.win().isFrame) {
-      } else {
-        this.showPostDetail({id: window.win().pageData.id}, null)
-      }
-    }
     this.initEvent()
   },
   beforeUnmount() {
@@ -344,7 +351,11 @@ export default {
         this.msgList.splice(rIndex, 1)
       }
     },
-    async showPostDetail(post, event) {
+    openPostDetail() {
+      this.show = true
+      window.win().doc.body.style.overflow = 'hidden'
+    },
+    async getPostDetail(post, event) {
       if (event) {
         let target = event.target || event.srcElement;
         //如果是站内帖子，那么直接打开
@@ -396,6 +407,17 @@ export default {
 <style lang="less">
 @import "@/assets/less/variable";
 
+.app-home {
+  &.home {
+    background: rgb(226, 226, 226);
+  }
+
+  &.card {
+    padding-top: 1rem;
+  }
+}
+
+
 .nav {
   font-size: 1.4rem;
   background: white;
@@ -406,7 +428,6 @@ export default {
   align-items: center;
 
   &.card {
-    margin-top: 1rem;
     border: 1px solid @border;
     border-radius: @border-radius;
   }

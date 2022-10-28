@@ -331,26 +331,6 @@ export default {
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
 
-.line {
-  border-bottom: 1px solid @border;
-}
-
-.my-box {
-  box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
-  border-radius: @border-radius;
-  background: white;
-  margin-bottom: 2rem;
-  width: 100%;
-}
-
-.my-cell {
-  padding: 1rem;
-  font-size: 1.4rem;
-  line-height: 150%;
-  text-align: left;
-  border-bottom: 1px solid @border;
-}
-
 .post-detail {
   text-align: start;
   position: fixed;
