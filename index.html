@@ -392,42 +392,46 @@
       }
       return item
     },
-    parsePostList(htmlText) {
-      let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-      let body = $(bodyText[0])
-      let box = body.find('#Wrapper #Main .box:first',)
-      let list = []
+    parsePostList(body, htmlText) {
+      if (!body) {
+        let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+        body = $(bodyText[0])
+      }
+
+      let postList = []
       let apiList = []
-      let listItemNode = window.win().doc.querySelectorAll('.item',)
+      let listItemNode = body.find('.item')
+      console.log(listItemNode)
       // listItemNode = Array.from(listItemNode)
       // listItemNode.slice(1, 5).forEach(itemNode => {
-      listItemNode.forEach((itemNode, index) => {
+      listItemNode.each(function (itemNode, index) {
         let item = window.win().clone(window.win().initPost)
-        let bg = itemNode.style['background-image']
+        let bg = this.style['background-image']
         item.bg = bg
-        let item_title = itemNode.querySelector('.item_title a')
+        let item_title = this.querySelector('.item_title a')
         let href = item_title.href
         item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
         item.title = item_title.innerText
 
-        let topic_info = itemNode.querySelector('.topic_info')
+        let topic_info = this.querySelector('.topic_info')
         let userNode = topic_info.querySelector('strong a')
         item.username = userNode.innerText
-        let timeNode = itemNode.querySelector('.topic_info span')
+        let timeNode = this.querySelector('.topic_info span')
         item.date = timeNode.innerText
         let tagNode = topic_info.querySelector('.node')
         item.node = tagNode.innerText
-        let countNode = itemNode.querySelector('.count_livid')
+        let countNode = this.querySelector('.count_livid')
         item.replyCount = countNode ? countNode.innerText : 0
 
         let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
         // console.log(url)
         apiList.push($.get(url))
-        list.push(item)
+        postList.push(item)
 
-        itemNode.remove()
+        this.remove()
       })
-      window.win().postList = list
+      window.win().postList = postList
+      return {postList, apiList}
 
       Promise.allSettled(apiList).then(async (results) => {
         let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])

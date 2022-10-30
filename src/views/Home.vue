@@ -207,7 +207,7 @@ export default {
             console.log('加载更多')
             let href = window.win().location.href
             let r = href.match(/p=([\d]+)/)
-            console.log('r', r)
+            // console.log('r', r)
             let url = window.win().url + `/recent?p=2`
             if (r) {
               url = window.win().url + `/recent?p=${Number(r[1]) + 1}`
@@ -215,7 +215,10 @@ export default {
             console.log('url',url)
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
-            console.log(htmlText)
+            let res = window.parse.parsePostList(null,htmlText)
+            console.log('res',res)
+
+            // console.log(htmlText)
 
             window.win().history.pushState({}, 0, url);
           }
