@@ -1,7 +1,7 @@
 <template>
-  <div class="Author">
+  <div class="Author" :class="{expand:!modelValue}">
     <div class="Author-left">
-      <svg class="expand"
+      <svg class="expand-icon"
            v-if="!modelValue"
            @click="$emit('update:modelValue',true)"
            width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -109,6 +109,10 @@ export default {
   position: relative;
   margin-bottom: .4rem;
 
+  &.expand {
+    margin-bottom: 0;
+  }
+
   .Author-left {
     display: flex;
     align-items: center;
@@ -117,7 +121,7 @@ export default {
       font-size: 1.4rem;
     }
 
-    .expand {
+    .expand-icon {
       cursor: pointer;
       margin-right: .8rem;
       width: 2rem;
