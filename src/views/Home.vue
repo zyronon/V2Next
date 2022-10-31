@@ -1,7 +1,7 @@
 <template>
   <div class="app-home" :class="[viewType,pageType]">
     <template v-if="pageType === 'home' || pageType === 'recent'">
-      <div class="nav" :class="viewType">
+      <div class="nav flex flex-end" :class="viewType">
         <div class="nav-item" :class="{active:viewType === 'table'}" @click="saveConfig(viewType = 'table')">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
@@ -35,12 +35,18 @@
         </div>
       </div>
       <div class="posts">
-        <Post
-            v-for="item in list"
-            :viewType="viewType"
-            :post="item"
-            :class="{visited:readList.has(item.id)}"
-            @show="getPostDetail(item,$event)"/>
+        <template v-for="item in list">
+          <div v-if="item.id === 'page'" class="nav p0 page" :class="viewType">
+            <div class="cell" v-html="item.innerHTML"></div>
+          </div>
+          <Post
+              v-else
+              :viewType="viewType"
+              :post="item"
+              :class="{visited:readList.has(item.id)}"
+              @show="getPostDetail(item,$event)"/>
+        </template>
+
       </div>
     </template>
     <template v-if="pageType === 'post'">
@@ -94,16 +100,15 @@ export default {
     return {
       viewType: 'card',
       loading: window.win().pageType === 'post',
+      loadMore: false,
       pageType: window.win().pageType,
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
       show: false,
       autoOpenDetail: false,
-      // show: true,
       current: window.win().initPost,
       list: [],
-      list2: [],
       readList: new Set(),
     }
   },
@@ -141,30 +146,7 @@ export default {
     console.log('create')
 
     let that = this
-    window.win().cb = ({type, value}) => {
-      console.log('回调的类型', type, value)
-      if (type === 'list') {
-        value.map(post => {
-          let rIndex = that.list.findIndex(v => v.id == post.id)
-          if (rIndex > -1) {
-            that.list[rIndex] = Object.assign(that.list[rIndex], {
-              content_rendered: post.content_rendered,
-              nodeUrl: post.node.url,
-              avatar: post.member.avatar_large,
-            })
-          }
-        })
-        window.win().vueCb && window.win().vueCb()
-      }
-      if (type === 'postContent') {
-        this.saveConfig(this.readList.add(value.id))
-        this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
-      }
-      if (type === 'postReplies') {
-        this.current = Object.assign(this.current, this.clone(value))
-        this.loading = false
-      }
-    }
+    window.win().cb = this.winCb
 
     if (window.win().vue) {
       // console.log('vue', window.win().postList)
@@ -199,31 +181,48 @@ export default {
     if (window.win().isFrame) {
       this.list = window.win().postList
 
-      if (this.pageType === 'recent') {
+      if (this.pageType === 'recent' || this.pageType === 'home') {
         let lastItem = window.win().appNode.nextElementSibling
         let ob = window.win().IntersectionObserver
         const observer = new ob(async (e) => {
           if (e[0].isIntersecting) {
+            if (this.loadMore) return
             console.log('加载更多')
-            let href = window.win().location.href
-            let r = href.match(/p=([\d]+)/)
-            // console.log('r', r)
-            let url = window.win().url + `/recent?p=2`
-            if (r) {
-              url = window.win().url + `/recent?p=${Number(r[1]) + 1}`
+            this.loadMore = true
+            let url
+            if (this.pageType === 'recent') {
+              let href = window.win().location.href
+              let r = href.match(/p=([\d]+)/)
+              url = window.win().url + `/recent?p=2`
+              if (r) {
+                url = window.win().url + `/recent?p=${Number(r[1]) + 1}`
+              }
             }
-            console.log('url',url)
+            if (this.pageType === 'home') {
+              url = window.win().url + `/recent?p=1`
+              this.pageType = 'recent'
+            }
+            console.log('url', url)
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
-            let res = window.parse.parsePostList(null,htmlText)
-            console.log('res',res)
-
+            let res = window.parse.parsePostListItem(null, htmlText)
+            lastItem.innerHTML = res.page.html()
+            this.list.push({id: 'page', innerHTML: lastItem.innerHTML})
+            //不同页数之单，会有重复的数据
+            res.postList.map(v => {
+              let rIndex = this.list.findIndex(i => i.id == v.id)
+              if (rIndex === -1) this.list.push(v)
+            })
+            this.loadMore = false
             // console.log(htmlText)
-
+            Promise.allSettled(res.apiList.map(v => $.get(v))).then(async (results) => {
+              let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+              this.winCb({type: 'list', value: res})
+            });
             window.win().history.pushState({}, 0, url);
           }
         })
-        observer.observe(lastItem)
+        // observer.observe(lastItem)
       }
       // setTimeout(() => {
       //   this.list.map(v => {
@@ -235,12 +234,37 @@ export default {
     }
 
     this.initEvent()
+
   },
   beforeUnmount() {
     console.log('unmounted')
     eventBus.clear()
   },
   methods: {
+    winCb({type, value}) {
+      console.log('回调的类型', type, value)
+      if (type === 'list') {
+        value.map(post => {
+          let rIndex = this.list.findIndex(v => v.id == post.id)
+          if (rIndex > -1) {
+            this.list[rIndex] = Object.assign(this.list[rIndex], {
+              content_rendered: post.content_rendered,
+              nodeUrl: post.node.url,
+              avatar: post.member.avatar_large,
+            })
+          }
+        })
+        window.win().vueCb && window.win().vueCb()
+      }
+      if (type === 'postContent') {
+        this.saveConfig(this.readList.add(value.id))
+        this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
+      }
+      if (type === 'postReplies') {
+        this.current = Object.assign(this.current, this.clone(value))
+        this.loading = false
+      }
+    },
     saveConfig() {
       let config = {
         username: window.win().user.username ?? '',
@@ -410,15 +434,16 @@ export default {
       let body = $(bodyText[0])
       // console.log(body)
 
-      this.current = await window.parse.parsePost(this.current, body, htmlText)
+      this.current = await window.parse.parsePostDetail(this.current, body, htmlText)
       this.loading = false
       console.log('当前帖子', this.current)
     },
   },
 }
 </script>
+
 <style lang="less">
-@import "@/assets/less/variable";
+@import "../assets/less/variable";
 
 .app-home {
   &.home, &.recent {
@@ -430,14 +455,17 @@ export default {
   }
 }
 
+.page {
+  &.card {
+    margin-top: 1rem;
+  }
+}
+
 .nav {
   font-size: 1.4rem;
   background: white;
   text-align: start;
   padding: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 
   &.card {
     border: 1px solid @border;

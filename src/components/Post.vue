@@ -33,6 +33,7 @@
 <script setup>
 import {computed, ref, watch} from "vue";
 
+const checkHeight = 200
 const props = defineProps(['post', 'viewType'])
 // const {post, viewType} = props
 const mask = ref(false)
@@ -57,14 +58,14 @@ watch([() => props.post, () => content.value, () => props.viewType], () => {
   content.value.querySelectorAll('img').forEach(item => {
     item.addEventListener('load', checkContentHeight)
   })
-  mask.value = rect.height >= 250
+  mask.value = rect.height >= checkHeight
 }, {immediate: true, flush: 'post'})
 
 function checkContentHeight() {
   if (mask.value) return
   let rect = content.value.getBoundingClientRect()
   // console.log('rect', rect.height)
-  mask.value = rect.height >= 250
+  mask.value = rect.height >= checkHeight
 }
 </script>
 
@@ -149,6 +150,7 @@ p {
         img {
           border-radius: .4rem;
           width: 4.8rem;
+          min-width: 4.8rem;
         }
       }
 
@@ -192,7 +194,7 @@ p {
   }
 
   .post-content-wrapper {
-    max-height: 25rem;
+    max-height: 20rem;
     overflow: hidden;
     margin-top: .6rem;
     color: black;
