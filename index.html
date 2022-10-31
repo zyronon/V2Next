@@ -402,6 +402,13 @@
         let page = body.find('.cell:last')
         return {...res, page}
       }
+      if (pageType === 'node') {
+        let topics = body.find('#TopicsNode')
+        let list = topics.children()
+        let res = window.parse.parsePostListItem(list)
+        let page = topics.next().html()
+        return {...res, page}
+      }
     },
     parsePostListItem(list) {
       let postList = []
@@ -421,7 +428,7 @@
         let timeNode = this.querySelector('.topic_info span')
         item.date = timeNode.innerText
         let tagNode = topic_info.querySelector('.node')
-        if (tagNode){
+        if (tagNode) {
           item.node = tagNode.innerText
         }
         let countNode = this.querySelector('.count_livid')
@@ -552,10 +559,14 @@
       let res
       switch (window.win().pageType) {
         case 'node':
-          list = $('#TopicsNode').children()
+          let topics = $('#TopicsNode')
+          topics.attr('id', 'app')
+          list = topics.children()
           res = window.parse.parsePostListItem(list)
-          console.log('res',res)
-
+          window.win().postList = res.postList
+          window.parse.fetchPostDetail(res.apiList).then(async r => {
+            await cbChecker({type: 'list', value: r})
+          })
           break
         case 'recent':
         case 'home':
