@@ -153,6 +153,11 @@ export default {
           color: black;
           word-break: break-word;
         }
+
+        .post-editor-wrapper{
+          margin-top: 1rem;
+        }
+
       }
     }
   }
