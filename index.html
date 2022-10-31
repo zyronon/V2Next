@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" href="/favicon.ico"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-  <title>Vite App</title>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+    <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -165,19 +165,19 @@
             promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
           })
           Promise.allSettled(promiseList).then(
-              (results) => {
-                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replies = this.getAllReply(repliesMap)
-                post.replies = replies
-                post.replyCount = replies.length
-                post.nestedReplies = this.getNestedList(replies)
-                resolve(post)
-              }
+            (results) => {
+              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+              let replies = this.getAllReply(repliesMap)
+              post.replies = replies
+              post.replyCount = replies.length
+              post.nestedReplies = this.getNestedList(replies)
+              resolve(post)
+            }
           );
         })
       }
     },
-    async parsePost(post = {}, body, htmlText, pageNo = 1) {
+    async parsePostDetail(post = {}, body, htmlText, pageNo = 1) {
       post = await this.parsePostContent(post, body, htmlText)
       return await this.parsePostReplies(post, body, htmlText, pageNo)
     },
@@ -392,19 +392,21 @@
       }
       return item
     },
-    parsePostList(body, htmlText) {
-      if (!body) {
-        let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        body = $(bodyText[0])
-      }
+    parsePage(html, pageType) {
+      let bodyText = html.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let body = $(bodyText[0])
 
+      if (pageType === 'recent') {
+        let list = body.find('.item')
+        let res = window.parse.parsePostListItem(list)
+        let page = body.find('.cell:last')
+        return {...res, page}
+      }
+    },
+    parsePostListItem(list) {
       let postList = []
       let apiList = []
-      let listItemNode = body.find('.item')
-      console.log(listItemNode)
-      // listItemNode = Array.from(listItemNode)
-      // listItemNode.slice(1, 5).forEach(itemNode => {
-      listItemNode.each(function (itemNode, index) {
+      list.each(function () {
         let item = window.win().clone(window.win().initPost)
         let bg = this.style['background-image']
         item.bg = bg
@@ -419,24 +421,29 @@
         let timeNode = this.querySelector('.topic_info span')
         item.date = timeNode.innerText
         let tagNode = topic_info.querySelector('.node')
-        item.node = tagNode.innerText
+        if (tagNode){
+          item.node = tagNode.innerText
+        }
         let countNode = this.querySelector('.count_livid')
         item.replyCount = countNode ? countNode.innerText : 0
 
         let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
         // console.log(url)
-        apiList.push($.get(url))
+        apiList.push(url)
         postList.push(item)
 
         this.remove()
       })
-      window.win().postList = postList
+      // let page = body.find('.cell:last')
       return {postList, apiList}
-
-      Promise.allSettled(apiList).then(async (results) => {
-        let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-        await cbChecker({type: 'list', value: res})
-      });
+    },
+    fetchPostDetail(list) {
+      return new Promise(resolve => {
+        Promise.allSettled(list.map(v => $.get(v))).then(async (results) => {
+          let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
+          resolve(res)
+        });
+      })
     }
   }
   if (window.top[0]) {
@@ -474,26 +481,26 @@
   window.win().doc = window.win().document
   window.win().clone = (val) => JSON.parse(JSON.stringify(val))
   window.win().user = {}
-  window.win().pageType = 'home'
+  window.win().pageType = ''
   window.win().pageData = {pageNo: 1}
 
   let location2 = window.win().location
-  if (location2.pathname) {
-    let r = location2.pathname.match(/t\/([\d]+)/)
+  if (location2.href.match(/.com\/go\//)) {
+    window.win().pageType = 'node'
+  } else if (location2.href.match(/.com\/?tab=/)) {
+    window.win().pageType = 'home'
+  } else if (location2.href.match(/.com\/recent/)) {
+    window.win().pageType = 'recent'
+  } else {
+    let r = location2.href.match(/.com\/t\/([\d]+)/)
     if (r) {
       window.win().pageType = 'post'
       window.win().pageData.id = r[1]
       if (location2.search) {
-        let pr = location2.search.match(/\?p=([\d]+)/)
+        let pr = location2.href.match(/\?p=([\d]+)/)
         if (pr) window.win().pageData.pageNo = Number(pr[1])
       }
     }
-    r = location2.pathname.includes('/recent')
-    if (r) window.win().pageType = 'recent'
-  }
-  if (location2.search) {
-    let r = location2.pathname.includes('?tab=')
-    if (r) window.win().pageType = 'home'
   }
 
   let top2 = $('.tools .top:eq(1)', window.win().doc).text()
@@ -504,7 +511,7 @@
     }
   }
 
-  // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
+  console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
 
   async function sleep(time) {
     return new Promise(resolve => {
@@ -531,7 +538,7 @@
   //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
   if (window.win().isFrame) {
     if (!window.win().init) {
-      window.win().init = true
+      // window.win().init = true
       window.win().cb = null
       window.win().vueCb = null
       window.win().postList = []
@@ -539,67 +546,37 @@
       let $section = document.createElement('section')
       $section.id = 'app'
 
-      let box = $('#Wrapper #Main .box:first', window.win().doc)
       let wrapper
-
-      const parseList = () => {
-        box.css({'box-shadow': 'unset'})
-        wrapper = box.find('.item:first')
-        wrapper.after($section)
-
-        let list = []
-        let apiList = []
-        let listItemNode = window.win().doc.querySelectorAll('.item',)
-        // listItemNode = Array.from(listItemNode)
-        // listItemNode.slice(1, 5).forEach(itemNode => {
-        listItemNode.forEach((itemNode, index) => {
-          let item = window.win().clone(window.win().initPost)
-          let bg = itemNode.style['background-image']
-          item.bg = bg
-          let item_title = itemNode.querySelector('.item_title a')
-          let href = item_title.href
-          item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-          item.title = item_title.innerText
-
-          let topic_info = itemNode.querySelector('.topic_info')
-          let userNode = topic_info.querySelector('strong a')
-          item.username = userNode.innerText
-          let timeNode = itemNode.querySelector('.topic_info span')
-          item.date = timeNode.innerText
-          let tagNode = topic_info.querySelector('.node')
-          item.node = tagNode.innerText
-          let countNode = itemNode.querySelector('.count_livid')
-          item.replyCount = countNode ? countNode.innerText : 0
-
-          let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-          // console.log(url)
-          apiList.push($.get(url))
-          list.push(item)
-
-          itemNode.remove()
-        })
-        window.win().postList = list
-
-        Promise.allSettled(apiList).then(async (results) => {
-          let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-          await cbChecker({type: 'list', value: res})
-        });
-      }
+      let box
+      let list
+      let res
       switch (window.win().pageType) {
-        case 'recent':
-          parseList()
+        case 'node':
+          list = $('#TopicsNode').children()
+          res = window.parse.parsePostListItem(list)
+          console.log('res',res)
+
           break
+        case 'recent':
         case 'home':
-          // box.css({background: 'transparent', 'box-shadow': 'unset'})
-          parseList()
+          box = $('#Wrapper #Main .box:first')
+          box.css({'box-shadow': 'unset'})
+          wrapper = box.find('.item:first')
+          wrapper.before($section)
+          list = $('.item')
+          res = window.parse.parsePostListItem(list)
+          window.win().postList = res.postList
+          window.parse.fetchPostDetail(res.apiList).then(async r => {
+            await cbChecker({type: 'list', value: r})
+          })
           break
         case 'post':
+          box = $('#Wrapper #Main .box:first')
           box.after($section)
-
           window.parse.parsePostContent(
-              {id: window.win().pageData.id},
-              $(window.win().doc.body),
-              window.win().doc.documentElement.outerHTML
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML
           ).then(async res => {
             // console.log('详情页-基本信息解析完成', new Date())
             window.win().pageData.post = res
@@ -607,15 +584,19 @@
           })
 
           window.parse.parsePostReplies(
-              {id: window.win().pageData.id},
-              $(window.win().doc.body),
-              window.win().doc.documentElement.outerHTML,
-              window.win().pageData.pageNo
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML,
+            window.win().pageData.pageNo
           ).then(async res => {
             // console.log('详情页-回复解析完成', new Date())
             window.win().pageData.post = Object.assign(window.win().pageData.post, res)
             await cbChecker({type: 'postReplies', value: res}, 0)
           })
+          break
+        default:
+          console.error('未知页面')
+          console.error('未知页面')
           break
       }
     }

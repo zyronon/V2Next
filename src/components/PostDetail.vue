@@ -353,7 +353,7 @@ export default {
     padding: 6rem 12rem 15rem 12rem;
     //margin: auto;
     //box-sizing: border-box;
-    min-height: 100%;
+    //min-height: 100%;
     background: #e2e2e2;
     position: relative;
 
