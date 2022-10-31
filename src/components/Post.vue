@@ -12,8 +12,10 @@
             <a :href="`t/${props.post.id}`">{{ props.post.title }}</a>
           </div>
           <div class="bottom">
-            <a :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
-            &nbsp;&nbsp;·&nbsp;&nbsp;
+            <template v-if="props.post.node">
+              <a :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
+              &nbsp;&nbsp;·&nbsp;&nbsp;
+            </template>
             <strong>
               <a class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
             </strong>
@@ -151,6 +153,7 @@ p {
           border-radius: .4rem;
           width: 4.8rem;
           min-width: 4.8rem;
+          min-height: 4.8rem;
         }
       }
 

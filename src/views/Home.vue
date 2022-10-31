@@ -46,7 +46,9 @@
               :class="{visited:readList.has(item.id)}"
               @show="getPostDetail(item,$event)"/>
         </template>
-
+        <div class="flex flex-center p1" v-if="loadMore">
+          <div class="loading-c"></div>
+        </div>
       </div>
     </template>
     <template v-if="pageType === 'post'">
@@ -119,7 +121,7 @@ export default {
     showList() {
       return this.pageType === 'home' ||
           this.pageType === 'recent' ||
-          this.pageType === 'node'
+          this.pageType === 'nodePage'
     }
   },
   watch: {
@@ -187,6 +189,12 @@ export default {
 
       if (this.showList) {
         let lastItem = window.win().appNode.nextElementSibling
+        let maxPage = 1000
+        if (this.pageType !== 'home') {
+          let navs = lastItem.querySelectorAll('a')
+          maxPage = Number(navs[navs.length - 1].innerText)
+        }
+
         let ob = window.win().IntersectionObserver
         const observer = new ob(async (e) => {
           if (e[0].isIntersecting) {
@@ -203,16 +211,19 @@ export default {
               url = href + `?p=2`
               let r = search.match(/p=([\d]+)/)
               if (r) {
+                if (Number(r[1]) >= maxPage) {
+                  eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已经是最后一页了'})
+                  return this.loadMore = false
+                }
                 url = origin + pathname + search.replace(r[1], Number(r[1]) + 1)
               }
             }
             console.log('url', url)
-            this.loadMore = false
             window.win().history.pushState({}, 0, url);
-            return
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
             let res = window.parse.parsePage(htmlText, this.pageType)
+            console.log('res', res)
             lastItem.innerHTML = res.page
             this.list.push({id: 'page', innerHTML: lastItem.innerHTML})
             //不同页数之单，会有重复的数据
@@ -248,7 +259,7 @@ export default {
   },
   methods: {
     winCb({type, value}) {
-      console.log('回调的类型', type, value)
+      // console.log('回调的类型', type, value)
       if (type === 'list') {
         value.map(post => {
           let rIndex = this.list.findIndex(v => v.id == post.id)
@@ -452,7 +463,7 @@ export default {
 @import "../assets/less/variable";
 
 .app-home {
-  &.home, &.recent {
+  &.home, &.recent, &.nodePage {
     background: rgb(226, 226, 226);
   }
 

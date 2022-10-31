@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -20,11 +20,13 @@
   // @match        https://*.v2ex.com/
   // @match        https://*.v2ex.com/?tab=*
   // @match        https://*.v2ex.com/t/*
-  // @match        https://*.v2ex.com/recent
+  // @match        https://*.v2ex.com/recent*
+  // @match        https://*.v2ex.com/go/*
   // @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
   // @grant        none
   // ==/UserScript==
 
+  const isDev = true
   window.parse = {
     async parsePostContent(post = {}, body, htmlText) {
       //如果没有正文（点的本站的a标签），才会解析正文
@@ -165,14 +167,14 @@
             promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
           })
           Promise.allSettled(promiseList).then(
-            (results) => {
-              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replies = this.getAllReply(repliesMap)
-              post.replies = replies
-              post.replyCount = replies.length
-              post.nestedReplies = this.getNestedList(replies)
-              resolve(post)
-            }
+              (results) => {
+                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+                let replies = this.getAllReply(repliesMap)
+                post.replies = replies
+                post.replyCount = replies.length
+                post.nestedReplies = this.getNestedList(replies)
+                resolve(post)
+              }
           );
         })
       }
@@ -398,14 +400,14 @@
 
       if (pageType === 'recent') {
         let list = body.find('.item')
-        let res = window.parse.parsePostListItem(list)
-        let page = body.find('.cell:last')
+        let res = this.parsePostListItem(list)
+        let page = body.find('.cell:last').html()
         return {...res, page}
       }
-      if (pageType === 'node') {
+      if (pageType === 'nodePage') {
         let topics = body.find('#TopicsNode')
         let list = topics.children()
-        let res = window.parse.parsePostListItem(list)
+        let res = this.parsePostListItem(list)
         let page = topics.next().html()
         return {...res, page}
       }
@@ -446,9 +448,11 @@
     },
     fetchPostDetail(list) {
       return new Promise(resolve => {
-        Promise.allSettled(list.map(v => $.get(v))).then(async (results) => {
-          let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
-          resolve(res)
+        Promise.allSettled(list.map(v => $.get(v))).then(async (res) => {
+          let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
+          let fail = res.filter((r) => r.status === "rejected")
+          console.log('fail', fail)
+          resolve(ok)
         });
       })
     }
@@ -458,7 +462,6 @@
     window.win().url = 'https://www.v2ex.com'
     // window.win().url = location.origin
     window.win().isFrame = true
-
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
   } else {
@@ -466,6 +469,12 @@
     window.win().url = 'https://www.v2ex.com'
     // window.win().url = location.origin
     window.win().isFrame = false
+  }
+
+  if (!isDev) {
+    window.win = () => window
+    window.win().url = location.origin
+    window.win().isFrame = true
   }
 
   window.win().initPost = {
@@ -492,10 +501,12 @@
   window.win().pageData = {pageNo: 1}
 
   let location2 = window.win().location
-  if (location2.href.match(/.com\/go\//)) {
-    window.win().pageType = 'node'
+  if (location2.pathname === '/') {
+    window.win().pageType = 'home'
   } else if (location2.href.match(/.com\/?tab=/)) {
     window.win().pageType = 'home'
+  } else if (location2.href.match(/.com\/go\//)) {
+    window.win().pageType = 'nodePage'
   } else if (location2.href.match(/.com\/recent/)) {
     window.win().pageType = 'recent'
   } else {
@@ -518,7 +529,7 @@
     }
   }
 
-  console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
+  // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
 
   async function sleep(time) {
     return new Promise(resolve => {
@@ -558,7 +569,10 @@
       let list
       let res
       switch (window.win().pageType) {
-        case 'node':
+        case 'nodePage':
+          box = $('#Wrapper #Main .box:first')
+          box.css({'box-shadow': 'unset'})
+
           let topics = $('#TopicsNode')
           topics.attr('id', 'app')
           list = topics.children()
@@ -585,9 +599,9 @@
           box = $('#Wrapper #Main .box:first')
           box.after($section)
           window.parse.parsePostContent(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML
+              {id: window.win().pageData.id},
+              $(window.win().doc.body),
+              window.win().doc.documentElement.outerHTML
           ).then(async res => {
             // console.log('详情页-基本信息解析完成', new Date())
             window.win().pageData.post = res
@@ -595,10 +609,10 @@
           })
 
           window.parse.parsePostReplies(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML,
-            window.win().pageData.pageNo
+              {id: window.win().pageData.id},
+              $(window.win().doc.body),
+              window.win().doc.documentElement.outerHTML,
+              window.win().pageData.pageNo
           ).then(async res => {
             // console.log('详情页-回复解析完成', new Date())
             window.win().pageData.post = Object.assign(window.win().pageData.post, res)
@@ -612,37 +626,39 @@
       }
     }
 
-    //开发时自动更新window.top head里面添加的vue style
-    function getStyle(html) {
-      let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
-      if (reg) {
-        return reg[0]
+    if (isDev) {
+      //开发时自动更新window.top head里面添加的vue style
+      function getStyle(html) {
+        let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
+        if (reg) {
+          return reg[0]
+        }
+        return `<style></style>`
       }
-      return `<style></style>`
-    }
 
-    function removeVueStyle() {
-      let title = $('title:eq(1)', window.win().doc.head)
-      while (title.next().length) {
-        title.next().remove()
+      function removeVueStyle() {
+        let title = $('title:eq(1)', window.win().doc.head)
+        while (title.next().length) {
+          title.next().remove()
+        }
+        title.remove()
       }
-      title.remove()
+
+      window.onbeforeunload = removeVueStyle
+
+      let observe = new MutationObserver(() => {
+        removeVueStyle()
+        let headHtml = window.document.head.innerHTML
+        let reg = getStyle(headHtml)
+        $(window.win().doc.head).append($(`<head>${reg}</head>`))
+      });
+      observe.observe(window.document.head, {
+        attributes: true, //目标节点的属性变化
+        childList: true, //目标节点的子节点的新增和删除
+        characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
+        subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
+      });
     }
-
-    window.onbeforeunload = removeVueStyle
-
-    let observe = new MutationObserver(() => {
-      removeVueStyle()
-      let headHtml = window.document.head.innerHTML
-      let reg = getStyle(headHtml)
-      $(window.win().doc.head).append($(`<head>${reg}</head>`))
-    });
-    observe.observe(window.document.head, {
-      attributes: true, //目标节点的属性变化
-      childList: true, //目标节点的子节点的新增和删除
-      characterData: true, //如果目标节点为characterData节点(一种抽象接口,具体可以为文本节点,注释节点,以及处理指令节点)时,也要观察该节点的文本内容是否发生变化
-      subtree: true, //目标节点所有后代节点的attributes、childList、characterData变化
-    });
   }
 </script>
 <script type="module" src="/src/main.js"></script>
