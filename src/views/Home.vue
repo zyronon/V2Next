@@ -1,6 +1,6 @@
 <template>
   <div class="app-home" :class="[viewType,pageType]">
-    <template v-if="pageType === 'home' || pageType === 'recent'">
+    <template v-if="showList">
       <div class="nav flex flex-end" :class="viewType">
         <div class="nav-item" :class="{active:viewType === 'table'}" @click="saveConfig(viewType = 'table')">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -115,6 +115,11 @@ export default {
   computed: {
     isDev() {
       return import.meta.env.DEV
+    },
+    showList() {
+      return this.pageType === 'home' ||
+          this.pageType === 'recent' ||
+          this.pageType === 'node'
     }
   },
   watch: {
@@ -145,7 +150,6 @@ export default {
   created() {
     console.log('create')
 
-    let that = this
     window.win().cb = this.winCb
 
     if (window.win().vue) {
@@ -181,7 +185,7 @@ export default {
     if (window.win().isFrame) {
       this.list = window.win().postList
 
-      if (this.pageType === 'recent' || this.pageType === 'home') {
+      if (this.showList) {
         let lastItem = window.win().appNode.nextElementSibling
         let ob = window.win().IntersectionObserver
         const observer = new ob(async (e) => {
@@ -190,23 +194,26 @@ export default {
             console.log('加载更多')
             this.loadMore = true
             let url
-            if (this.pageType === 'recent') {
-              let href = window.win().location.href
-              let r = href.match(/p=([\d]+)/)
-              url = window.win().url + `/recent?p=2`
-              if (r) {
-                url = window.win().url + `/recent?p=${Number(r[1]) + 1}`
-              }
-            }
+
             if (this.pageType === 'home') {
               url = window.win().url + `/recent?p=1`
               this.pageType = 'recent'
+            } else {
+              let {href, search, origin, pathname} = window.win().location
+              url = href + `?p=2`
+              let r = search.match(/p=([\d]+)/)
+              if (r) {
+                url = origin + pathname + search.replace(r[1], Number(r[1]) + 1)
+              }
             }
             console.log('url', url)
+            this.loadMore = false
+            window.win().history.pushState({}, 0, url);
+            return
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
-            let res = window.parse.parsePostListItem(null, htmlText)
-            lastItem.innerHTML = res.page.html()
+            let res = window.parse.parsePage(htmlText, this.pageType)
+            lastItem.innerHTML = res.page
             this.list.push({id: 'page', innerHTML: lastItem.innerHTML})
             //不同页数之单，会有重复的数据
             res.postList.map(v => {
@@ -219,10 +226,9 @@ export default {
               let res = results.filter((result) => result.status === "fulfilled").map(v => v.value[0])
               this.winCb({type: 'list', value: res})
             });
-            window.win().history.pushState({}, 0, url);
           }
         })
-        // observer.observe(lastItem)
+        observer.observe(lastItem)
       }
       // setTimeout(() => {
       //   this.list.map(v => {
