@@ -157,16 +157,16 @@ export default {
     if (window.win().vue) {
       // console.log('vue', window.win().postList)
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-      if (window.win().pageData?.post) {
-        window.win().doc.body.style.overflow = 'hidden'
-        this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
-        this.loading = false
-      }
-      if (window.win().isFrame) {
-        this.list = window.win().postList
-      } else {
-        this.list = data
-      }
+      // if (window.win().pageData?.post) {
+      //   window.win().doc.body.style.overflow = 'hidden'
+      //   this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
+      //   this.loading = false
+      // }
+      // if (window.win().isFrame) {
+      //   this.list = window.win().postList
+      // } else {
+      //   this.list = data
+      // }
     }
 
     let configStr = window.win().localStorage.getItem('v2ex-config')
