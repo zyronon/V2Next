@@ -210,14 +210,15 @@ export default {
   watch: {
     modelValue(newVal) {
       if (!newVal) {
-        this.$nextTick(()=>{
-          this.$refs.detail.scrollTo({top: 0})
-        })
         window.win().doc.body.style.overflow = 'unset'
         this.isSticky = false
         if (window.win().pageType === 'home') {
           // window.history.back();
         }
+      } else {
+        this.$nextTick(() => {
+          this.$refs.detail.scrollTo({top: 0})
+        })
       }
     }
   },
