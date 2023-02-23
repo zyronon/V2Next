@@ -1,33 +1,36 @@
 <template>
-  <div class="post" :style="postStyle" :class="props.viewType">
+  <div class="post"
+       :style="postStyle"
+       :class="props.viewType"
+       @click="$emit('show',$event)">
     <div class="base-info">
       <div class="left">
-        <a :href="`/member/${props.post.username}`">
+        <a @click.stop="null" :href="`/member/${props.post.username}`">
           <div class="avatar">
             <img :src="props.post.avatar" alt="">
           </div>
         </a>
         <div class="right">
-          <div class="title" @click="$emit('show',$event)">
+          <div class="title">
             <a :href="`t/${props.post.id}`">{{ props.post.title }}</a>
           </div>
           <div class="bottom">
             <template v-if="props.post.node">
-              <a :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
+              <a @click.stop="null"  :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
               &nbsp;&nbsp;·&nbsp;&nbsp;
             </template>
             <strong>
-              <a class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
+              <a @click.stop="null"  class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
             </strong>
             &nbsp;&nbsp;·&nbsp;&nbsp;
             <span class="date">{{ props.post.date }}</span>
           </div>
         </div>
       </div>
-      <div class="count" v-if="props.post.replyCount" @click="$emit('show')">{{ props.post.replyCount }}</div>
+      <div class="count" v-if="props.post.replyCount">{{ props.post.replyCount }}</div>
     </div>
     <div class="post-content-wrapper" :class="{mask}" v-if="props.post.content_rendered">
-      <div v-html="props.post.content_rendered" ref="content" @click="$emit('show',$event)"></div>
+      <div v-html="props.post.content_rendered" ref="contentRef"></div>
     </div>
   </div>
 </template>
@@ -39,7 +42,7 @@ const checkHeight = 200
 const props = defineProps(['post', 'viewType'])
 // const {post, viewType} = props
 const mask = ref(false)
-const content = ref(null)
+const contentRef = ref(null)
 const postStyle = computed(() => {
   if (props.post.bg) {
     return {
@@ -52,12 +55,12 @@ const postStyle = computed(() => {
   return {}
 })
 
-watch([() => props.post, () => content.value, () => props.viewType], () => {
-  if (!content.value) return
+watch([() => props.post, () => contentRef.value, () => props.viewType], () => {
+  if (!contentRef.value) return
   if (props.viewType === 'table') return;
-  let rect = content.value.getBoundingClientRect()
+  let rect = contentRef.value.getBoundingClientRect()
   //如果有图片，还没加载完，此刻content.value的高度不会包括图片的高度
-  content.value.querySelectorAll('img').forEach(item => {
+  contentRef.value.querySelectorAll('img').forEach(item => {
     item.addEventListener('load', checkContentHeight)
   })
   mask.value = rect.height >= checkHeight
@@ -65,7 +68,7 @@ watch([() => props.post, () => content.value, () => props.viewType], () => {
 
 function checkContentHeight() {
   if (mask.value) return
-  let rect = content.value.getBoundingClientRect()
+  let rect = contentRef.value.getBoundingClientRect()
   // console.log('rect', rect.height)
   mask.value = rect.height >= checkHeight
 }

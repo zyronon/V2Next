@@ -36,8 +36,8 @@
       </div>
       <div class="posts">
         <template v-for="item in list">
-          <div v-if="item.id === 'page'" class="nav p0 page" :class="viewType">
-            <div class="cell" v-html="item.innerHTML"></div>
+          <div v-if="item.type === 'ad'" class="nav p0 page" :class="viewType">
+            <div v-html="item.innerHTML"></div>
           </div>
           <Post
               v-else
@@ -155,38 +155,37 @@ export default {
     window.win().cb = this.winCb
 
     if (window.win().vue) {
-      // console.log('vue', window.win().postList)
+      console.log('vue', window.win().postList)
       //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-      // if (window.win().pageData?.post) {
-      //   window.win().doc.body.style.overflow = 'hidden'
-      //   this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
-      //   this.loading = false
-      // }
-      // if (window.win().isFrame) {
-      //   this.list = window.win().postList
-      // } else {
-      //   this.list = data
-      // }
+      if (window.win().pageData?.post) {
+        window.win().doc.body.style.overflow = 'hidden'
+        this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
+        this.loading = false
+      }
+      if (window.win().canParseV2exPage) {
+        this.list = window.win().postList
+      } else {
+        this.list = data
+      }
     }
 
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
       let config = JSON.parse(configStr)
-      if (config.username === window.win().user.username) {
+      config = config[window.win().user.username ?? 'default']
+      if (config) {
         this.readList = new Set(config.readList);
         this.viewType = config.viewType
         this.autoOpenDetail = config.autoOpenDetail || false
         if (this.autoOpenDetail && this.pageType === 'post') {
-          this.show = true
-          window.win().doc.body.style.overflow = 'hidden'
+          this.openPostDetail()
         }
       }
     }
     window.win().onbeforeunload = this.saveConfig
 
-    if (window.win().isFrame) {
+    if (window.win().canParseV2exPage) {
       this.list = window.win().postList
-
       if (this.showList) {
         let lastItem = window.win().appNode.nextElementSibling
         let maxPage = 1000
@@ -225,7 +224,7 @@ export default {
             let res = window.parse.parsePage(htmlText, this.pageType)
             console.log('res', res)
             lastItem.innerHTML = res.page
-            this.list.push({id: 'page', innerHTML: lastItem.innerHTML})
+            this.list.push({type: 'page', innerHTML: lastItem.innerHTML})
             //不同页数之单，会有重复的数据
             res.postList.map(v => {
               let rIndex = this.list.findIndex(i => i.id == v.id)
@@ -239,7 +238,7 @@ export default {
             });
           }
         })
-        observer.observe(lastItem)
+        // observer.observe(lastItem)
       }
       // setTimeout(() => {
       //   this.list.map(v => {
@@ -251,7 +250,6 @@ export default {
     }
 
     this.initEvent()
-
   },
   beforeUnmount() {
     console.log('unmounted')
@@ -281,13 +279,27 @@ export default {
         this.current = Object.assign(this.current, this.clone(value))
         this.loading = false
       }
+      if (type === 'ad') {
+        window.win().adList.map(v => {
+          let adEl = window.win().query('#' + v.id)
+          let rIndex = this.list.findIndex(w => w.id == v.id)
+          if (rIndex > -1) {
+            this.list[rIndex] = Object.assign(this.list[rIndex], {
+              innerHTML: adEl.innerHTML
+            })
+          }
+        })
+        window.win().$adListEl.innerHTML = ''
+        window.win().adList = []
+      }
     },
     saveConfig() {
       let config = {
-        username: window.win().user.username ?? '',
-        viewType: this.viewType,
-        readList: Array.from(this.readList),
-        autoOpenDetail: this.autoOpenDetail
+        [window.win().user.username ?? 'default']: {
+          viewType: this.viewType,
+          readList: Array.from(this.readList),
+          autoOpenDetail: this.autoOpenDetail
+        }
       }
       window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     },
@@ -407,9 +419,11 @@ export default {
     },
     openPostDetail() {
       this.show = true
+      this.loading = true
       window.win().doc.body.style.overflow = 'hidden'
     },
     async getPostDetail(post, event) {
+      this.openPostDetail()
       if (event) {
         let target = event.target || event.srcElement;
         //如果是站内帖子，那么直接打开
@@ -425,12 +439,8 @@ export default {
       this.saveConfig(this.readList.add(post.id))
       this.current = Object.assign(
           window.win().clone(window.win().initPost),
-          // {RightbarHTML: this.current.RightbarHTML},
+          {RightbarHTML: this.current.RightbarHTML},
           window.win().clone(post))
-      this.show = true
-      this.loading = true
-      // window.win().history.pushState({}, 0, '/t/' + post.id);
-      window.win().doc.body.style.overflow = 'hidden'
 
       let url = window.win().url + '/t/' + post.id
       //ajax不能判断是否跳转
