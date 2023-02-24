@@ -18,7 +18,7 @@ import {CMD} from "@/utils/type";
 
 export default {
   name: "Point",
-  inject: ['post'],
+  inject: ['post','isLogin'],
   props: {
     item: {
       type: Object,
@@ -47,6 +47,9 @@ export default {
       return val ? '#ff4500' : 'none'
     },
     async thank() {
+      if (!this.isLogin) {
+        return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+      }
       if (this.item.username === window.win().user.username) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
       }

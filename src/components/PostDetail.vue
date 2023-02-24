@@ -45,7 +45,7 @@
               <Toolbar @reply="isSticky = !isSticky"/>
             </div>
           </div>
-          <div class="my-box" v-if="loading">
+          <div class="my-box comment-wrapper" v-if="replies.length || loading">
             <div class="my-cell flex">
                 <span class="gray">{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
@@ -68,44 +68,18 @@
                 </div>
               </div>
             </div>
-            <div class="loading-wrapper">
+            <div class="loading-wrapper" v-if="loading">
               <div class="loading-c"></div>
             </div>
-          </div>
-          <template v-else>
-            <div class="my-box comment-wrapper" v-if="replies.length">
-              <div class="my-cell flex">
-                <span class="gray">{{ post.replyCount }} 条回复
-                 <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
-                </span>
-                <div class="sort-select">
-                  <div class="target" @click.stop="showSortOption = true">
-                    <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
-                    <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
-                            stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                  <div class="options" v-if="showSortOption">
-                    <div class="option"
-                         :class="{active:target === item.value}"
-                         @click="changeOption(item)"
-                         v-for="item in sortOptions">
-                      {{ item.label }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="comments" ref="comments">
-                <Comment v-for="(item,index) in replies"
-                         :key="item.floor"
-                         style="border-bottom: 1px solid #e2e2e2;  padding: 1rem;margin-top: 0;"
-                         v-model="replies[index]"/>
-              </div>
+            <div class="comments" ref="comments" v-else>
+              <Comment v-for="(item,index) in replies"
+                       :key="item.floor"
+                       style="border-bottom: 1px solid #e2e2e2;  padding: 1rem;margin-top: 0;"
+                       v-model="replies[index]"/>
             </div>
-            <div v-else id="no-comments-yet">目前尚无回复</div>
-          </template>
-          <div class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
+          </div>
+          <div v-else id="no-comments-yet">目前尚无回复</div>
+          <div v-if="isLogin" class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
             <div class="my-cell flex">
               <span>添加一条新回复</span>
               <div class="notice-right">
@@ -159,7 +133,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post', 'clone'],
+  inject: ['allReplyUsers', 'post', 'clone', 'isLogin'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -223,13 +197,15 @@ export default {
     }
   },
   mounted() {
-    const observer = new IntersectionObserver(
-        ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
-        {threshold: [1]}
-    );
-    observer.observe(this.$refs.replyBox);
+    if (this.isLogin) {
+      const observer = new IntersectionObserver(
+          ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
+          {threshold: [1]}
+      );
+      observer.observe(this.$refs.replyBox);
+      window.win().addEventListener('keydown', this.onKeyDown)
+    }
 
-    window.win().addEventListener('keydown', this.onKeyDown)
     // let Rightbar = window.win().doc.querySelector('#Rightbar')
     // if (Rightbar) {
     //   this.$refs.right.append(Rightbar.cloneNode(true))
@@ -398,6 +374,8 @@ export default {
           }
 
           .post-author {
+            font-size: 1.25rem;
+            color: #999 !important;
           }
         }
 

@@ -36,7 +36,7 @@
       </div>
       <div class="posts">
         <template v-for="item in list">
-          <div v-if="item.type === 'ad'" class="nav p0 page" :class="viewType">
+          <div v-if="item.type === 'ad' && item.innerHTML" class="nav p0 page" :class="viewType">
             <div v-html="item.innerHTML"></div>
           </div>
           <Post
@@ -126,11 +126,11 @@ export default {
   },
   watch: {
     'current.replies': {
-      handler(newVal) {
-        console.log('watch')
+      handler(newVal, oldVal) {
+        // console.log('watch', newVal.length, oldVal.length)
         if (newVal.length) {
           this.current.replyCount = newVal.length
-          let res = window.parse.getNestedList(newVal)
+          let res = window.parse.createNestedList(newVal, this.current.allReplyUsers)
           if (res) {
             this.current.nestedReplies = res
           }
@@ -154,20 +154,20 @@ export default {
 
     window.win().cb = this.winCb
 
-    if (window.win().vue) {
-      console.log('vue', window.win().postList)
-      //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
-      if (window.win().pageData?.post) {
-        window.win().doc.body.style.overflow = 'hidden'
-        this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
-        this.loading = false
-      }
-      if (window.win().canParseV2exPage) {
-        this.list = window.win().postList
-      } else {
-        this.list = data
-      }
-    }
+    // if (window.win().vue) {
+    //   console.log('vue', window.win().postList)
+    //   //开发时使用，因为数据是从cb传过来的。hmr之后index.html不会再调cb了
+    //   if (window.win().pageData?.post) {
+    //     window.win().doc.body.style.overflow = 'hidden'
+    //     this.current = Object.assign(this.clone(window.win().initPost), this.clone(window.win().pageData.post))
+    //     this.loading = false
+    //   }
+    //   if (window.win().canParseV2exPage) {
+    //     this.list = window.win().postList
+    //   } else {
+    //     this.list = data
+    //   }
+    // }
 
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
@@ -178,6 +178,7 @@ export default {
         this.viewType = config.viewType
         this.autoOpenDetail = config.autoOpenDetail || false
         if (this.autoOpenDetail && this.pageType === 'post') {
+          this.loading = true
           this.openPostDetail()
         }
       }
@@ -186,6 +187,8 @@ export default {
 
     if (window.win().canParseV2exPage) {
       this.list = window.win().postList
+      window.win().waitDelElList.map(v => v.remove())
+      window.win().waitDelElList = []
       if (this.showList) {
         let lastItem = window.win().appNode.nextElementSibling
         let maxPage = 1000
@@ -221,7 +224,7 @@ export default {
             window.win().history.pushState({}, 0, url);
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
-            let res = window.parse.parsePage(htmlText, this.pageType)
+            let res = window.parse.parseOtherPage(htmlText, this.pageType)
             console.log('res', res)
             lastItem.innerHTML = res.page
             this.list.push({type: 'page', innerHTML: lastItem.innerHTML})
@@ -419,7 +422,6 @@ export default {
     },
     openPostDetail() {
       this.show = true
-      this.loading = true
       window.win().doc.body.style.overflow = 'hidden'
     },
     async getPostDetail(post, event) {
@@ -442,6 +444,9 @@ export default {
           {RightbarHTML: this.current.RightbarHTML},
           window.win().clone(post))
 
+      //如果，有数据，不显示loading,默默更新即可
+      if (!this.current.replies.length) this.loading = true
+
       let url = window.win().url + '/t/' + post.id
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
@@ -461,7 +466,16 @@ export default {
       let body = $(bodyText[0])
       // console.log(body)
 
-      this.current = await window.parse.parsePostDetail(this.current, body, htmlText)
+      this.current = await window.parse.getPostDetail(this.current, body, htmlText)
+      if (this.current.replies.length) {
+        let index = this.list.findIndex(v => v.id === post.id)
+        if (index > -1) {
+          this.list[index].replies = this.current.replies
+          this.list[index].nestedReplies = this.current.nestedReplies
+          this.list[index].once = this.current.once
+          this.list[index].createDate = this.current.createDate
+        }
+      }
       this.loading = false
       console.log('当前帖子', this.current)
     },
