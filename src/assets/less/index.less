@@ -63,7 +63,10 @@ a {
   margin-bottom: 1rem;
 
   .subtle {
-    border-bottom: none;
+
+    &:last-child{
+      border-bottom: none;
+    }
 
     .fade {
       color: @date-color;
@@ -297,7 +300,7 @@ a {
   background: white;
   margin-bottom: 2rem;
   width: 100%;
-  overflow: hidden;
+  //overflow: hidden;
   box-sizing: border-box;
 }
 

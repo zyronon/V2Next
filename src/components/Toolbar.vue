@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <div class="tool" @click="$emit('reply')">
+    <div class="tool" @click="checkIsLogin('reply')">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round"/>
@@ -114,6 +114,13 @@ export default {
     }
   },
   methods: {
+    checkIsLogin(emitName = '') {
+      if (!this.isLogin) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+        return false
+      }
+      this.$emit(emitName)
+    },
     getColor(val) {
       return val ? '#ff4500' : '#929596'
     },
@@ -130,11 +137,13 @@ export default {
       }, 500)
     },
     tweet() {
+      if (!this.checkIsLogin()) return
       let username = window.win().user.username
       let url = `https://twitter.com/share?url=${window.win().url}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     report() {
+      if (!this.checkIsLogin()) return
       if (!this.isLogin) return
       if (this.post.isReport) return
       let username = window.win().user.username
@@ -142,6 +151,7 @@ export default {
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     async toggleIgnore() {
+      if (!this.checkIsLogin()) return
       let url = `${window.win().url}/${this.post.isIgnore ? 'unignore' : 'ignore'}/topic/${this.post.id}?once=${this.post.once}`
       //如果是帖子详情页，那么直接跳转到首页
       if (this.pageType === 'post') {
@@ -177,6 +187,7 @@ export default {
       }
     },
     async toggleFavorite() {
+      if (!this.checkIsLogin()) return
       // return eventBus.emit('merge', 'isFavorite')
       this.loading = true
       let url = `${window.win().url}/${this.post.isFavorite ? 'unfavorite' : 'favorite'}/topic/${this.post.id}?once=${this.post.once}`

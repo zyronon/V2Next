@@ -22,7 +22,7 @@
     </div>
     <div class="Author-right">
       <div class="toolbar">
-        <div class="tool" @click="$emit('reply')">
+        <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -32,7 +32,7 @@
           </svg>
           <span>回复</span>
         </div>
-        <div class="tool" @click="$emit('hide')">
+        <div class="tool" @click="checkIsLogin('hide')">
           <span>隐藏</span>
         </div>
         <!--            <div class="tool">-->
@@ -65,7 +65,7 @@ import {CMD} from "../utils/type";
 export default {
   name: "Author",
   components: {Point},
-  inject: ['isDev'],
+  inject: ['isDev', 'isLogin'],
   props: {
     modelValue: false,
     comment: {
@@ -88,6 +88,13 @@ export default {
     }
   },
   methods: {
+    checkIsLogin(emitName = '') {
+      if (!this.isLogin) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+        return false
+      }
+      this.$emit(emitName)
+    },
     addThank() {
       eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'add'})
     },

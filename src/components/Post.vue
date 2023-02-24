@@ -17,12 +17,12 @@
           <div class="bottom">
             <template v-if="props.post.node">
               <a @click.stop="null"  :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
-              &nbsp;&nbsp;·&nbsp;&nbsp;
+              &nbsp;&nbsp;•&nbsp;&nbsp;
             </template>
             <strong>
               <a @click.stop="null"  class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
             </strong>
-            &nbsp;&nbsp;·&nbsp;&nbsp;
+            &nbsp;&nbsp;•&nbsp;&nbsp;
             <span class="date">{{ props.post.date }}</span>
           </div>
         </div>
@@ -175,6 +175,7 @@ p {
           line-height: 1.2rem;
           display: flex;
           align-items: center;
+          color: #ccc;
         }
       }
     }

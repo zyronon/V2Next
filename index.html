@@ -68,10 +68,14 @@
   window.win().user = {}
   window.win().pageType = ''
   window.win().pageData = {pageNo: 1}
-  window.win().adIndex = 0
-  window.win().adList = []
+  window.win().adIndex = 0 //广告下标，用于区分广告id
+  window.win().adList = []//广告列表，用于延时通知vue复制广告的innerHTML，因为一开始就复制，google的js不能正常加载
+  //待删除元素列表。等vue加载好了，再删除。之所以要用数组，是因为帖子中间夹杂着广告。
+  // 只删除帖子，广告会被移除到其他地方，保证google的js能正常加载出广告来
+  window.win().waitDelElList = []
 
   window.parse = {
+    //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
       //如果没有正文（点的本站的a标签），才会解析正文
       if (!post.title) {
@@ -84,15 +88,17 @@
         if (title.length) {
           post.title = title.html()
         }
-        let a2 = main.find('.header a:nth-child(3)')
-        if (a2.length) {
-          post.nodeUrl = a2[0].href
-          post.node = a2.text()
+        let as = main.find('.header a')
+        debugger
+        if (as[2]) {
+          post.nodeUrl = as[2].href
+          post.node = as[2].innerText
         }
-        let a5 = main.find('.header a:nth-child(6)')
-        if (a5.length) {
-          post.username = a5.text()
-          post.date = a5.next().text()
+        //标题里面可能也有a标签...不能用as[5]
+        let lastA = as[as.length-1]
+        if (lastA) {
+          post.username = lastA.innerText
+          post.date = lastA.nextElementSibling.innerText
         }
 
         let avatarNode = main.find('.header .fr img')
@@ -176,7 +182,8 @@
       // console.log('基本信息', post)
       return post
     },
-    async parsePostReplies(post = {}, body, htmlText, pageNo = 1) {
+    //获取帖子所有回复
+    async getPostAllReplies(post = {}, body, htmlText, pageNo = 1) {
       if (body.find('#no-comments-yet').length) {
         return post
       }
@@ -191,55 +198,58 @@
 
       let repliesMap = []
       if (cells[1].id) {
-        repliesMap.push({i: pageNo, replyList: this.parseReplies(cells.slice(1))})
+        repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
         let replies = this.getAllReply(repliesMap)
         post.replies = replies
         post.replyCount = replies.length
-        post.nestedReplies = this.getNestedList(replies)
+        post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+        let nestedList = this.createNestedList(replies, post.allReplyUsers)
+        if (nestedList) post.nestedReplies = nestedList
         return post
       } else {
         let promiseList = []
         // console.log(this.current.repliesMap)
         return new Promise((resolve, reject) => {
-          repliesMap.push({i: pageNo, replyList: this.parseReplies(cells.slice(2, cells.length - 1))})
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
 
           let pages = cells[1].querySelectorAll('a')
+          pages = Array.from(pages)
           // console.log(pages)
           let url = window.win().url + '/t/' + post.id
-          pages.forEach((v, i) => {
-            let currentPageNo = Number(v.innerText)
-            if (currentPageNo === pageNo) return
-            promiseList.push(this.getOtherPage(url + '?p=' + currentPageNo, currentPageNo))
-          })
+          for (let i = 0; i < pages.length; i++) {
+            let currentPageNo = Number(pages[i].innerText)
+            if (currentPageNo == pageNo) continue
+            promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
+          }
           Promise.allSettled(promiseList).then(
             (results) => {
               results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
               let replies = this.getAllReply(repliesMap)
               post.replies = replies
               post.replyCount = replies.length
-              post.nestedReplies = this.getNestedList(replies)
+              post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+              let nestedList = this.createNestedList(replies, post.allReplyUsers)
+              if (nestedList) post.nestedReplies = nestedList
               resolve(post)
             }
           );
         })
       }
     },
-    async parsePostDetail(post = {}, body, htmlText, pageNo = 1) {
-      post = await this.parsePostContent(post, body, htmlText)
-      return await this.parsePostReplies(post, body, htmlText, pageNo)
-    },
-    getOtherPage(url, pageNo) {
+    //请求帖子其他页的回复
+    fetchPostOtherPageReplies(url, pageNo) {
       return new Promise(resolve => {
         $.get(url).then(res => {
           let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
           let box = $(s[0]).find('#Main .box')[1]
           let cells = box.querySelectorAll('.cell')
           cells = Array.from(cells)
-          resolve({i: pageNo, replyList: this.parseReplies(cells.slice(2, cells.length - 1))})
+          resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
         })
       })
     },
-    parseReplies(nodes) {
+    //解析页面的回复
+    parsePageReplies(nodes) {
       let replyList = []
       nodes.forEach((node, index) => {
         if (!node.id) return
@@ -290,8 +300,10 @@
       })
       return replyList
     },
+    //解析回复内容，解析出@用户，回复楼层。用于后续生成嵌套楼层
     parseReplyContent(str) {
       if (!str) return
+      let users = []
       let getUsername = (userStr) => {
         let endIndex = userStr.indexOf('">')
         if (endIndex > -1) {
@@ -307,26 +319,29 @@
       let hasFloor = str.matchAll(floorReg)
       let res = [...hasFloor]
       // console.log('总匹配', res)
-      let users = []
       let floor = -1
       if (res.length) {
         floor = Number(res[0][1])
-      } else {
-        let has = str.matchAll(userReg)
-        let res2 = [...has]
-        // console.log('总匹配', res2)
-        if (res2.length > 1) {
-          res2.map(item => {
-            getUsername(item[1])
-          })
-        }
-        if (res2.length === 1) {
-          getUsername(res2[0][1])
-        }
+      }
+      let has = str.matchAll(userReg)
+      let res2 = [...has]
+      // console.log('总匹配', res2)
+      if (res2.length > 1) {
+        res2.map(item => {
+          getUsername(item[1])
+        })
+      }
+      if (res2.length === 1) {
+        getUsername(res2[0][1])
       }
       // console.log('用户', users)
       // console.log('楼层', floor)
       return {users, floor}
+    },
+    //获取帖子详情
+    async getPostDetail(post = {}, body, htmlText, pageNo = 1) {
+      post = await this.parsePostContent(post, body, htmlText)
+      return await this.getPostAllReplies(post, body, htmlText, pageNo)
     },
     getAllReply(repliesMap = []) {
       return repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
@@ -334,92 +349,92 @@
         return pre
       }, [])
     },
-    getNestedList(allList = []) {
+    //生成嵌套回复
+    createNestedList(allList = []) {
       if (!allList.length) return []
       if ((Date.now() - window.win().lastCallDate) < 1000) {
-        console.log('短时间内，重复调用')
-        // return null
+        // console.log('短时间内，重复调用,因为监听了replies,所以打开时会触发两次。第二次不管他')
+        return false
       }
-      window.win().lastCallDate = Date.now()
-      // console.log('cal-getNestedList', Date.now())
-      console.log('getNestedList，长度', allList.length)
+      // console.log('cal-createNestedList', Date.now())
 
       let list = JSON.parse(JSON.stringify(allList))
       let nestedList = []
       list.map((item, index) => {
-        let forList = list.slice(index + 1)
+        let startList = list.slice(0, index)
+        let startReplyUsers = Array.from(new Set(startList.map(v => v.username)))
+
+        let endList = list.slice(index + 1)
+
         if (index === 0) {
           item.level = 0
-          nestedList.push(this.findChildren(item, forList, list))
+          nestedList.push(this.findChildren(item, endList, list))
         } else {
-          //这里判断@人数不等于1。那么会把@多个人作为一级楼层，而不会作为楼中楼
-          //如果要把@多个人作为楼中楼，那么这里只需判断人数等于0
-          //然后把子方法里面for里面的第一个else里面的if判断r.replyUsers.length === 1 改为=== 0。然后把逻辑和else对调就可以
-          if ((item.replyUsers.length !== 1) && item.replyFloor === -1) {
-            item.level = 0
-            nestedList.push(this.findChildren(item, forList, list))
+          let isParentReply = false
+          // if (item.replyFloor === -1) {
+          //   isParentReply = true
+          // }
+          if (item.replyUsers.length) {
+            if (item.replyUsers.length > 1) {
+              isParentReply = true
+            } else {
+              isParentReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+            }
+          }else {
+            isParentReply = true
+          }
+          if (isParentReply) {
+            item.level === 0
+            nestedList.push(this.findChildren(item, endList, list))
           }
         }
       })
+      console.log('replies长度', allList)
+      console.log('nestedList长度', nestedList)
+      window.win().lastCallDate = Date.now()
       return nestedList
     },
-    findChildren(item, arr, all) {
-      const fn = (list, r, item2) => {
-        r.level = item2.level + 1
-        let rIndex = all.findIndex(v => v.floor === r.floor)
+    //查找子回复
+    findChildren(item, endList, all) {
+      const fn = (child, endList2, parent) => {
+        child.level = parent.level + 1
+        let rIndex = all.findIndex(v => v.floor === child.floor)
         if (rIndex > -1) {
           all[rIndex].isUse = true
         }
-        item2.children.push(this.findChildren(r, list, all))
+        parent.children.push(this.findChildren(child, endList2, all))
       }
-      // console.log('arr', arr)
+      // console.log('endList', endList)
       item.children = []
       // if (item.floor ==8)debugger
-      for (let i = 0; i < arr.length; i++) {
-        let r = arr[i]
+      for (let i = 0; i < endList.length; i++) {
+        let currentItem = endList[i]
 
         //如果已被使用，直接跳过
-        if (r.isUse) continue
+        if (currentItem.isUse) continue
 
-        let list = arr.slice(i + 1)
-        //不知哪个V友的插件，回复的#号是错误的....，所有还要加上一个用户名是不是相同的判断
-        // if (r.replyFloor === item.floor && r.replyUsers[0] === item.username) {
-        //错的就错的吧，反正我自己的不出错就行
-        //todo 2022-10-26，好像回复被忽略了之后，会占据原来的楼层
+        let endList2 = endList.slice(i + 1)
+        //注： 2022-10-26，回复被忽略了之后，会占据原来的楼层
         //但是，未忽略这条回复的人，看到的楼层和忽略回复的人看到的不一样，导致以楼层号来判断会出问题
-
-        if (r.replyFloor !== -1) {
-          if (r.replyFloor === item.floor) {
-            fn(list, r, item)
+        // if (currentItem.replyFloor !== -1) {
+        if (false) {
+          if (currentItem.replyFloor === item.floor) {
+            fn(currentItem, endList2, item)
           }
         } else {
-          if (r.replyUsers.length === 1) {
-            //找出自己最近一条正常回复，以那条为搜索终点
-            let rIndex = arr.findIndex(v => v.username === item.username && (r.replyUsers.length === 0 && r.replyFloor === -1))
-            if (rIndex > -1) {
-              list = arr.slice(i + 1, rIndex)
-            }
-            //如果是下一条是同一人的回复，那么跳转循环。children从下一条开始找
-            if (r.username === item.username) {
+          if (currentItem.replyUsers.length === 1) {
+            // //找出自己最近一条正常回复，以那条为搜索终点
+            // let rIndex = endList.findIndex(v => v.username === item.username && (currentItem.replyUsers.length === 0 && currentItem.replyFloor === -1))
+            // if (rIndex > -1) {
+            //   endList2 = endList.slice(i + 1, rIndex)
+            // }
+            //如果是下一条是同一人的回复，那么跳出循环。children从下一条开始找
+            if (currentItem.username === item.username) {
               //自己回复自己的特殊情况
-              if (r.replyUsers[0] === item.username) {
-                fn(list, r, item)
+              if (currentItem.replyUsers[0] === item.username) {
+                fn(currentItem, endList2, item)
                 continue
               }
-              list.map((v, vi) => {
-                if (v.replyFloor === item.floor) {
-                  fn(arr.slice(vi + 1), v, item)
-                }
-              })
-              break
-            } else {
-              if (r.replyUsers[0] === item.username) {
-                fn(list, r, item)
-              }
-            }
-          } else {
-            //如果是下一条是同一人的回复，那么跳转循环。children从下一条开始找
-            if (r.username === item.username) {
               //有种特殊情况，就是自己连着评论了两条。然后后面的人以#号的方式 回复了自己第一条。
               //如果检测到下条是自己的回复，直接略过的话就会丢失第一条的所有楼中楼回复
               //具体如下
@@ -427,41 +442,49 @@
               //进行楼中楼查找，查找完了再跳过
               // 自己：2楼
               // 别人：指定回复1楼
-              list.map((v, vi) => {
-                if (v.replyFloor === item.floor) {
-                  fn(arr.slice(vi + 1), v, item)
-                }
-              })
+              // endList2.map((v, vi) => {
+              //   if (v.replyFloor === item.floor) {
+              //     fn(v, endList.slice(vi + 1), item)
+              //   }
+              // })
               break
+            } else {
+              if (currentItem.replyUsers[0] === item.username) {
+                fn(currentItem, endList2, item)
+              }
             }
           }
         }
       }
       return item
     },
-    parsePage(html, pageType) {
+    //解析其他页面
+    parseOtherPage(html, pageType) {
       let bodyText = html.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
 
       if (pageType === 'recent') {
         let list = body.find('.item')
-        let res = this.parsePostListItem(list)
+        let res = this.parsePagePostList(list)
         let page = body.find('.cell:last').html()
         return {...res, page}
       }
       if (pageType === 'nodePage') {
         let topics = body.find('#TopicsNode')
         let list = topics.children()
-        let res = this.parsePostListItem(list)
+        let res = this.parsePagePostList(list)
         let page = topics.next().html()
         return {...res, page}
       }
     },
-    parsePostListItem(list) {
+    //解析页面帖子列表
+    parsePagePostList(list) {
       let postList = []
       let apiList = []
       list.forEach(function (listItem) {
         if (!listItem.classList.contains('cell')) {
+          window.win().$adListEl.append(listItem)
+
           window.win().adIndex += 1
           let adId = 'ad' + window.win().adIndex
           listItem.id = adId
@@ -471,7 +494,6 @@
             innerHTML: listItem.innerHTML
           }
           postList.push(item)
-          window.win().$adListEl.append(listItem)
           window.win().adList.push(item)
           // listItem.remove()
           return
@@ -496,20 +518,25 @@
         let countNode = listItem.querySelector('.count_livid')
         item.replyCount = countNode ? countNode.innerText : 0
 
+        let avatar = listItem.querySelector('img')
+        item.avatar = avatar.src
+
         let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
         // console.log(url)
         apiList.push(url)
         postList.push(item)
-        listItem.remove()
+        window.win().waitDelElList.push(listItem)
+        // listItem.remove()
       })
       setTimeout(() => {
         cbChecker({type: 'ad'})
       }, 3000)
       return {postList, apiList}
     },
-    fetchPostDetail(list) {
+
+    fetchAll(list) {
       return new Promise(resolve => {
-        Promise.allSettled(list.map(v => $.get(v))).then(async (res) => {
+        Promise.allSettled(list.map(url => $.get(url))).then(async (res) => {
           let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
           let fail = res.filter((r) => r.status === "rejected")
           console.log('fail', fail)
@@ -585,7 +612,6 @@
 
     let $section = document.createElement('section')
     $section.id = 'app'
-    // $section.style = {position: 'fixed', left: '-100vw'}
 
     window.win().$adListEl = document.createElement('section')
     window.win().$adListEl.id = 'ad_list'
@@ -606,9 +632,9 @@
         let topics = $('#TopicsNode')
         topics.attr('id', 'app')
         list = topics.children()
-        res = window.parse.parsePostListItem(Array.from(list))
+        res = window.parse.parsePagePostList(Array.from(list))
         window.win().postList = res.postList
-        window.parse.fetchPostDetail(res.apiList).then(async r => {
+        window.parse.fetchAll(res.apiList).then(async r => {
           await cbChecker({type: 'list', value: r})
         })
         break
@@ -623,9 +649,9 @@
         wrapper.before($section)
         // list = box.querySelectorAll('.item')
         list = arr.slice(start, arr.length - end)
-        res = window.parse.parsePostListItem(list)
+        res = window.parse.parsePagePostList(list)
         window.win().postList = res.postList
-        window.parse.fetchPostDetail(res.apiList).then(async r => {
+        window.parse.fetchAll(res.apiList).then(async r => {
           await cbChecker({type: 'list', value: r})
         })
         break
@@ -642,7 +668,7 @@
           await cbChecker({type: 'postContent', value: res}, 0)
         })
 
-        window.parse.parsePostReplies(
+        window.parse.getPostAllReplies(
           {id: window.win().pageData.id},
           $(window.win().doc.body),
           window.win().doc.documentElement.outerHTML,
