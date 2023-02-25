@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
 </head>
 <body>
 <div id="app"></div>
@@ -95,7 +95,7 @@
           post.node = as[2].innerText
         }
         //标题里面可能也有a标签...不能用as[5]
-        let lastA = as[as.length-1]
+        let lastA = as[as.length - 1]
         if (lastA) {
           post.username = lastA.innerText
           post.date = lastA.nextElementSibling.innerText
@@ -222,16 +222,16 @@
             promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
           }
           Promise.allSettled(promiseList).then(
-            (results) => {
-              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replies = this.getAllReply(repliesMap)
-              post.replies = replies
-              post.replyCount = replies.length
-              post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-              let nestedList = this.createNestedList(replies, post.allReplyUsers)
-              if (nestedList) post.nestedReplies = nestedList
-              resolve(post)
-            }
+              (results) => {
+                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+                let replies = this.getAllReply(repliesMap)
+                post.replies = replies
+                post.replyCount = replies.length
+                post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+                let nestedList = this.createNestedList(replies, post.allReplyUsers)
+                if (nestedList) post.nestedReplies = nestedList
+                resolve(post)
+              }
           );
         })
       }
@@ -380,7 +380,7 @@
             } else {
               isParentReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
             }
-          }else {
+          } else {
             isParentReply = true
           }
           if (isParentReply) {
@@ -464,15 +464,19 @@
       let body = $(bodyText[0])
 
       if (pageType === 'recent') {
+        // box = window.win().query('#Wrapper #Main .box')
+        // let arr = Array.from(box.children)
+        // let start = arr.findIndex(v => v.classList.contains('item'))
+        // list = arr.slice(start, arr.length - 1)
         let list = body.find('.item')
-        let res = this.parsePagePostList(list)
+        let res = this.parsePagePostList(Array.from(list))
         let page = body.find('.cell:last').html()
         return {...res, page}
       }
       if (pageType === 'nodePage') {
         let topics = body.find('#TopicsNode')
         let list = topics.children()
-        let res = this.parsePagePostList(list)
+        let res = this.parsePagePostList(Array.from(list))
         let page = topics.next().html()
         return {...res, page}
       }
@@ -642,13 +646,11 @@
       case 'home':
         box = window.win().query('#Wrapper #Main .box')
         box.style.boxShadow = 'unset'
-        let arr = Array.from(box.children)
-        let start = arr.findIndex(v => v.classList.contains('item'))
-        let end = arr.slice().reverse().findIndex(v => v.classList.length === 0)
         wrapper = box.querySelector('.item')
         wrapper.before($section)
-        // list = box.querySelectorAll('.item')
-        list = arr.slice(start, arr.length - end)
+        let arr = Array.from(box.children)
+        let start = arr.findIndex(v => v.classList.contains('item'))
+        list = arr.slice(start, arr.length - 1)
         res = window.parse.parsePagePostList(list)
         window.win().postList = res.postList
         window.parse.fetchAll(res.apiList).then(async r => {
@@ -659,9 +661,9 @@
         box = window.win().query('#Wrapper #Main .box')
         box.after($section)
         window.parse.parsePostContent(
-          {id: window.win().pageData.id},
-          $(window.win().doc.body),
-          window.win().doc.documentElement.outerHTML
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML
         ).then(async res => {
           // console.log('详情页-基本信息解析完成', new Date())
           window.win().pageData.post = res
@@ -669,10 +671,10 @@
         })
 
         window.parse.getPostAllReplies(
-          {id: window.win().pageData.id},
-          $(window.win().doc.body),
-          window.win().doc.documentElement.outerHTML,
-          window.win().pageData.pageNo
+            {id: window.win().pageData.id},
+            $(window.win().doc.body),
+            window.win().doc.documentElement.outerHTML,
+            window.win().pageData.pageNo
         ).then(async res => {
           // console.log('详情页-回复解析完成', new Date())
           window.win().pageData.post = Object.assign(window.win().pageData.post, res)

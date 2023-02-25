@@ -120,6 +120,7 @@ export default {
         return false
       }
       this.$emit(emitName)
+      return true
     },
     getColor(val) {
       return val ? '#ff4500' : '#929596'
