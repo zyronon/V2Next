@@ -36,7 +36,10 @@
       </div>
       <div class="posts">
         <template v-for="item in list">
-          <div v-if="(item.type === 'ad'||item.type === 'page') && item.innerHTML" class="nav p0 page" :class="viewType">
+          <div v-if="item.type === 'ad' && item.innerHTML" class="nav p0 page" :class="viewType">
+            <div v-html="item.innerHTML"></div>
+          </div>
+          <div v-if="item.type === 'page' && item.innerHTML" class="nav page" :class="viewType">
             <div v-html="item.innerHTML"></div>
           </div>
           <Post
@@ -220,7 +223,7 @@ export default {
                 url = origin + pathname + search.replace(r[1], Number(r[1]) + 1)
               }
             }
-            console.log('url', url)
+            // console.log('url', url)
             window.win().history.pushState({}, 0, url);
             let apiRes = await window.win().fetch(url)
             let htmlText = await apiRes.text()
@@ -465,6 +468,8 @@ export default {
       let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
       // console.log(body)
+
+      window.win().history.pushState({}, 0, url);
 
       this.current = await window.parse.getPostDetail(this.current, body, htmlText)
       if (this.current.replies.length) {

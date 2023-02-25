@@ -1,5 +1,5 @@
 <template>
-  <div class="comment" ref="comment">
+  <div class="comment" :class="modelValue.isOp?'op':''" ref="comment">
     <Author v-model="expand"
             :comment="modelValue"
             @reply="edit = !edit"
@@ -105,6 +105,14 @@ export default {
   margin-top: 1rem;
   background: white;
 
+  //&.op {
+  //  background: rgb(yellow, .3);
+  //
+  //  & > .comment-content-w > .comment-content > .right > .w {
+  //    background: rgb(yellow, .3);
+  //  }
+  //}
+
   .comment-content-w {
     background: white;
 
@@ -154,7 +162,7 @@ export default {
           word-break: break-word;
         }
 
-        .post-editor-wrapper{
+        .post-editor-wrapper {
           margin-top: 1rem;
         }
 
