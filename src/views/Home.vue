@@ -36,7 +36,7 @@
       </div>
       <div class="posts">
         <template v-for="item in list">
-          <div v-if="item.type === 'ad' && item.innerHTML" class="nav p0 page" :class="viewType">
+          <div v-if="(item.type === 'ad'||item.type === 'page') && item.innerHTML" class="nav p0 page" :class="viewType">
             <div v-html="item.innerHTML"></div>
           </div>
           <Post
@@ -241,7 +241,7 @@ export default {
             });
           }
         })
-        // observer.observe(lastItem)
+        observer.observe(lastItem)
       }
       // setTimeout(() => {
       //   this.list.map(v => {

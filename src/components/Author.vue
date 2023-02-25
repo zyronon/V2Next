@@ -94,6 +94,7 @@ export default {
         return false
       }
       this.$emit(emitName)
+      return true
     },
     addThank() {
       eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'add'})
