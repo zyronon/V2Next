@@ -78,7 +78,7 @@
     //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
       //如果没有正文（点的本站的a标签），才会解析正文
-      if (!post.title) {
+      if (!post.title || !post.content_rendered) {
         let main = body.find('#Main')
         let topic_content = main.find('.topic_content')
         if (topic_content.length) {
@@ -98,9 +98,6 @@
           post.username = aName[0].innerText
           post.date = aName[0].nextElementSibling.innerText
         }
-
-        console.log('w', window.win().user)
-
         let avatarNode = main.find('.header .fr img')
         if (avatarNode.length) {
           post.avatar = avatarNode[0].src
