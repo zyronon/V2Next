@@ -115,6 +115,7 @@ async function submit() {
 
         let r2 = res.search('创建新回复')
         if (r2 > -1) {
+          eventBus.emit(CMD.REFRESH_ONCE, res)
           return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
         }
         content.value = replyInfo

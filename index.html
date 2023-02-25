@@ -89,17 +89,17 @@
           post.title = title.html()
         }
         let as = main.find('.header a')
-        debugger
         if (as[2]) {
           post.nodeUrl = as[2].href
           post.node = as[2].innerText
         }
-        //标题里面可能也有a标签...不能用as[5]
-        let lastA = as[as.length - 1]
-        if (lastA) {
-          post.username = lastA.innerText
-          post.date = lastA.nextElementSibling.innerText
+        let aName = main.find('.header small a:nth-child(1)')
+        if (aName) {
+          post.username = aName[0].innerText
+          post.date = aName[0].nextElementSibling.innerText
         }
+
+        console.log('w', window.win().user)
 
         let avatarNode = main.find('.header .fr img')
         if (avatarNode.length) {
@@ -389,8 +389,8 @@
           }
         }
       })
-      console.log('replies长度', allList)
-      console.log('nestedList长度', nestedList)
+      // console.log('replies长度', allList)
+      // console.log('nestedList长度', nestedList)
       window.win().lastCallDate = Date.now()
       return nestedList
     },
@@ -537,7 +537,6 @@
       }, 3000)
       return {postList, apiList}
     },
-
     fetchAll(list) {
       return new Promise(resolve => {
         Promise.allSettled(list.map(url => $.get(url))).then(async (res) => {
@@ -606,7 +605,7 @@
     if (top2 !== '注册') {
       window.win().user = {
         username: top2,
-        avatar: $('#Rightbar .box:nth-child(1) .avatar', window.win().doc).attr('src')
+        avatar: $('#Rightbar .box .avatar', window.win().doc).attr('src')
       }
     }
 

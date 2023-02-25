@@ -187,7 +187,7 @@ export default {
         window.win().doc.body.style.overflow = 'unset'
         this.isSticky = false
         if (window.win().pageType === 'home') {
-          // window.history.back();
+          window.history.back();
         }
       } else {
         this.$nextTick(() => {
