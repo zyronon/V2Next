@@ -11,22 +11,6 @@
 <body>
 <div id="app"></div>
 <script>
-  // ==UserScript==
-  // @name         New Userscript
-  // @namespace    http://tampermonkey.net/
-  // @version      0.1
-  // @description  try to take over the world!
-  // @author       You
-  // @match        https://*.v2ex.com/
-  // @match        https://*.v2ex.com/?tab=*
-  // @match        https://*.v2ex.com/t/*
-  // @match        https://*.v2ex.com/recent*
-  // @match        https://*.v2ex.com/go/*
-  // @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
-  // @grant        none
-  // ==/UserScript==
-
-
   const isDev = true
 
   if (window.top[0]) {
@@ -590,7 +574,6 @@
   // console.log('postList', window.win().postList)
   // console.log('init', window.win().init)
 
-  //let $vue = document.createElement('iframe');$vue.src = 'http://localhost:3000/';document.body.appendChild($vue);
 
   window.win().canParseV2exPage = true
   //开发环境并且没有嵌套到v2ex的网页里面时，不要解析

@@ -1,8 +1,18 @@
 <template>
-  <div class="app-home" :class="[viewType,pageType]">
+  <div class="app-home" :class="[config.viewType,pageType]">
     <template v-if="showList">
-      <div class="nav flex flex-end" :class="viewType">
-        <div class="nav-item" :class="{active:viewType === 'table'}" @click="saveConfig(viewType = 'table')">
+      <div class="nav flex flex-end" :class="config.viewType">
+        <div class="nav-item" @click="showConfig = true">
+          <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M34.0003 41L44 24L34.0003 7H14.0002L4 24L14.0002 41H34.0003Z" fill="none" stroke="#000000"
+                  stroke-width="4" stroke-linejoin="round"/>
+            <path
+                d="M24 29C26.7614 29 29 26.7614 29 24C29 21.2386 26.7614 19 24 19C21.2386 19 19 21.2386 19 24C19 26.7614 21.2386 29 24 29Z"
+                fill="none" stroke="#000000" stroke-width="4" stroke-linejoin="round"/>
+          </svg>
+          <span>配置</span>
+        </div>
+        <div class="nav-item" :class="{active:config.viewType === 'table'}" @click="config.viewType = 'table'">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 5H6V13H42V5Z" fill="none" :stroke="svgColor('table')" stroke-width="4"
                   stroke-linejoin="round"/>
@@ -13,7 +23,7 @@
           </svg>
           <span>表格</span>
         </div>
-        <div class="nav-item" :class="{active:viewType === 'card'}" @click="saveConfig(viewType = 'card')">
+        <div class="nav-item" :class="{active:config.viewType === 'card'}" @click="config.viewType = 'card'">
           <svg width="19" height="19" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 18V40C42 41.1046 41.1046 42 40 42H8C6.89543 42 6 41.1046 6 40V18" :stroke="svgColor('card')"
                   stroke-width="4"
@@ -36,17 +46,17 @@
       </div>
       <div class="posts">
         <template v-for="item in list">
-          <div v-if="item.type === 'ad' && item.innerHTML" class="nav p0 page" :class="viewType">
+          <div v-if="item.type === 'ad' && item.innerHTML" class="nav p0 page" :class="config.viewType">
             <div v-html="item.innerHTML"></div>
           </div>
-          <div v-if="item.type === 'page' && item.innerHTML" class="nav page" :class="viewType">
+          <div v-if="item.type === 'page' && item.innerHTML" class="nav page" :class="config.viewType">
             <div v-html="item.innerHTML"></div>
           </div>
           <Post
               v-else
-              :viewType="viewType"
+              :viewType="config.viewType"
               :post="item"
-              :class="{visited:readList.has(item.id)}"
+              :class="{visited:config.readList.has(item.id)}"
               @show="getPostDetail(item,$event)"/>
         </template>
         <div class="flex flex-center p1" v-if="loadMore">
@@ -58,18 +68,73 @@
       <div class="my-box flex f14" style="margin: 1rem 0 0 0;padding: 1rem;">
         <div class="flex">
           自动加载详情页 ：
-          <div class="switch" :class="{active:autoOpenDetail}" @click="saveConfig(autoOpenDetail = !autoOpenDetail)"/>
+          <div class="switch" :class="{active:config.autoOpenDetail}"
+               @click="config.autoOpenDetail = !config.autoOpenDetail"/>
         </div>
         <div class="button" @click="openPostDetail" :class="{loading}">
           点击显示详情页
         </div>
       </div>
     </template>
-    <PostDetail v-model="show" :loading="loading"/>
+    <PostDetail v-model="show"
+                v-model:commentDisplayType="config.commentDisplayType"
+                :closePostDetailBySpace="config.closePostDetailBySpace"
+                :loading="loading"/>
     <div class="msgs">
       <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
     </div>
     <Base64Tooltip/>
+    <div class="setting" v-if="showConfig">
+      <div class="mask" @click="showConfig = !showConfig"></div>
+      <div class="wrapper">
+        <div class="title">
+          脚本配置
+        </div>
+        <div class="sub-title">
+          配置自动保存到本地，下次打开依然生效
+        </div>
+        <div class="option">
+          列表帖子展示方式：
+          <div class="radio-group2">
+            <div class="radio"
+                 @click="config.viewType = 'table'"
+                 :class="config.viewType === 'table'?'active':''">表格
+            </div>
+            <div class="radio"
+                 @click="config.viewType = 'card'"
+                 :class="config.viewType === 'card'?'active':''">卡片
+            </div>
+          </div>
+        </div>
+        <div class="option">
+          回复展示方式：
+          <div class="radio-group2">
+            <div class="radio"
+                 @click="config.commentDisplayType = 0"
+                 :class="config.commentDisplayType === 0?'active':''">楼中楼
+            </div>
+            <div class="radio"
+                 @click="config.commentDisplayType = 1"
+                 :class="config.commentDisplayType === 1?'active':''">感谢最多
+            </div>
+            <div class="radio"
+                 @click="config.commentDisplayType = 2"
+                 :class="config.commentDisplayType === 2?'active':''">V2原版
+            </div>
+          </div>
+        </div>
+        <div class="option">
+          自动加载详情页 ：
+          <div class="switch" :class="{active:config.autoOpenDetail}"
+               @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+        </div>
+        <div class="option">
+          点击两侧空白处关闭帖子详情：
+          <div class="switch" :class="{active:config.closePostDetailBySpace}"
+               @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -103,7 +168,6 @@ export default {
   },
   data() {
     return {
-      viewType: 'card',
       loading: window.win().pageType === 'post',
       loadMore: false,
       pageType: window.win().pageType,
@@ -111,10 +175,16 @@ export default {
         // {type: 'success', text: '123', id: Date.now()}
       ],
       show: false,
-      autoOpenDetail: false,
+      showConfig: false,
       current: window.win().initPost,
       list: [],
-      readList: new Set(),
+      config: {
+        autoOpenDetail: false,
+        closePostDetailBySpace: true,//点击空白处关闭详情
+        readList: new Set(),
+        viewType: 'card',
+        commentDisplayType: 0
+      }
     }
   },
   computed: {
@@ -150,6 +220,14 @@ export default {
         }
       },
       deep: true
+    },
+    config: {
+      handler(newVal) {
+        let readList = Array.from(newVal.readList);
+        let config = {[window.win().user.username ?? 'default']: {...newVal, readList}}
+        window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
+      },
+      deep: true
     }
   },
   created() {
@@ -174,19 +252,17 @@ export default {
 
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
-      let config = JSON.parse(configStr)
-      config = config[window.win().user.username ?? 'default']
-      if (config) {
-        this.readList = new Set(config.readList);
-        this.viewType = config.viewType
-        this.autoOpenDetail = config.autoOpenDetail || false
-        if (this.autoOpenDetail && this.pageType === 'post') {
+      let configObj = JSON.parse(configStr)
+      configObj = configObj[window.win().user.username ?? 'default']
+      if (configObj) {
+        configObj.readList = new Set(configObj.readList);
+        this.config = Object.assign(this.config, configObj)
+        if (this.config.autoOpenDetail && this.pageType === 'post') {
           this.loading = true
           this.openPostDetail()
         }
       }
     }
-    window.win().onbeforeunload = this.saveConfig
 
     if (window.win().canParseV2exPage) {
       this.list = window.win().postList
@@ -278,7 +354,7 @@ export default {
         window.win().vueCb && window.win().vueCb()
       }
       if (type === 'postContent') {
-        this.saveConfig(this.readList.add(value.id))
+        this.config.readList.add(value.id)
         this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
       }
       if (type === 'postReplies') {
@@ -298,16 +374,6 @@ export default {
         window.win().$adListEl.innerHTML = ''
         window.win().adList = []
       }
-    },
-    saveConfig() {
-      let config = {
-        [window.win().user.username ?? 'default']: {
-          viewType: this.viewType,
-          readList: Array.from(this.readList),
-          autoOpenDetail: this.autoOpenDetail
-        }
-      }
-      window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
     },
     clone(val) {
       return window.win().clone(val)
@@ -415,7 +481,7 @@ export default {
       })
     },
     svgColor(type) {
-      return type === this.viewType ? 'white' : '#929596'
+      return type === this.config.viewType ? 'white' : '#929596'
     },
     removeMsg(id) {
       let rIndex = this.msgList.findIndex(item => item.id === id)
@@ -441,7 +507,7 @@ export default {
           }
         }
       }
-      this.saveConfig(this.readList.add(post.id))
+      this.config.readList.add(post.id)
       this.current = Object.assign(
           window.win().clone(window.win().initPost),
           {RightbarHTML: this.current.RightbarHTML},
@@ -492,6 +558,8 @@ export default {
 @import "../assets/less/variable";
 
 .app-home {
+  position: relative;
+
   &.home, &.recent, &.nodePage {
     background: rgb(226, 226, 226);
   }
@@ -547,5 +615,77 @@ export default {
       margin-left: .4rem;
     }
   }
+}
+
+.setting {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //left: 50%;
+  //top: 50%;
+  //transform: translate(-50%, -50%);
+
+  .mask {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background: rgba(black, .3);
+  }
+
+  .wrapper {
+    z-index: 9;
+    background: #f1f1f1;
+    border-radius: .8rem;
+    font-size: 1.4rem;
+    //box-shadow: 0 0 6px 4px gainsboro;
+    padding: 2rem 6rem 4rem 6rem;
+
+    .title {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .sub-title {
+      color: gray;
+      font-size: 1.4rem;
+      margin-bottom: 4rem;
+    }
+
+    .option {
+      width: 40rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+
+      .radio-group2 {
+        display: flex;
+        border-radius: .5rem;
+        overflow: hidden;
+
+        .radio {
+          cursor: pointer;
+          background: white;
+          padding: .7rem 1.5rem;
+          border: none;
+        }
+
+        .active {
+          background: #40a9ff;
+          color: white;
+
+        }
+      }
+    }
+  }
+
+
 }
 </style>

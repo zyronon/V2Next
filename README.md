@@ -3,9 +3,9 @@
 # 主要功能
 
 - 支持回复以楼中楼的方式展示
-  - 加载所有回复，保持楼中楼解析回复正确
-  - 提供三种展示方式：楼中楼、按感谢排序、V2原版
-  - 超过15层嵌套，默认隐藏剩余回复，点击可展开，保证嵌套过多不会导致页面变形
+    - 加载所有回复，保持楼中楼解析回复正确
+    - 提供三种展示方式：楼中楼、按感谢排序、V2原版
+    - 超过15层嵌套，默认隐藏剩余回复，点击可展开，保证嵌套过多不会导致页面变形
 - 首页、节点页面，可以直接预览帖子详情
 - 列表点击帖子弹出帖子详情（不跳转页面），异步加载帖子内容
 - 操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面
@@ -24,77 +24,57 @@
 - 高亮楼主回复
 - 集成 sov2ex
 - 如果回复中，指定了楼层，用hover的形式显示
+- 适配黑夜模式
 
 # 如需要其他功能或发现bug，可在[这里](https://github.com/zyronon/v2ex-script/issues)提出
 
-https://www.v2ex.com/poll_once 好像是换once的
+# 开发指南
 
-# 测试数据
-- 362535 回复巨多
-- 825072 嵌套问题
-- 898448 超级多
-bug
-# 回复问题
-- [x]  667520 嵌套有问题 
-- [x]  825072 嵌套有问题 
-- [x]  918489 嵌套有问题 
-- [x]  724408 嵌套超级多 259 在v站单独打开帖子 失效 
-- [ ]  889129 有附言的 
-- [x]  890671  楼中楼不正常,70楼，回复的32楼。但是也没问题
-- [x]  bug：https://greasyfork.org/zh-CN/scripts/397787-v2ex-pro/discussions/51302
+## 步骤有点麻烦。但是是一次性的
 
-# 其他问题
-- [x] 点击图片无反应 https://www.v2ex.com/t/886814  备注：本来点了也没反应  
-- [x]  回复自己的帖子失效 https://www.v2ex.com/t/887103 
-- [x]  youtube视频不能占满 704240
-- [ ]  886895 正文显示异常 开发模式显示异常，在v2ex站内显示正常
-- [ ]  脚本有问题的tooltip显示不出来了
-- [ ]  单独打开帖子，不自动显示的情况下，好像把body设为overflow:hidden了
-- [ ]  单独打开帖子，自动显示的情况下，没有滚动到顶部
+1. 在硬盘新建一个空白目录。
+2. 复制Chrome的快捷方式。然后右键新的快捷方式，点击属性，在属性弹框里面，点击上面的第二个Tab（快捷方式）
+3. 找到目标，在输入框里面加上 --args --disable-web-security --disable-site-isolation-trials
+   --user-data-dir=第一步建的目录地址（不用加引用）
+   例："C:\Program Files\Google\Chrome\Application\chrome.exe" --args --disable-web-security
+   --disable-site-isolation-trials --user-data-dir=C:\Users\abc\Documents\chrome2
+4. 保存，然后双击打开这个快捷方式。这样子新打开的Chrome就允许跨域了
+5. 在新开的Chrome里面安装tampermonkey这个插件
+6. 在里面“添加新脚本”，复制以下内容
 
-# TODO
-- [ ]未登录情况下的收藏、忽略等按钮
-- [x] todo 等页面分类出来了，记得把单独打开帖子时，点击忽略后要跳转到首页 
-- [x] 条目点击后变灰，已读功能 
-- [x] 回复时，如果是@人，那么即使显示的时候，要加上a标签 
-- [x] 列表，卡片和表格间切换 
-- [x] base64解码解码 https://www.v2ex.com/t/889937 
-- [x] 回复按照❤️排序 
-- [x] 实现回复里面@ 
-- [x] 打开详情，有时候默认会跳转到最后一页 
-- [x] 主贴回复 
-- [x] 屏蔽预览时的 a链接点击跳转 
-- [x] 解决 楼中楼全套过多的问题 887103 
-- [x] 自适应屏幕宽度 
-- [x] 超过15层嵌套，自动修改宽度 
-- [x] 单独打开帖子,提供一个选项是否默认打开详情页 
-- [x] 点赞，需要修改源数据，否则会导致楼中楼和嵌套数据不相同
-- [x] 分页，可选自动翻页，还是点击后加载翻页
-- [ ] 解析列表条目时，如果中间有广告，会导致获取app 下一个时是广告，而不是分页
-- [ ] 点击界面上的a标签，如果是v站的，那么就弹出详情页，如果是其他，比如是video和img，要禁止
-- [ ] 缓存详情数据
-- [ ] 帖子详情理更像v2
-- [ ] 打开详情时，地址栏显示帖子地址
-- [ ] 详情页，广告无法显示的问题
-- [ ] 帖子404 https://www.v2ex.com/t/855918#reply26
-- [ ] 解决createNestedList 短时间内调用次数过多问题
-- [ ] 新标签页打开链接
-- [ ] 回复里面如果是 本站帖子，那么不打开新的页面
-- [ ] 测试复制的签到功能
-- [ ] 测试复制的搜索功能
-- [ ] 首页自动翻页
-- [ ] 详情页超过5页，不执行获取所有回复
-- [ ] 读取用户，用于比较
-- [ ] 适配夜间模式
-- [ ] 支持多开
-- [ ] 隐藏 v2ex 用户头像/页面背景
-- [ ] v2ex 免跳转浏览 + 折叠回复少的页面
-- [ ] v2ex屏蔽不想看到的节点
-- [ ] 首页tab切换
-- [ ] 支持手机版
+```js
+// ==UserScript==
+// @name         开发：V2EX - 超级增强
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       You
+// @match        https://*.v2ex.com/
+// @match        https://*.v2ex.com/?tab=*
+// @match        https://*.v2ex.com/t/*
+// @match        https://*.v2ex.com/recent*
+// @match        https://*.v2ex.com/go/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
+// @grant        none
+// ==/UserScript==
 
+(function () {
+  'use strict';
+  let $vue = document.createElement('iframe');
+  $vue.src = 'http://localhost:3000/';
+  document.body.appendChild($vue);
+})();
+```
 
+7. 克隆本项目，然后安装依赖，然后启动。
+8. 修改本项目的index.html文件里面第30行，将const isDev = false 改为const isDev = ture
+9. 用新的Chrome打开v2ex.com。本脚本会自动注入到v2的网页里面
+10. 像正常的vue项目一样开发即可
 
+# 打包指南
 
-
-
+1. 如果你修改了index.html里面的第一个<script>标签的内容。那么也要复制到脚本里面。注意：const isDev = true 要修改为 const
+   isDev = false。其他的js内容全部复制替换到脚本的第40行之后即可
+2. 运行npm run build
+3. 复制dist/assets目录下的css和js，css复制替换到脚本的21行，js复制替换到脚本的32行
+4. 注意，js和css一定要同时复制。vue打包后的"data-v-c9f8a6c7"这种东西，会重新生成
