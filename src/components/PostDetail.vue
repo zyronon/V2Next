@@ -3,7 +3,7 @@
        ref="detail"
        @scroll="scroll"
        v-show="modelValue"
-       @click="$emit('update:modelValue',false)">
+       @click="close('space')">
     <div class="main" @click.stop="stop">
       <div class="left">
         <div class="left-wrapper">
@@ -52,7 +52,7 @@
                 </span>
               <div class="sort-select">
                 <div class="target" @click.stop="showSortOption = true">
-                  <span>排序：{{ sortOptions.find(v => v.value === target).label }}</span>
+                  <span>排序：{{ sortOptions.find(v => v.value === commentDisplayType).label }}</span>
                   <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
                           stroke-linejoin="round"/>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="options" v-if="showSortOption">
                   <div class="option"
-                       :class="{active:target === item.value}"
+                       :class="{active:commentDisplayType === item.value}"
                        @click="changeOption(item)"
                        v-for="item in sortOptions">
                     {{ item.label }}
@@ -111,6 +111,13 @@
           <a>{{ item }}</a>
         </div>
       </div>
+
+      <div class="close-btn" @click="close('btn')">
+        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 8L40 40" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 40L40 8" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
@@ -142,12 +149,13 @@ export default {
   props: {
     modelValue: false,
     loading: false,
+    closePostDetailBySpace: true,
+    commentDisplayType: 0,
   },
   data() {
     return {
       showSortOption: false,
       isSticky: false,
-      target: 0,
       sortOptions: [
         {value: 0, label: '楼中楼'},
         {value: 1, label: '感谢'},
@@ -174,18 +182,18 @@ export default {
       return []
     },
     replies() {
-      if (this.target === 0) return this.post.nestedReplies
-      if (this.target === 1) {
+      if (this.commentDisplayType === 0) return this.post.nestedReplies
+      if (this.commentDisplayType === 1) {
         return this.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
-      if (this.target === 2) return this.post.replies
+      if (this.commentDisplayType === 2) return this.post.replies
     },
   },
   watch: {
     modelValue(newVal) {
       if (!newVal) {
         window.win().doc.body.style.overflow = 'unset'
-        this.isSticky = false
+        this.showSortOption = this.isSticky = false
         if (window.win().pageType === 'home') {
           window.history.back();
         }
@@ -235,6 +243,15 @@ export default {
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    close(from) {
+      if (from === 'space') {
+        if (this.closePostDetailBySpace) {
+          this.$emit('update:modelValue', false)
+        }
+      } else {
+        this.$emit('update:modelValue', false)
+      }
+    },
     setCall(e) {
       eventBus.emit(CMD.SET_CALL, e)
       this.showCallList = false
@@ -267,7 +284,7 @@ export default {
     },
     changeOption(item) {
       this.showSortOption = false;
-      this.target = item.value
+      this.$emit('update:commentDisplayType', item.value)
     },
     stop() {
       this.showSortOption = false
@@ -327,8 +344,10 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 
+
   .main {
     display: flex;
+    justify-content: flex-end;
     padding: 6rem 12rem 15rem 12rem;
     //margin: auto;
     //box-sizing: border-box;
@@ -532,6 +551,7 @@ export default {
         }
       }
     }
+
   }
 
   @media screen and (max-width: 1500px) {
@@ -569,6 +589,15 @@ export default {
     position: fixed;
     bottom: 3rem;
     z-index: 99;
+  }
+
+  .close-btn {
+    cursor: pointer;
+    position: fixed;
+    top: 6rem;
+    transform: translateX(4rem);
+
+    //margin-left: 50rem;
   }
 }
 </style>
