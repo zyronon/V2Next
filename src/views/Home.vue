@@ -507,6 +507,8 @@ export default {
           }
         }
       }
+      let url = window.win().url + '/t/' + post.id
+      window.win().history.pushState({}, 0, url);
       this.config.readList.add(post.id)
       this.current = Object.assign(
           window.win().clone(window.win().initPost),
@@ -516,7 +518,6 @@ export default {
       //如果，有数据，不显示loading,默默更新即可
       if (!this.current.replies.length) this.loading = true
 
-      let url = window.win().url + '/t/' + post.id
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
       let apiRes = await window.win().fetch(url + '?p=1')
@@ -534,8 +535,6 @@ export default {
       let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
       // console.log(body)
-
-      window.win().history.pushState({}, 0, url);
 
       this.current = await window.parse.getPostDetail(this.current, body, htmlText)
       if (this.current.replies.length) {
