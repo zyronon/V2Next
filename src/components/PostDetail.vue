@@ -76,7 +76,7 @@
             <div class="comments" ref="comments" v-else>
               <Comment v-for="(item,index) in replies"
                        :key="item.floor"
-                       style="border-bottom: 1px solid #e2e2e2;  padding: 1rem;margin-top: 0;"
+                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#e2e2e2'};  padding: 1rem;margin-top: 0;`"
                        v-model="replies[index]"/>
             </div>
           </div>
@@ -393,11 +393,12 @@ export default {
         }
       }
 
-      /deep/ .subtle {
-        .fade{
+      :deep(.subtle) {
+        .fade {
           color: #b2c3d4 !important;
         }
-        .topic_content{
+
+        .topic_content {
           color: @text !important;
         }
       }
@@ -416,8 +417,7 @@ export default {
         }
       }
 
-      /deep/ .comment {
-        border-bottom: 1px solid @line !important;
+      :deep(.comment) {
         background: @bg;
 
         .expand-line {
@@ -435,7 +435,7 @@ export default {
         }
       }
 
-      /deep/ .Author-right {
+      :deep(.Author-right) {
 
         .toolbar {
           &:hover {
@@ -448,7 +448,7 @@ export default {
         }
       }
 
-      /deep/ .point {
+      :deep(.point) {
         margin-left: .5rem;
 
         svg {
@@ -462,7 +462,7 @@ export default {
         }
       }
 
-      /deep/ .floor {
+      :deep(.floor) {
         background: #393f4e !important;
         color: #d1d5d9 !important;
       }
@@ -471,7 +471,7 @@ export default {
         background: #393f4e !important;
       }
 
-      /deep/ .post-editor-wrapper {
+      :deep(.post-editor-wrapper) {
         //border: 1px solid #507092;
         .post-editor {
           background: @bg;
