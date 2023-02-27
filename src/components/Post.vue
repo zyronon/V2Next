@@ -1,7 +1,7 @@
 <template>
   <div class="post"
        :style="postStyle"
-       :class="props.viewType"
+       :class="[props.viewType,props.isNight?'isNight':'']"
        @click="$emit('show',$event)">
     <div class="base-info">
       <div class="left">
@@ -16,11 +16,13 @@
           </div>
           <div class="bottom">
             <template v-if="props.post.node">
-              <a @click.stop="null"  :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
+              <a @click.stop="null" :href="props.post.nodeUrl" class="my-node">{{ props.post.node }}</a>
               &nbsp;&nbsp;•&nbsp;&nbsp;
             </template>
             <strong>
-              <a @click.stop="null"  class="username" :href="`/member/${props.post.username}`">{{ props.post.username }}</a>
+              <a @click.stop="null" class="username" :href="`/member/${props.post.username}`">{{
+                  props.post.username
+                }}</a>
             </strong>
             &nbsp;&nbsp;•&nbsp;&nbsp;
             <span class="date">{{ props.post.date }}</span>
@@ -39,7 +41,7 @@
 import {computed, ref, watch} from "vue";
 
 const checkHeight = 200
-const props = defineProps(['post', 'viewType'])
+const props = defineProps(['post', 'viewType', 'isNight'])
 // const {post, viewType} = props
 const mask = ref(false)
 const contentRef = ref(null)
@@ -94,6 +96,52 @@ p {
   text-align: start;
   padding: 1rem;
   overflow: hidden;
+
+  &.isNight {
+    background: #18222d;
+    border: none !important;
+
+    .title a {
+      color: #a9bcd6 !important;
+    }
+
+    .bottom .date {
+      color: #738292;
+    }
+
+    .post-content-wrapper {
+      color: #d1d5d9 !important;
+    }
+
+    .my-node {
+      background: #393f4e;
+      color: #9caec7;
+
+      &:hover {
+        background: #9caec7;
+        color: #001d25;
+      }
+    }
+
+    .count {
+      background: #393f4e !important;
+      color: #d1d5d9 !important;
+    }
+
+    &.visited {
+      .count {
+        background: #001d25 !important;
+        color: #393f4e !important;
+      }
+
+      .title a {
+        color: #393f4e !important;
+      }
+      .post-content-wrapper {
+        color: #576077 !important;
+      }
+    }
+  }
 
   &.table {
     border-bottom: 1px solid @border;

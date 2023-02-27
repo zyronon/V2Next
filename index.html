@@ -549,27 +549,6 @@
     }
   }
 
-  let location2 = window.win().location
-  if (location2.pathname === '/') {
-    window.win().pageType = 'home'
-  } else if (location2.href.match(/.com\/?tab=/)) {
-    window.win().pageType = 'home'
-  } else if (location2.href.match(/.com\/go\//)) {
-    window.win().pageType = 'nodePage'
-  } else if (location2.href.match(/.com\/recent/)) {
-    window.win().pageType = 'recent'
-  } else {
-    let r = location2.href.match(/.com\/t\/([\d]+)/)
-    if (r) {
-      window.win().pageType = 'post'
-      window.win().pageData.id = r[1]
-      if (location2.search) {
-        let pr = location2.href.match(/\?p=([\d]+)/)
-        if (pr) window.win().pageData.pageNo = Number(pr[1])
-      }
-    }
-  }
-
   // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
   // console.log('postList', window.win().postList)
   // console.log('init', window.win().init)
@@ -581,6 +560,29 @@
     window.win().canParseV2exPage = false
   }
   if (window.win().canParseV2exPage) {
+    let location2 = window.win().location
+    if (location2.pathname === '/') {
+      window.win().pageType = 'home'
+    } else if (location2.href.match(/.com\/?tab=/)) {
+      window.win().pageType = 'home'
+    } else if (location2.href.match(/.com\/go\//)) {
+      window.win().pageType = 'nodePage'
+    } else if (location2.href.match(/.com\/recent/)) {
+      window.win().pageType = 'recent'
+    } else {
+      let r = location2.href.match(/.com\/t\/([\d]+)/)
+      if (r) {
+        window.win().pageType = 'post'
+        window.win().pageData.id = r[1]
+        if (location2.search) {
+          let pr = location2.href.match(/\?p=([\d]+)/)
+          if (pr) window.win().pageData.pageNo = Number(pr[1])
+        }
+      }
+    }
+
+    window.win().isNight = $('.Night').length === 1
+
     let top2 = window.win().query('.tools .top:nth-child(2)').text
     if (top2 !== '注册') {
       window.win().user = {

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-home" :class="[config.viewType,pageType]">
+  <div class="app-home" :class="[config.viewType,pageType,isNight?'isNight':'']">
     <template v-if="showList">
       <div class="nav flex flex-end" :class="config.viewType">
         <div class="nav-item" @click="showConfig = true">
@@ -56,6 +56,7 @@
               v-else
               :viewType="config.viewType"
               :post="item"
+              :isNight="isNight"
               :class="{visited:config.readList.has(item.id)}"
               @show="getPostDetail(item,$event)"/>
         </template>
@@ -65,7 +66,7 @@
       </div>
     </template>
     <template v-if="pageType === 'post'">
-      <div class="my-box flex f14" style="margin: 1rem 0 0 0;padding: 1rem;">
+      <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
         <div class="flex">
           自动加载详情页 ：
           <div class="switch" :class="{active:config.autoOpenDetail}"
@@ -77,6 +78,7 @@
       </div>
     </template>
     <PostDetail v-model="show"
+                :isNight="isNight"
                 v-model:commentDisplayType="config.commentDisplayType"
                 :closePostDetailBySpace="config.closePostDetailBySpace"
                 :loading="loading"/>
@@ -94,7 +96,7 @@
           配置自动保存到本地，下次打开依然生效
         </div>
         <div class="option">
-          列表帖子展示方式：
+          <span>列表帖子展示方式：</span>
           <div class="radio-group2">
             <div class="radio"
                  @click="config.viewType = 'table'"
@@ -107,7 +109,7 @@
           </div>
         </div>
         <div class="option">
-          回复展示方式：
+          <span>回复展示方式：</span>
           <div class="radio-group2">
             <div class="radio"
                  @click="config.commentDisplayType = 0"
@@ -124,12 +126,12 @@
           </div>
         </div>
         <div class="option">
-          自动加载详情页 ：
+          <span>自动加载详情页 ：</span>
           <div class="switch" :class="{active:config.autoOpenDetail}"
                @click="config.autoOpenDetail = !config.autoOpenDetail"/>
         </div>
         <div class="option">
-          点击两侧空白处关闭帖子详情：
+          <span>点击两侧空白处关闭帖子详情：</span>
           <div class="switch" :class="{active:config.closePostDetailBySpace}"
                @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
         </div>
@@ -171,6 +173,7 @@ export default {
       loading: window.win().pageType === 'post',
       loadMore: false,
       pageType: window.win().pageType,
+      isNight: window.win().isNight,
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
@@ -563,6 +566,30 @@ export default {
     background: rgb(226, 226, 226);
   }
 
+  &.isNight {
+    background: #22303f;
+
+    .open-post, .nav {
+      color: white;
+      background: #18222d;
+      border: none;
+    }
+
+    .setting {
+      .wrapper {
+        background: #22303f;
+
+        .option {
+          color: black;
+
+          span {
+            color: gray !important;
+          }
+        }
+      }
+    }
+  }
+
   &.card {
     padding: 1rem 0;
   }
@@ -679,7 +706,6 @@ export default {
         .active {
           background: #40a9ff;
           color: white;
-
         }
       }
     }

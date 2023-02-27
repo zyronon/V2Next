@@ -3,8 +3,10 @@
        ref="detail"
        @scroll="scroll"
        v-show="modelValue"
+       :class="[isNight?'isNight':'']"
        @click="close('space')">
-    <div class="main" @click.stop="stop">
+    <div class="main"
+         @click.stop="stop">
       <div class="left">
         <div class="left-wrapper">
           <div class="my-box post-wrapper">
@@ -69,7 +71,7 @@
               </div>
             </div>
             <div class="loading-wrapper" v-if="loading">
-              <div class="loading-c"></div>
+              <div :class="[isNight?'loading-b':'loading-c']"></div>
             </div>
             <div class="comments" ref="comments" v-else>
               <Comment v-for="(item,index) in replies"
@@ -114,8 +116,10 @@
 
       <div class="close-btn" @click="close('btn')">
         <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 8L40 40" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 40L40 8" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 8L40 40" :stroke="isNight?'#ffffff':'#000000'" stroke-width="4" stroke-linecap="round"
+                stroke-linejoin="round"/>
+          <path d="M8 40L40 8" :stroke="isNight?'#ffffff':'#000000'" stroke-width="4" stroke-linecap="round"
+                stroke-linejoin="round"/>
         </svg>
       </div>
     </div>
@@ -147,9 +151,30 @@ export default {
     }
   },
   props: {
-    modelValue: false,
-    loading: false,
-    closePostDetailBySpace: true,
+    modelValue: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    },
+    loading: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    },
+    isNight: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    },
+    closePostDetailBySpace: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    },
     commentDisplayType: 0,
   },
   data() {
@@ -344,6 +369,144 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 
+  &.isNight {
+    background: rgba(46, 47, 48, .8);
+
+    .main {
+      background: #22303f;
+
+      @bg: #18222d;
+      @bg1: #22303f;
+      @line: #22303f;
+      @text: #d1d5d9;
+
+      .my-box {
+        color: white;
+        background: @bg;
+
+        .title, .content {
+          color: @text !important;
+        }
+
+        .base-info, .content {
+          border: 1px solid @line !important;
+        }
+      }
+
+      /deep/ .subtle {
+        .fade{
+          color: #b2c3d4 !important;
+        }
+        .topic_content{
+          color: @text !important;
+        }
+      }
+
+      .my-cell {
+        border-bottom: 1px solid @line !important;
+      }
+
+      .options {
+        background: #22303f !important;
+
+        .option {
+          &:hover {
+            background-color: #393f4e !important;
+          }
+        }
+      }
+
+      /deep/ .comment {
+        border-bottom: 1px solid @line !important;
+        background: @bg;
+
+        .expand-line {
+          &::after {
+            border-right: 2px solid #507092 !important;
+          }
+        }
+
+        .comment-content {
+          background: @bg !important;
+
+          .w > .text {
+            color: #d1d5d9 !important;
+          }
+        }
+      }
+
+      /deep/ .Author-right {
+
+        .toolbar {
+          &:hover {
+            background: @bg !important;
+          }
+        }
+
+        .tool {
+          background: @bg1 !important;
+        }
+      }
+
+      /deep/ .point {
+        margin-left: .5rem;
+
+        svg {
+          &:hover {
+            background: @bg1;
+          }
+        }
+
+        .num {
+          color: #d1d5d9 !important;
+        }
+      }
+
+      /deep/ .floor {
+        background: #393f4e !important;
+        color: #d1d5d9 !important;
+      }
+
+      .editor-wrapper {
+        background: #393f4e !important;
+      }
+
+      /deep/ .post-editor-wrapper {
+        //border: 1px solid #507092;
+        .post-editor {
+          background: @bg;
+          border: transparent;
+          color: white;
+        }
+
+        .toolbar {
+          background: #393f4e !important;
+        }
+      }
+
+      .call-list {
+        background: @bg1;
+
+        .call-item {
+          border-top: 1px solid @bg;
+
+          .select {
+            background-color: #393f4e;
+            text-decoration: none;
+          }
+
+          &:hover {
+            .select();
+          }
+
+          &.select {
+            .select();
+          }
+
+        }
+      }
+    }
+  }
 
   .main {
     display: flex;
