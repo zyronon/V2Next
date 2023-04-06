@@ -27,6 +27,8 @@
 - 如果回复中，指定了楼层，用hover的形式显示
 - 打标签功能
    https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
+- 已读同步到gist
+- 回复太多，考虑放后台，如924034
 
 # 如需要其他功能或发现bug，可在[这里](https://github.com/zyronon/v2ex-script/issues)提出
 
