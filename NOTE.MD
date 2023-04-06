@@ -17,7 +17,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - [ ]  889129 有附言的
 - [x]  890671 楼中楼不正常,70楼，回复的32楼。但是也没问题
 - [x]  bug：https://greasyfork.org/zh-CN/scripts/397787-v2ex-pro/discussions/51302
-
+- [ ]  930155 指定回复我，解析到后面去了。还是要考虑，如果标明了楼层号，尽量以楼层号优先解析
 # 其他问题
 
 - [x] 点击图片无反应 https://www.v2ex.com/t/886814  备注：本来点了也没反应

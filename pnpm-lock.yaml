@@ -1,13 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@vitejs/plugin-vue': 2.2.0
-  axios: ^0.26.1
-  dayjs: ^1.11.7
+  '@vitejs/plugin-vue': '*2.2.0'
+  axios: ^0.26.0
+  dayjs: ^1.10.8
   less: 4.1.1
   mitt: ^3.0.0
-  rollup-plugin-commonjs: 10.1.0
-  rollup-plugin-external-globals: 0.6.1
+  rollup-plugin-commonjs: '*10.1.0'
+  rollup-plugin-external-globals: '*0.6.1'
   vite: ^4.1.4
   vue: ^3.2.47
 
