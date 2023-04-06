@@ -25,6 +25,8 @@
 - 高亮楼主回复
 - 集成 sov2ex
 - 如果回复中，指定了楼层，用hover的形式显示
+- 打标签功能
+   https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
 
 # 如需要其他功能或发现bug，可在[这里](https://github.com/zyronon/v2ex-script/issues)提出
 
