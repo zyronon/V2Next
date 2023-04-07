@@ -29,6 +29,7 @@
    https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
 - 已读同步到gist
 - 回复太多，考虑放后台，如924034
+- 把 V2 的节点抬头
 
 # 如需要其他功能或发现bug，可在[这里](https://github.com/zyronon/v2ex-script/issues)提出
 
