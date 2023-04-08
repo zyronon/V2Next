@@ -7,24 +7,27 @@
   <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
   <title>Vite App</title>
+  <style>
+  </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
   const isDev = true
 
-  if (window.top[0]) {
+  if (window.top !== window.self) {
     window.win = () => window.top
-    window.win().url = 'https://www.v2ex.com'
-    // window.win().url = location.origin
+    window.win().url = 'https://v2ex.com'
     window.win().isFrame = true
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
+    console.log('1', window.win().url)
   } else {
     window.win = () => window
-    window.win().url = 'https://www.v2ex.com'
-    // window.win().url = location.origin
+    //这里必须一致。不然会报跨域
+    window.win().url = location.origin
     window.win().isFrame = false
+    console.log('2', window.win().url)
   }
 
   window.win().initPost = {
@@ -47,57 +50,25 @@
   }
   window.win().doc = window.win().document
   window.win().query = (v) => window.win().document.querySelector(v)
-  window.win().queryAll = window.win().document.querySelectorAll
   window.win().clone = (val) => JSON.parse(JSON.stringify(val))
   window.win().user = {}
   window.win().pageType = ''
   window.win().pageData = {pageNo: 1}
-  window.win().adIndex = 0 //广告下标，用于区分广告id
-  window.win().adList = []//广告列表，用于延时通知vue复制广告的innerHTML，因为一开始就复制，google的js不能正常加载
-  //待删除元素列表。等vue加载好了，再删除。之所以要用数组，是因为帖子中间夹杂着广告。
-  // 只删除帖子，广告会被移除到其他地方，保证google的js能正常加载出广告来
-  window.win().waitDelElList = []
+  window.win().config = {
+    autoOpenDetail: true,
+    clickPostItemOpenDetail: true,
+    // newTabOpen: true,
+    closePostDetailBySpace: true,//点击空白处关闭详情
+    viewType: 'card',
+    commentDisplayType: 0
+  }
+  window.win().isNight = $('.Night').length === 1
+  window.win().cb = null
+  window.win().postList = []
 
   window.parse = {
     //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
-      //如果没有正文（点的本站的a标签），才会解析正文
-      if (!post.title || !post.content_rendered) {
-        let main = body.find('#Main')
-        let topic_content = main.find('.topic_content')
-        if (topic_content.length) {
-          post.content_rendered = topic_content.html()
-        }
-        let title = main.find('.header h1')
-        if (title.length) {
-          post.title = title.html()
-        }
-        let as = main.find('.header a')
-        if (as[2]) {
-          post.nodeUrl = as[2].href
-          post.node = as[2].innerText
-        }
-        let aName = main.find('.header small a:nth-child(1)')
-        if (aName) {
-          post.username = aName[0].innerText
-          post.date = aName[0].nextElementSibling.innerText
-        }
-        let avatarNode = main.find('.header .fr img')
-        if (avatarNode.length) {
-          post.avatar = avatarNode[0].src
-        }
-      }
-
-      let subtles = body.find('.subtle')
-      if (subtles.length) {
-        post.subtlesHtml = `
-        <div class="subtlesHtml">${Array.from(subtles).reduce((p, i) => {
-          p += `<div class="subtle">${i.innerHTML}</div>`
-          return p
-        }, '')}</div>
-        `
-      }
-
       let once = htmlText.match(/var once = "([\d]+)";/)
       // console.log(once)
       if (once && once[1]) {
@@ -138,22 +109,15 @@
           if (thankCountReg.length) {
             post.thankCount = Number(thankCountReg[0][1])
           }
+          let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
+          let clickCountReg = [...reg3]
+          if (clickCountReg.length) {
+            post.clickCount = Number(clickCountReg[0][1])
+          }
           // console.log([...thankCountReg])
         }
       }
 
-      //点击数
-      let baseInfo = body.find('.header small.gray')
-      if (baseInfo.length) {
-        let text = baseInfo.text()
-        let reg = text.matchAll(/([\d]+)[\s]*次点击/g)
-        let clickCountReg = [...reg]
-        if (clickCountReg.length) {
-          post.clickCount = Number(clickCountReg[0][1])
-        }
-      }
-
-      // let Rightbar = window.win().query('#Rightbar')
       let Rightbar = body.find('#Rightbar')
       if (Rightbar.length) {
         post.RightbarHTML = Rightbar[0].innerHTML
@@ -161,6 +125,10 @@
         post.RightbarHTML = post.RightbarHTML.replace('type="text/css"', 'type="text/css1"')
       }
       // console.log('基本信息', post)
+
+      body.find('.topic_buttons').remove()
+      let header = body.find('#Main .box').first()
+      post.headerTemplate = `${header.html()} `
       return post
     },
     //获取帖子所有回复
@@ -171,6 +139,7 @@
 
       let box = body.find('#Main > .box')[1]
       let cells = box.querySelectorAll('.cell')
+      post.fr = cells[0].querySelector('.cell .fr').innerHTML
       cells = Array.from(cells)
 
       //获取创建时间
@@ -203,16 +172,16 @@
             promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
           }
           Promise.allSettled(promiseList).then(
-              (results) => {
-                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replies = this.getAllReply(repliesMap)
-                post.replies = replies
-                post.replyCount = replies.length
-                post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-                let nestedList = this.createNestedList(replies, post.allReplyUsers)
-                if (nestedList) post.nestedReplies = nestedList
-                resolve(post)
-              }
+            (results) => {
+              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+              let replies = this.getAllReply(repliesMap)
+              post.replies = replies
+              post.replyCount = replies.length
+              post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+              let nestedList = this.createNestedList(replies, post.allReplyUsers)
+              if (nestedList) post.nestedReplies = nestedList
+              resolve(post)
+            }
           );
         })
       }
@@ -343,6 +312,7 @@
       let nestedList = []
       list.map((item, index) => {
         let startList = list.slice(0, index)
+        //用于918489这种情况，@不存在的人
         let startReplyUsers = Array.from(new Set(startList.map(v => v.username)))
 
         let endList = list.slice(index + 1)
@@ -351,22 +321,25 @@
           item.level = 0
           nestedList.push(this.findChildren(item, endList, list))
         } else {
-          let isParentReply = false
-          // if (item.replyFloor === -1) {
-          //   isParentReply = true
-          // }
-          if (item.replyUsers.length) {
-            if (item.replyUsers.length > 1) {
-              isParentReply = true
+          if (!item.isUse) {
+            //是否是一级回复
+            let isOneLevelReply = false
+            // if (item.replyFloor === -1) {
+            //   isOneLevelReply = true
+            // }
+            if (item.replyUsers.length) {
+              if (item.replyUsers.length > 1) {
+                isOneLevelReply = true
+              } else {
+                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              }
             } else {
-              isParentReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              isOneLevelReply = true
             }
-          } else {
-            isParentReply = true
-          }
-          if (isParentReply) {
-            item.level === 0
-            nestedList.push(this.findChildren(item, endList, list))
+            if (isOneLevelReply) {
+              item.level === 0
+              nestedList.push(this.findChildren(item, endList, list))
+            }
           }
         }
       })
@@ -390,51 +363,88 @@
       // if (item.floor ==8)debugger
       for (let i = 0; i < endList.length; i++) {
         let currentItem = endList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+        let endList2 = endList.slice(i + 1)
+        if (currentItem.replyUsers.length === 1) {
+          //如果是下一条是同一人的回复，那么跳出循环
+          if (currentItem.username === item.username) {
+            //自己回复自己的特殊情况
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+            return item
+          } else {
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+          }
+        } else {
+          //下一条是同一人的回复，并且均未@人。直接跳过
+          if (currentItem.username === item.username) return item
+        }
+      }
+      return item
+    },
+    findChildren2(item, endList, all) {
+      const fn = (child, endList2, parent) => {
+        child.level = parent.level + 1
+        let rIndex = all.findIndex(v => v.floor === child.floor)
+        if (rIndex > -1) {
+          all[rIndex].isUse = true
+        }
+        parent.children.push(this.findChildren(child, endList2, all))
+      }
+      // console.log('endList', endList)
+      item.children = []
+      // if (item.floor ==8)debugger
+      for (let i = 0; i < endList.length; i++) {
+        let currentItem = endList[i]
 
         //如果已被使用，直接跳过
         if (currentItem.isUse) continue
 
         let endList2 = endList.slice(i + 1)
-        //注： 2022-10-26，回复被忽略了之后，会占据原来的楼层
-        //但是，未忽略这条回复的人，看到的楼层和忽略回复的人看到的不一样，导致以楼层号来判断会出问题
+        //注： 2022-10-26，回复被忽略、用户被ban，会占据原来的楼层，以楼层号来判断会出问题
         // if (currentItem.replyFloor !== -1) {
-        if (false) {
-          if (currentItem.replyFloor === item.floor) {
-            fn(currentItem, endList2, item)
-          }
-        } else {
-          if (currentItem.replyUsers.length === 1) {
-            // //找出自己最近一条正常回复，以那条为搜索终点
-            // let rIndex = endList.findIndex(v => v.username === item.username && (currentItem.replyUsers.length === 0 && currentItem.replyFloor === -1))
-            // if (rIndex > -1) {
-            //   endList2 = endList.slice(i + 1, rIndex)
-            // }
-            //如果是下一条是同一人的回复，那么跳出循环。children从下一条开始找
-            if (currentItem.username === item.username) {
-              //自己回复自己的特殊情况
-              if (currentItem.replyUsers[0] === item.username) {
-                fn(currentItem, endList2, item)
-                continue
-              }
-              //有种特殊情况，就是自己连着评论了两条。然后后面的人以#号的方式 回复了自己第一条。
-              //如果检测到下条是自己的回复，直接略过的话就会丢失第一条的所有楼中楼回复
-              //具体如下
-              // 自己：1楼，在for的时候，如果碰到 2楼不能直接跳过，直接略过的话就会丢失第一条的所有楼中楼回复，即3楼。所以应该以3楼为起点
-              //进行楼中楼查找，查找完了再跳过
-              // 自己：2楼
-              // 别人：指定回复1楼
-              // endList2.map((v, vi) => {
-              //   if (v.replyFloor === item.floor) {
-              //     fn(v, endList.slice(vi + 1), item)
-              //   }
-              // })
-              break
-            } else {
-              if (currentItem.replyUsers[0] === item.username) {
-                fn(currentItem, endList2, item)
-              }
+        //   if (currentItem.replyFloor === item.floor) {
+        //     fn(currentItem, endList2, item)
+        //   }
+        // }
+        if (currentItem.replyUsers.length) {
+          // //找出自己最近一条正常回复，以那条为搜索终点
+          // let rIndex = endList.findIndex(v => v.username === item.username && (currentItem.replyUsers.length === 0 && currentItem.replyFloor === -1))
+          // if (rIndex > -1) {
+          //   endList2 = endList.slice(i + 1, rIndex)
+          // }
+          //如果是下一条是同一人的回复，那么跳出循环。children从下一条开始找
+          if (currentItem.username === item.username) {
+            //自己回复自己的特殊情况
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+              continue
+            }
+            //有种特殊情况，就是自己连着评论了两条。然后后面的人以#号的方式 回复了自己第一条。
+            //如果检测到下条是自己的回复，直接略过的话就会丢失第一条的所有楼中楼回复
+            //具体如下
+            // 自己：1楼，在for的时候，如果碰到 2楼不能直接跳过，直接略过的话就会丢失第一条的所有楼中楼回复，即3楼。所以应该以3楼为起点
+            //进行楼中楼查找，查找完了再跳过
+            // 自己：2楼
+            // 别人：指定回复1楼
+            // endList2.map((v, vi) => {
+            //   if (v.replyFloor === item.floor) {
+            //     fn(v, endList.slice(vi + 1), item)
+            //   }
+            // })
+            break
+          } else {
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
             }
           }
+        } else {
+          //下一条是同一人的回复，并且均未@人。直接跳过
+          if (currentItem.username === item.username) return item
         }
       }
       return item
@@ -445,10 +455,6 @@
       let body = $(bodyText[0])
 
       if (pageType === 'recent') {
-        // box = window.win().query('#Wrapper #Main .box')
-        // let arr = Array.from(box.children)
-        // let start = arr.findIndex(v => v.classList.contains('item'))
-        // list = arr.slice(start, arr.length - 1)
         let list = body.find('.item')
         let res = this.parsePagePostList(Array.from(list))
         let page = body.find('.cell:last').html()
@@ -463,70 +469,75 @@
       }
     },
     //解析页面帖子列表
-    parsePagePostList(list) {
-      let postList = []
-      let apiList = []
-      list.forEach(function (listItem) {
-        if (!listItem.classList.contains('cell')) {
-          window.win().$adListEl.append(listItem)
-
-          window.win().adIndex += 1
-          let adId = 'ad' + window.win().adIndex
-          listItem.id = adId
-          let item = {
-            type: 'ad',
-            id: adId,
-            innerHTML: listItem.innerHTML
-          }
-          postList.push(item)
-          window.win().adList.push(item)
-          // listItem.remove()
-          return
-        }
+    parsePagePostList(list, box) {
+      list.forEach(itemDom => {
         let item = window.win().clone(window.win().initPost)
-        let bg = listItem.style['background-image']
-        item.bg = bg
-        let item_title = listItem.querySelector('.item_title a')
-        let href = item_title.href
-        item.id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-        item.title = item_title.innerText
-
-        let topic_info = listItem.querySelector('.topic_info')
-        let userNode = topic_info.querySelector('strong a')
-        item.username = userNode.innerText
-        let timeNode = listItem.querySelector('.topic_info span')
-        item.date = timeNode.innerText
-        let tagNode = topic_info.querySelector('.node')
-        if (tagNode) {
-          item.node = tagNode.innerText
-        }
-        let countNode = listItem.querySelector('.count_livid')
-        item.replyCount = countNode ? countNode.innerText : 0
-
-        let avatar = listItem.querySelector('img')
-        item.avatar = avatar.src
-
-        let url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-        // console.log(url)
-        apiList.push(url)
-        postList.push(item)
-        window.win().waitDelElList.push(listItem)
-        // listItem.remove()
+        let item_title = itemDom.querySelector('.item_title a')
+        let {href, id} = window.parse.parseA(item_title)
+        item.id = id
+        item.href = href
+        item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+        itemDom.classList.add('post-item')
+        itemDom.classList.add(`id_${id}`)
+        window.win().postList.push(item)
       })
-      setTimeout(() => {
-        cbChecker({type: 'ad'})
-      }, 3000)
-      return {postList, apiList}
-    },
-    fetchAll(list) {
-      return new Promise(resolve => {
-        Promise.allSettled(list.map(url => $.get(url))).then(async (res) => {
+
+      Promise.allSettled(window.win().postList.map(item => $.get(item.url))).then(
+        res => {
           let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
-          let fail = res.filter((r) => r.status === "rejected")
-          console.log('fail', fail)
-          resolve(ok)
-        });
-      })
+          // let fail = res.filter((r) => r.status === "rejected")
+
+          box.style.boxShadow = 'unset'
+          box.style.background = 'unset'
+          if (window.win().config.viewType === 'card') {
+            list.forEach(itemDom => {
+              itemDom.classList.add('preview')
+            })
+          }
+          ok.map(postItem => {
+            let itemDom = box.querySelector(`.id_${postItem.id}`)
+
+            //添加切换按钮
+            let td = itemDom.querySelector('td:nth-child(4)')
+            td.style.position = 'relative'
+            let toggle = document.createElement('div')
+            toggle.dataset['id'] = postItem.id
+            toggle.classList.add('toggle')
+            toggle.innerText = '点击展开/收起'
+            td.append(toggle)
+
+            let index = window.win().postList.findIndex(v => v.id == postItem.id)
+            if (index > -1) {
+              let obj = window.win().postList[index]
+              window.win().postList[index] = Object.assign({}, obj, postItem)
+
+              if (postItem.content_rendered) {
+                let a = document.createElement('a')
+                a.href = obj.href
+                a.classList.add('post-content')
+                let div = document.createElement('div')
+                div.innerHTML = postItem.content_rendered
+                a.append(div)
+                // console.log(div.clientHeight)
+                itemDom.append(a)
+              }
+            }
+          })
+          cbChecker({type: 'list', value: window.win().postList})
+        }
+      )
+    },
+    parseA(a) {
+      let href = a.href
+      let id
+      if (href.includes('/t/')) {
+        if (href.includes('#')) {
+          id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+        } else {
+          id = href.substring(href.indexOf('/t/') + 3,)
+        }
+      }
+      return {href, id}
     }
   }
 
@@ -551,14 +562,10 @@
 
   // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
   // console.log('postList', window.win().postList)
-  // console.log('init', window.win().init)
-
+  // console.log('init', window.win().init)\
 
   window.win().canParseV2exPage = true
-  //开发环境并且没有嵌套到v2ex的网页里面时，不要解析
-  if (isDev && !window.win().isFrame) {
-    window.win().canParseV2exPage = false
-  }
+
   if (window.win().canParseV2exPage) {
     let location2 = window.win().location
     if (location2.pathname === '/') {
@@ -566,7 +573,9 @@
     } else if (location2.href.match(/.com\/?tab=/)) {
       window.win().pageType = 'home'
     } else if (location2.href.match(/.com\/go\//)) {
-      window.win().pageType = 'nodePage'
+      if (!location2.href.includes('/links')) {
+        window.win().pageType = 'nodePage'
+      }
     } else if (location2.href.match(/.com\/recent/)) {
       window.win().pageType = 'recent'
     } else {
@@ -581,8 +590,6 @@
       }
     }
 
-    window.win().isNight = $('.Night').length === 1
-
     let top2 = window.win().query('.tools .top:nth-child(2)').text
     if (top2 !== '注册') {
       window.win().user = {
@@ -591,60 +598,43 @@
       }
     }
 
-    window.win().cb = null
-    window.win().vueCb = null
-    window.win().postList = []
+    //获取默认配置
+    let configStr = window.win().localStorage.getItem('v2ex-config')
+    if (configStr) {
+      let configObj = JSON.parse(configStr)
+      configObj = configObj[window.win().user.username ?? 'default']
+      if (configObj) {
+        window.win().config = Object.assign(window.win().config, configObj)
+      }
+    }
 
     let $section = document.createElement('section')
     $section.id = 'app'
 
-    window.win().$adListEl = document.createElement('section')
-    window.win().$adListEl.id = 'ad_list'
-    window.win().$adListEl.style.position = 'fixed'
-    window.win().$adListEl.style.left = '-100vw'
-    window.win().$adListEl.style.top = '0'
-    window.win().doc.body.append(window.win().$adListEl)
-
-    let wrapper
     let box
     let list
-    let res
     switch (window.win().pageType) {
       case 'nodePage':
-        box = $('#Wrapper #Main .box:first')
-        box.css({'box-shadow': 'unset'})
-
-        let topics = $('#TopicsNode')
-        topics.attr('id', 'app')
-        list = topics.children()
-        res = window.parse.parsePagePostList(Array.from(list))
-        window.win().postList = res.postList
-        window.parse.fetchAll(res.apiList).then(async r => {
-          await cbChecker({type: 'list', value: r})
-        })
+        box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+        let topics = box[1].querySelector('#TopicsNode')
+        list = topics.querySelectorAll('.cell')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box[1])
         break
       case 'recent':
       case 'home':
         box = window.win().query('#Wrapper #Main .box')
-        box.style.boxShadow = 'unset'
-        wrapper = box.querySelector('.item')
-        wrapper.before($section)
-        let arr = Array.from(box.children)
-        let start = arr.findIndex(v => v.classList.contains('item'))
-        list = arr.slice(start, arr.length - 1)
-        res = window.parse.parsePagePostList(list)
-        window.win().postList = res.postList
-        window.parse.fetchAll(res.apiList).then(async r => {
-          await cbChecker({type: 'list', value: r})
-        })
+        list = box.querySelectorAll('.item')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box)
         break
       case 'post':
         box = window.win().query('#Wrapper #Main .box')
         box.after($section)
         window.parse.parsePostContent(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML
+          {id: window.win().pageData.id},
+          $(window.win().doc.body),
+          window.win().doc.documentElement.outerHTML
         ).then(async res => {
           // console.log('详情页-基本信息解析完成', new Date())
           window.win().pageData.post = res
@@ -652,10 +642,10 @@
         })
 
         window.parse.getPostAllReplies(
-            {id: window.win().pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML,
-            window.win().pageData.pageNo
+          {id: window.win().pageData.id},
+          $(window.win().doc.body),
+          window.win().doc.documentElement.outerHTML,
+          window.win().pageData.pageNo
         ).then(async res => {
           // console.log('详情页-回复解析完成', new Date())
           window.win().pageData.post = Object.assign(window.win().pageData.post, res)
@@ -670,6 +660,95 @@
 
   //开发时自动更新window.top head里面添加的vue style
   if (window.win().isFrame && isDev) {
+    let style2 = `
+     html, body {
+          font-size: 62.5%;
+      }
+
+      .post-item {
+          background: white;
+      }
+
+      .post-item > .post-content {
+          height: 0;
+          margin-top: 0;
+      }
+
+      .post-item:hover .toggle {
+          display: flex;
+      }
+
+      .toggle {
+          position: absolute;
+          right: 0;
+          top: 0.5rem;
+          width: 8rem;
+          height: 100%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-end;
+          cursor: pointer;
+          font-size: 1.2rem;
+          color: #4d5256;
+          display: none;
+      }
+
+      .preview {
+          margin: 1rem 0;
+          border: 1px solid #e2e2e2;
+          border-radius: 0.4rem;
+          cursor: pointer;
+      }
+
+      .preview:hover {
+          border: 1px solid #968b8b;
+      }
+
+      .preview > .post-content {
+          height: unset !important;
+          margin-top: 0.5rem !important;
+      }
+
+      .post-content {
+          margin-top: 0.5rem;
+          display: block;
+          max-height: 20rem;
+          overflow: hidden;
+          text-decoration: unset !important;
+          line-break: anywhere;
+      }
+
+      .post-content:link {
+          color: black;
+      }
+
+      .post-content:visited {
+          color: #afb9c1 !important;
+      }
+
+      .Night .post-item {
+          background: #18222d !important;
+      }
+
+      .Night .preview {
+          border: 1px solid #3b536e;
+      }
+
+      .Night .preview > .post-content:link {
+          color: #d1d5d9;
+      }
+
+      .Night .preview > .post-content:visited {
+          color: #393f4e !important;
+      }
+
+    `
+    let addStyle2 = document.createElement("style");
+    addStyle2.rel = "stylesheet";
+    addStyle2.type = "text/css";
+    addStyle2.innerHTML = style2
+    $(window.win().doc.head).append(addStyle2)
+
     function getStyle(html) {
       let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
       if (reg) {
