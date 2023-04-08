@@ -186,20 +186,22 @@ export default {
     },
   },
   watch: {
-    modelValue(newVal) {
-      if (!newVal) {
-        window.win().doc.body.style.overflow = 'unset'
-        this.isSticky = false
-        if (window.win().pageType === 'home' || window.win().pageType === 'nodePage') {
-          window.history.back();
+    modelValue: {
+      handler(newVal) {
+        if (!newVal) {
+          window.win().doc.body.style.overflow = 'unset'
+          this.isSticky = false
+          if (window.win().pageType === 'home' || window.win().pageType === 'nodePage') {
+            window.history.back();
+          }
+        } else {
+          window.win().doc.body.style.overflow = 'hidden'
+          this.$nextTick(() => {
+            this.$refs.main.focus()
+            this.$refs.detail.scrollTo({top: 0})
+          })
         }
-      } else {
-        window.win().doc.body.style.overflow = 'hidden'
-        this.$nextTick(() => {
-          this.$refs.main.focus()
-          this.$refs.detail.scrollTo({top: 0})
-        })
-      }
+      },
     }
   },
   mounted() {
