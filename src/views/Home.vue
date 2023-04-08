@@ -221,6 +221,8 @@ export default {
     this.config = window.win().config
     if (this.config.autoOpenDetail && this.pageType === 'post') {
       this.loading = true
+      //这里手动设置一下，postdetail不能使用立即执行监听器，会导致，从帖子页进入列表页是，自动返回
+      window.win().doc.body.style.overflow = 'hidden'
       this.show = true
     }
 

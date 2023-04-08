@@ -21,13 +21,11 @@
     window.win().isFrame = true
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
-    console.log('1', window.win().url)
   } else {
     window.win = () => window
     //这里必须一致。不然会报跨域
     window.win().url = location.origin
     window.win().isFrame = false
-    console.log('2', window.win().url)
   }
 
   window.win().initPost = {
