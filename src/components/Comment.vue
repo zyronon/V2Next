@@ -129,18 +129,17 @@ export default {
     .expand-line {
       cursor: pointer;
       //border-right: 2px solid #ddd;
-      width: 2.6rem;
-      min-width: 2.6rem;
+      width: 3rem;
+      min-width: 3rem;
       position: relative;
 
       &:after {
         position: absolute;
-        left: calc(68% - 1px);
+        left: calc(60% - 1px);
         content: " ";
         height: 100%;
         width: 0;
-        border-right: 2px solid #ddd;
-
+        border-right: 1px solid #e1e1e1;
       }
 
       &:hover {
@@ -152,7 +151,7 @@ export default {
 
     .right {
       flex: 1;
-      width: calc(100% - 2.6rem);
+      width: calc(100% - 3rem);
 
       .w {
         padding-left: 1.7rem;

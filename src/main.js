@@ -7,7 +7,7 @@ let appNode
 if (window.win().isFrame) {
   appNode = $("#app", window.win().doc)[0]
 } else {
-  appNode = $("#app")[0]
+  appNode = window.win().query("#app")
 }
 if (window.win().vue) {
   window.win().vue.unmount()

@@ -1,39 +1,15 @@
 <template>
   <div class="post-detail"
        ref="detail"
-       @scroll="scroll"
+       @keydown.esc="close()"
        v-show="modelValue"
        :class="[isNight?'isNight':'']"
        @click="close('space')">
-    <div class="main"
-         @click.stop="stop">
+    <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
       <div class="left">
         <div class="left-wrapper">
           <div class="my-box post-wrapper">
-            <div class="base-info">
-              <a :href="`/member/${post.username}`">
-                <img class="avatar" :src="post.avatar" alt="">
-              </a>
-              <div class="post-nodes">
-                <a href="/">V2EX</a>
-                <span class="chevron">&nbsp;&nbsp;›&nbsp;&nbsp;</span>
-                <a :href="post.nodeUrl">{{ post.node }}</a>
-              </div>
-              <div class="title" v-html="post.title"></div>
-              <div class="post-author">
-                <div class="username">
-                  <a :href="`/member/${post.username}`">{{ post.username }}</a>
-                </div>
-                &nbsp;&nbsp;·&nbsp;&nbsp;
-                <div class="date">{{ post.date }}</div>
-                &nbsp;&nbsp;·&nbsp;&nbsp;
-                <div class="date">{{ post.clickCount }}次点击</div>
-              </div>
-            </div>
-            <div class="content" v-if="post.content_rendered||post.subtlesHtml">
-              <BaseHtmlRender :html="post.content_rendered" class="baseContent"/>
-              <BaseHtmlRender :html="post.subtlesHtml"/>
-            </div>
+            <div v-html="post.headerTemplate"></div>
             <div class="toolbar-wrapper">
               <Point
                   @addThank="addThank"
@@ -48,27 +24,27 @@
             </div>
           </div>
           <div class="my-box comment-wrapper" v-if="replies.length || loading">
+            <div class="my-cell flex flex-end">
+              <div class="radio-group2">
+                <div class="radio"
+                     @click="changeOption(0)"
+                     :class="displayType === 0?'active':''">楼中楼
+                </div>
+                <div class="radio"
+                     @click="changeOption(1)"
+                     :class="displayType === 1?'active':''">感谢
+                </div>
+                <div class="radio"
+                     @click="changeOption(2)"
+                     :class="displayType === 2?'active':''">V2原版
+                </div>
+              </div>
+            </div>
             <div class="my-cell flex">
                 <span class="gray">{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
                 </span>
-              <div class="sort-select">
-                <div class="target" @click.stop="showSortOption = true">
-                  <span>排序：{{ sortOptions.find(v => v.value === commentDisplayType).label }}</span>
-                  <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M36 19L24 31L12 19H36Z" fill="#0079d3" stroke="#0079d3" stroke-width="2"
-                          stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <div class="options" v-if="showSortOption">
-                  <div class="option"
-                       :class="{active:commentDisplayType === item.value}"
-                       @click="changeOption(item)"
-                       v-for="item in sortOptions">
-                    {{ item.label }}
-                  </div>
-                </div>
-              </div>
+              <div class="fr" v-html="post.fr"></div>
             </div>
             <div class="loading-wrapper" v-if="loading">
               <div :class="[isNight?'loading-b':'loading-c']"></div>
@@ -175,17 +151,11 @@ export default {
         return true
       }
     },
-    commentDisplayType: 0,
+    displayType: 0,
   },
   data() {
     return {
-      showSortOption: false,
       isSticky: false,
-      sortOptions: [
-        {value: 0, label: '楼中楼'},
-        {value: 1, label: '感谢'},
-        {value: 2, label: 'V2原版'},
-      ],
       selectCallIndex: 0,
       postDetailWidth: 0,
       showCallList: false,
@@ -207,23 +177,26 @@ export default {
       return []
     },
     replies() {
-      if (this.commentDisplayType === 0) return this.post.nestedReplies
-      if (this.commentDisplayType === 1) {
+      if (this.displayType === 0) return this.post.nestedReplies
+      if (this.displayType === 1) {
         return this.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
-      if (this.commentDisplayType === 2) return this.post.replies
+      if (this.displayType === 2) return this.post.replies
+      return []
     },
   },
   watch: {
     modelValue(newVal) {
       if (!newVal) {
         window.win().doc.body.style.overflow = 'unset'
-        this.showSortOption = this.isSticky = false
-        if (window.win().pageType === 'home') {
+        this.isSticky = false
+        if (window.win().pageType === 'home' || window.win().pageType === 'nodePage') {
           window.history.back();
         }
       } else {
+        window.win().doc.body.style.overflow = 'hidden'
         this.$nextTick(() => {
+          this.$refs.main.focus()
           this.$refs.detail.scrollTo({top: 0})
         })
       }
@@ -308,14 +281,7 @@ export default {
       }
     },
     changeOption(item) {
-      this.showSortOption = false;
-      this.$emit('update:commentDisplayType', item.value)
-    },
-    stop() {
-      this.showSortOption = false
-    },
-    scroll() {
-      this.showSortOption = false
+      this.$emit('update:displayType', item)
     },
     addThank() {
       eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'add'})
@@ -407,22 +373,18 @@ export default {
         border-bottom: 1px solid @line !important;
       }
 
-      .options {
-        background: #22303f !important;
-
-        .option {
-          &:hover {
-            background-color: #393f4e !important;
-          }
-        }
-      }
-
       :deep(.comment) {
         background: @bg;
 
         .expand-line {
-          &::after {
-            border-right: 2px solid #507092 !important;
+          &:after {
+            border-right: 1px solid #202c39 !important;
+          }
+
+          &:hover {
+            &:after {
+              border-right: 2px solid #0079D3 !important;
+            }
           }
         }
 
@@ -530,49 +492,8 @@ export default {
       }
 
       .post-wrapper {
-
-        .base-info {
-          padding: 1rem;
-          box-sizing: border-box;
-          border-bottom: 1px solid @border;
-
-          .avatar {
-            float: right;
-            border-radius: .4rem;
-            height: 7.3rem;
-          }
-
-          .post-nodes {
-            font-size: 1.5rem;
-            margin-bottom: .8rem;
-            display: flex;
-          }
-
-          .title {
-            margin-bottom: 1rem;
-            line-height: 150%;
-            font-size: 2.4rem;
-            color: black;
-          }
-
-          .post-author {
-            font-size: 1.25rem;
-            color: #999 !important;
-          }
-        }
-
-        .content {
-          color: black;
-          word-break: break-word;
-          line-height: 1.6;
-          border-bottom: 1px solid @border;
-
-          .baseContent {
-            padding: 1rem;
-          }
-        }
-
         .toolbar-wrapper {
+          border-top: 1px solid #e2e2e2;
           height: 4rem;
           padding-left: .6rem;
           display: flex;
@@ -581,9 +502,7 @@ export default {
         }
       }
 
-
       .editor-wrapper {
-
         .float {
           margin-right: 2rem;
         }
@@ -600,51 +519,6 @@ export default {
         }
       }
 
-      .sort-select {
-        position: relative;
-
-        .target {
-          color: #0079d3;
-          font-size: 1.2rem;
-          font-weight: bold;
-          display: inline-flex;
-          align-items: center;
-          cursor: pointer;
-
-          svg {
-            @width: 1.4rem;
-            width: @width;
-            height: @width;
-            margin-left: .5rem;
-          }
-        }
-
-        .options {
-          box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
-          background: white;
-          z-index: 9998;
-          border-radius: .5rem;
-          cursor: pointer;
-          font-size: 1.4rem;
-          position: absolute;
-          top: 2.6rem;
-          left: 2.7rem;
-          width: 8rem;
-          color: @link-color;
-
-          .option {
-            padding: .8rem 1.4rem;
-
-            &.active {
-              color: #0079d3;
-            }
-
-            &:hover {
-              background: #e9f5fd;
-            }
-          }
-        }
-      }
 
       .loading-wrapper {
         height: 20rem;
