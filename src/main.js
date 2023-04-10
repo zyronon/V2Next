@@ -17,4 +17,11 @@ let vue = createApp(Home)
 window.win().vue = vue
 window.win().appNode = appNode
 vue.config.unwrapInjectedRef = true
+vue.config.errorHandler = (err, vm, info) => {
+  console.error('通过vue errorHandler捕获的错误');
+  console.error(err);
+  console.error(vm);
+  console.error(info);
+}
 vue.mount(appNode)
+

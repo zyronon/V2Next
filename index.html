@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" href="/favicon.ico"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-  <title>Vite App</title>
-  <style>
-  </style>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+    <title>Vite App</title>
+    <style>
+    </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
   const isDev = true
+
+  if (!isDev) {
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log('捕获到异常：', {message, source, lineno, colno, error});
+    }
+    window.addEventListener('error', (error) => {
+      console.log('捕获到异常：', error);
+    }, true)
+    window.addEventListener("unhandledrejection", function (e) {
+      e.preventDefault()
+      console.log('捕获到异常：', e);
+      return true;
+    });
+  }
 
   if (window.top !== window.self) {
     window.win = () => window.top
@@ -49,11 +63,18 @@
   window.win().doc = window.win().document
   window.win().query = (v) => window.win().document.querySelector(v)
   window.win().clone = (val) => JSON.parse(JSON.stringify(val))
-  window.win().user = {}
+  window.win().user = {
+    tagPrefix: '--用户标签--',
+    tags: {},
+    username: '',
+    avatar: '',
+    tagsId: ''
+  }
   window.win().pageType = ''
   window.win().pageData = {pageNo: 1}
   window.win().config = {
     autoOpenDetail: true,
+    openTag: true,
     clickPostItemOpenDetail: true,
     // newTabOpen: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
@@ -63,6 +84,7 @@
   window.win().isNight = $('.Night').length === 1
   window.win().cb = null
   window.win().postList = []
+
 
   window.parse = {
     //解析帖子内容
@@ -241,6 +263,10 @@
         let op = node.querySelector('.op')
         if (op) {
           item.isOp = true
+        }
+        let mod = node.querySelector('.mod')
+        if (mod) {
+          item.isMod = true
         }
         // console.log('item', item)
 
@@ -521,7 +547,7 @@
               }
             }
           })
-          cbChecker({type: 'list', value: window.win().postList})
+          cbChecker({type: 'syncData'})
         }
       )
     },
@@ -536,6 +562,30 @@
         }
       }
       return {href, id}
+    },
+    //创建记事本里面的tag标签
+    async createTagNote() {
+      let data = new FormData()
+      data.append('content', '--用户标签--')
+      data.append('parent_id', 0)
+      data.append('syntax', 0)
+      let apiRes = await window.win().fetch(`${window.win().url}/notes/new`, {method: 'post', body: data})
+      console.log(apiRes)
+      if (apiRes.redirected && apiRes.status === 200) {
+        //成功
+        return apiRes.url.substr(-5)
+      }
+      return null
+    },
+    //标签操作
+    async saveTags(val) {
+      let data = new FormData()
+      data.append('content', window.win().user.tagPrefix + JSON.stringify(val))
+      data.append('syntax', 0)
+      let apiRes = await window.win().fetch(`${window.win().url}/notes/edit/${window.win().user.tagsId}`, {
+        method: 'post', body: data
+      })
+      return apiRes.redirected && apiRes.status === 200;
     }
   }
 
@@ -590,10 +640,51 @@
 
     let top2 = window.win().query('.tools .top:nth-child(2)').text
     if (top2 !== '注册') {
-      window.win().user = {
-        username: top2,
-        avatar: $('#Rightbar .box .avatar', window.win().doc).attr('src')
-      }
+      window.win().user.username = top2
+      window.win().user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
+      cbChecker({type: 'syncData'})
+
+      //获取或创建记事本的标签
+      $.get(window.win().url + '/notes').then(r => {
+        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+        let body = $(bodyText[0])
+        let items = body.find('#Main .box .note_item_title a')
+        let needCreateNoteTags = true
+        if (items.length) {
+          let tags = Array.from(items).find(v => v.innerText.includes(window.win().user.tagPrefix))
+          if (tags) {
+            needCreateNoteTags = false
+            window.win().user.tagsId = tags.href.substr(-5)
+            cbChecker({type: 'syncData'})
+            $.get(window.win().url + '/notes/edit/' + window.win().user.tagsId).then(r2 => {
+              bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+              body = $(bodyText[0])
+              let text = body.find('.note_editor').text()
+              if (text === window.win().user.tagPrefix) {
+                window.win().user.tags = {}
+              } else {
+                let tagJson = text.substring(window.win().user.tagPrefix.length)
+                try {
+                  window.win().user.tags = JSON.parse(tagJson)
+                } catch (e) {
+                  console.log('tage', tagJson)
+                  window.win().user.tags = {}
+                }
+              }
+              cbChecker({type: 'syncData'})
+            })
+          }
+        }
+        if (needCreateNoteTags) {
+          window.parse.createTagNote().then(r => {
+            if (r) {
+              window.win().user.tagsId = r
+              window.win().user.tags = {}
+              cbChecker({type: 'syncData'})
+            }
+          })
+        }
+      })
     }
 
     //获取默认配置

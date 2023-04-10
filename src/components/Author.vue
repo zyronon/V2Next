@@ -11,13 +11,21 @@
       <a class="icon" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
-      <span>
+      <span class="texts">
         <strong>
           <a :href="`/member/${comment.username}`" class="username">{{ comment.username }}</a>
         </strong>
-        &nbsp;&nbsp;&nbsp;
         <div v-if="comment.isOp" class="op">OP</div>
+        <div v-if="comment.isMod" class="mod">MOD</div>
         <span class="ago">{{ comment.date }}</span>
+        <template v-if="isLogin && config.openTag">
+            <span class="my-tag" v-for="i in myTags">
+              <i class="fa fa-tag"></i>
+              <span>{{ i }}</span>
+              <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
+            </span>
+        <span class="add-tag" @click="addTag" title="添加标签">+</span>
+        </template>
       </span>
     </div>
     <div class="Author-right">
@@ -65,7 +73,7 @@ import {CMD} from "../utils/type";
 export default {
   name: "Author",
   components: {Point},
-  inject: ['isDev', 'isLogin'],
+  inject: ['isDev', 'isLogin', 'tags', 'config'],
   props: {
     modelValue: false,
     comment: {
@@ -75,9 +83,6 @@ export default {
       }
     }
   },
-  data() {
-    return {}
-  },
   computed: {
     pointInfo() {
       return {
@@ -85,9 +90,18 @@ export default {
         thankCount: this.comment.thankCount,
         username: this.comment.username
       }
+    },
+    myTags() {
+      return this.tags[this.comment.username] ?? []
     }
   },
   methods: {
+    addTag() {
+      eventBus.emit(CMD.ADD_TAG, this.comment.username)
+    },
+    removeTag(tag) {
+      eventBus.emit(CMD.REMOVE_TAG, {username: this.comment.username, tag})
+    },
     checkIsLogin(emitName = '') {
       if (!this.isLogin) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
@@ -124,9 +138,11 @@ export default {
   .Author-left {
     display: flex;
     align-items: center;
+    max-width: 90%;
 
     .username {
       font-size: 1.4rem;
+      margin-right: 1rem;
     }
 
     .expand-icon {
@@ -150,8 +166,13 @@ export default {
       //border-radius: 50%;
     }
 
+    @color: #1484cd;
+
+    .texts {
+      flex: 1;
+    }
+
     .op {
-      @color: #1484cd;
       display: inline-block;
       background-color: transparent;
       color: @color;
@@ -163,6 +184,48 @@ export default {
       font-weight: bold;
       margin-right: 1rem;
       transform: scale(.8);
+    }
+
+    .mod {
+      .op;
+      background: @color;
+      color: white;
+      margin-right: 1rem;
+    }
+
+    .my-tag {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: red;
+      margin-left: 1rem;
+
+      &:hover {
+        .remove {
+          display: inline;
+        }
+      }
+
+      .remove {
+        cursor: pointer;
+        margin-left: .5rem;
+        display: none;
+      }
+    }
+
+    .add-tag {
+      font-size: 2rem;
+      line-height: 1rem;
+      display: inline-block;
+      margin-left: 1rem;
+      cursor: pointer;
+      display: none;
+    }
+
+  }
+
+  &:hover {
+    .add-tag {
+      display: inline-block;
     }
   }
 
