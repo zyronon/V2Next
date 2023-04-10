@@ -38,7 +38,7 @@
       <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
     </div>
     <Base64Tooltip/>
-    <div class="setting" v-if="showConfig">
+    <div class="setting-modal modal" v-if="showConfig">
       <div class="mask" @click="showConfig = !showConfig"></div>
       <div class="wrapper">
         <div class="title">
@@ -78,6 +78,11 @@
           </div>
         </div>
         <div class="option">
+          <span>开启打标签功能：</span>
+          <div class="switch" :class="{active:config.openTag}"
+               @click="config.openTag = !config.openTag"/>
+        </div>
+        <div class="option">
           <span>帖子界面自动打开详情弹框 ：</span>
           <div class="switch" :class="{active:config.autoOpenDetail}"
                @click="config.autoOpenDetail = !config.autoOpenDetail"/>
@@ -113,6 +118,25 @@
         </div>
       </div>
     </div>
+    <div class="tag-modal modal" v-if="tagModal.show">
+      <div class="mask" @click.stop="tagModal.show = false"></div>
+      <div class="wrapper">
+        <div class="title">
+          添加标签
+        </div>
+        <div class="option">
+          <span>用户：</span>
+          <div>
+            {{ tagModal.currentUsername }}
+          </div>
+        </div>
+        <input type="text" autofocus v-model="tagModal.tag" @keydown.enter="addTag">
+        <div class="btns">
+          <div class="button info" @click="tagModal.show = false">取消</div>
+          <div class="button" @click="addTag">确定</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -132,8 +156,10 @@ export default {
       isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => !!window.win().user.username),
       pageType: computed(() => this.pageType),
+      tags: computed(() => this.tags),
       clone: window.win().clone,
       post: computed(() => this.current),
+      config: computed(() => this.config),
       allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
     }
   },
@@ -156,7 +182,13 @@ export default {
       showConfig: false,
       current: window.win().initPost,
       list: [],
-      config: window.win().config
+      config: window.win().config,
+      tags: window.win().user.tags,
+      tagModal: {
+        show: false,
+        currentUsername: '',
+        tag: '',
+      }
     }
   },
   computed: {
@@ -201,6 +233,9 @@ export default {
       },
       deep: true
     },
+    tags(newVal) {
+      window.win().user.tags = newVal
+    },
     'config.viewType'(newVal) {
       if (!newVal) return
       if (newVal === 'card') {
@@ -217,15 +252,12 @@ export default {
   created() {
     // console.log('create', this.current)
     window.win().cb = this.winCb
-    this.list = window.win().postList
-    this.config = window.win().config
     if (this.config.autoOpenDetail && this.pageType === 'post') {
       this.loading = true
       //这里手动设置一下，postdetail不能使用立即执行监听器，会导致，从帖子页进入列表页是，自动返回
       window.win().doc.body.style.overflow = 'hidden'
       this.show = true
     }
-
     if (window.win().canParseV2exPage) {
       if (this.showList) {
         // let lastItem = window.win().appNode.nextElementSibling
@@ -348,17 +380,41 @@ export default {
     eventBus.clear()
   },
   methods: {
-    async winCb({type, value}) {
-      console.log('回调的类型', type, value)
-      if (type === 'list') {
-        this.list = value
+    async addTag() {
+      let oldTag = this.clone(this.tags)
+      let tags = this.tags[this.tagModal.currentUsername] ?? []
+      let rIndex = tags.findIndex(v => v === this.tagModal.tag)
+      if (rIndex > -1) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '标签已存在！'})
+        return
+      } else {
+        tags.push(this.tagModal.tag)
       }
+      this.tags[this.tagModal.currentUsername] = tags
+      this.tagModal.tag = ''
+      this.tagModal.show = false
+      let res = await window.parse.saveTags(this.tags)
+      if (!res) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '标签添加失败！'})
+        this.tags = oldTag
+      }
+      console.log('res', res)
+      return console.log(this.tags)
+    },
+    async winCb({type, value}) {
+      // console.log('回调的类型', type, value)
       if (type === 'postContent') {
         this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
       }
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, this.clone(value))
         this.loading = false
+      }
+      if (type === 'syncData') {
+        this.list = window.win().postList
+        this.config = window.win().config
+        this.tags = window.win().user.tags
+        console.log(this.tags)
       }
     },
     clone(val) {
@@ -465,6 +521,26 @@ export default {
         //   }
         // })
       })
+      eventBus.on(CMD.ADD_TAG, (username) => {
+        console.log('use', username)
+        this.tagModal.currentUsername = username
+        this.tagModal.show = true
+      })
+      eventBus.on(CMD.REMOVE_TAG, async ({username, tag}) => {
+        let oldTag = this.clone(this.tags)
+        let tags = this.tags[username] ?? []
+        let rIndex = tags.findIndex(v => v === tag)
+        if (rIndex > -1) {
+          tags.splice(rIndex, 1)
+        }
+        this.tags[username] = tags
+
+        let res = await window.parse.saveTags(this.tags)
+        if (!res) {
+          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '标签删除失败！'})
+          this.tags = oldTag
+        }
+      })
     },
     removeMsg(id) {
       let rIndex = this.msgList.findIndex(item => item.id === id)
@@ -555,7 +631,7 @@ export default {
       border: none;
     }
 
-    .setting {
+    .setting-modal {
       .wrapper {
         background: #22303f;
 
@@ -626,29 +702,7 @@ export default {
   }
 }
 
-.setting {
-  position: fixed;
-  z-index: 9;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  //left: 50%;
-  //top: 50%;
-  //transform: translate(-50%, -50%);
-
-  .mask {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    background: rgba(black, .3);
-  }
-
+.setting-modal {
   .wrapper {
     z-index: 9;
     background: #f1f1f1;
@@ -658,10 +712,6 @@ export default {
     padding: 2rem 6rem 4rem 6rem;
     width: 45rem;
 
-    .title {
-      font-size: 2.4rem;
-      margin-bottom: 1rem;
-    }
 
     .sub-title {
       color: gray;
@@ -669,12 +719,6 @@ export default {
       margin-bottom: 4rem;
     }
 
-    .option {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-    }
 
     .notice {
       font-size: 12px;
@@ -694,6 +738,35 @@ export default {
       justify-content: flex-start;
       line-break: anywhere;
       text-align: left;
+    }
+  }
+}
+
+.tag-modal {
+  .wrapper {
+    z-index: 9;
+    background: #f1f1f1;
+    border-radius: .8rem;
+    font-size: 1.4rem;
+    //box-shadow: 0 0 6px 4px gainsboro;
+    padding: 2rem 6rem 4rem 6rem;
+    width: 25rem;
+
+    input {
+      margin-bottom: 3rem;
+      width: 100%;
+      height: 3rem;
+      outline: unset;
+      border: 1px solid #e1e1e1;
+      padding: 0 .5rem;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
     }
   }
 }
