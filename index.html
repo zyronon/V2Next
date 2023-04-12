@@ -528,14 +528,14 @@
             toggle.dataset['id'] = postItem.id
             toggle.classList.add('toggle')
             toggle.innerText = '点击展开/收起'
-            td.append(toggle)
+            // td.append(toggle)
 
             let index = window.postList.findIndex(v => v.id == postItem.id)
             if (index > -1) {
               let obj = window.postList[index]
               window.postList[index] = Object.assign({}, obj, postItem)
 
-              if (postItem.content_rendered) {
+              if (postItem.content_rendered && false) {
                 let a = document.createElement('a')
                 a.href = obj.href
                 a.classList.add('post-content')
@@ -794,20 +794,8 @@
           display: none;
       }
 
-      .preview {
-          margin: 1rem 0;
-          border: 1px solid #e2e2e2;
-          border-radius: 0.4rem;
-          cursor: pointer;
-      }
-
       .preview:hover {
-          border: 1px solid #968b8b;
-      }
-
-      .preview > .post-content {
-          height: unset !important;
-          margin-top: 0.5rem !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       }
 
       .post-content {
