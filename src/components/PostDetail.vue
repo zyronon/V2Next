@@ -73,12 +73,12 @@
           </div>
         </div>
       </div>
-      <div class="right" ref="right">
+      <!-- <div class="right" ref="right">
         <div id="Rightbar" v-html="post.RightbarHTML"></div>
         <div class="scroll-top button" @click.stop="scrollTop">
           回到顶部
         </div>
-      </div>
+      </div> -->
       <div class="call-list"
            :style="callStyle"
            v-if="showCallList && filterCallList.length">
@@ -455,7 +455,7 @@ export default {
   .main {
     display: flex;
     justify-content: flex-end;
-    padding: 6rem 12rem 15rem 12rem;
+    padding: 2rem 8rem;
     //margin: auto;
     //box-sizing: border-box;
     //min-height: 100%;
@@ -576,8 +576,7 @@ export default {
   @media screen and (max-width: 1500px) {
     @width: 65vw;
     .main {
-      padding: 8rem;
-      padding-bottom: 15rem;
+      padding: 2rem 8rem;
 
       > .left {
         width: @width;
@@ -591,8 +590,7 @@ export default {
   @media screen and (max-width: 1280px) {
     @width: 75vw;
     .main {
-      padding: 5rem;
-      padding-bottom: 15rem;
+      padding: 2rem 5rem;
 
       > .left {
         width: @width;
@@ -613,7 +611,7 @@ export default {
   .close-btn {
     cursor: pointer;
     position: fixed;
-    top: 6rem;
+    top: 2rem;
     transform: translateX(4rem);
 
     //margin-left: 50rem;
