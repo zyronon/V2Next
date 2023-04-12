@@ -20,7 +20,7 @@
                 username:post.username
               }"
                   :api-url="'topic/'+post.id"/>
-              <Toolbar @reply="isSticky = !isSticky"/>
+              <!-- <Toolbar @reply="isSticky = !isSticky"/> -->
             </div>
           </div>
           <div class="my-box comment-wrapper" v-if="replies.length || loading">
