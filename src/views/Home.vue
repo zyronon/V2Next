@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="option">
-          <span>开启打标签功能：</span>
+          <span>用户打标签：</span>
           <div class="switch" :class="{active:config.openTag}"
                @click="config.openTag = !config.openTag"/>
         </div>
@@ -647,7 +647,6 @@ export default {
       }
     }
 
-
     .radio-group2 {
       @border: rgb(69, 72, 71);
       border: 1px solid @border;
@@ -676,6 +675,7 @@ export default {
   background: white;
   text-align: start;
   padding: 1rem;
+  border: 1px solid @border;
 
   .nav-item {
     cursor: pointer;
@@ -743,7 +743,6 @@ export default {
     }
   }
 }
-
 .tag-modal {
   .wrapper {
     z-index: 9;
@@ -773,32 +772,4 @@ export default {
   }
 }
 
-.radio-group2 {
-  display: inline-flex;
-  border-radius: .5rem;
-  overflow: hidden;
-  @border: #40a9ff;
-  //@border: rgb(69, 72, 71);
-  border: 1px solid @border;
-
-  .radio {
-    cursor: pointer;
-    //background: white;
-    background: transparent;
-    padding: 0.5rem 1.5rem;
-    border-left: 1px solid @border;
-    color: black;
-    //color: white;
-
-    &:first-child {
-      border-left: none;
-    }
-  }
-
-  .active {
-    background: #40a9ff;
-    //background: #165c94;
-    color: white;
-  }
-}
 </style>
