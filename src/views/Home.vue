@@ -198,9 +198,7 @@ export default {
       return import.meta.env.DEV
     },
     showList() {
-      return this.pageType === 'home' ||
-          this.pageType === 'recent' ||
-          this.pageType === 'nodePage'
+      return false
     }
   },
   watch: {
