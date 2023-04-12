@@ -52,7 +52,7 @@
             <div class="comments" ref="comments" v-else>
               <Comment v-for="(item,index) in replies"
                        :key="item.floor"
-                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#e2e2e2'};  padding: 1rem;margin-top: 0;`"
+                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#F5F5F5'};  padding: 1rem;margin-top: 0;`"
                        v-model="replies[index]"/>
             </div>
           </div>
@@ -459,7 +459,7 @@ export default {
     //margin: auto;
     //box-sizing: border-box;
     //min-height: 100%;
-    background: #e2e2e2;
+    background: #F5F5F5;
     position: relative;
 
     > .left {
@@ -475,7 +475,7 @@ export default {
 
       .post-wrapper {
         .toolbar-wrapper {
-          border-top: 1px solid #e2e2e2;
+          border-top: 1px solid #F5F5F5;
           height: 4rem;
           padding-left: .6rem;
           display: flex;

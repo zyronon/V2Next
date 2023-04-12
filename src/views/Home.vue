@@ -694,7 +694,7 @@ export default {
     }
 
     &:hover {
-      background: #e2e2e2;
+      background: #F5F5F5;
     }
 
     span {
