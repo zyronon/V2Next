@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     disabled() {
-      return (this.item.username === window.win().user.username) || this.item.isThanked
+      return (this.item.username === window.user.username) || this.item.isThanked
     }
   },
   methods: {
@@ -50,7 +50,7 @@ export default {
       if (!this.isLogin) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
       }
-      if (this.item.username === window.win().user.username) {
+      if (this.item.username === window.user.username) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '不能感谢自己'})
       }
       if (this.item.isThanked) {
@@ -58,7 +58,7 @@ export default {
       }
       this.$emit('addThank')
       //https://www.v2ex.com/thank/topic/886147?once=38719
-      let url = `${window.win().url}/thank/${this.apiUrl}?once=${this.post.once}`
+      let url = `${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`
       $.post(url).then(res => {
         console.log('感谢', res)
         if (!res.success) {

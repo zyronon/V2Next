@@ -9,7 +9,7 @@
       <div class="left">
         <div class="left-wrapper">
           <div class="my-box post-wrapper">
-            <div v-html="post.headerTemplate"></div>
+            <BaseHtmlRender :html="post.headerTemplate"/>
             <div class="toolbar-wrapper">
               <Point
                   @addThank="addThank"
@@ -119,7 +119,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post', 'clone', 'isLogin'],
+  inject: ['allReplyUsers', 'post', 'clone', 'isLogin','config'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -142,12 +142,6 @@ export default {
       type: Boolean,
       default() {
         return false
-      }
-    },
-    closePostDetailBySpace: {
-      type: Boolean,
-      default() {
-        return true
       }
     },
     displayType: 0,
@@ -178,7 +172,7 @@ export default {
     replies() {
       if (this.displayType === 0) return this.post.nestedReplies
       if (this.displayType === 1) {
-        return this.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
+        return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.displayType === 2) return this.post.replies
       return []
@@ -190,7 +184,7 @@ export default {
         if (!newVal) {
           window.win().doc.body.style.overflow = 'unset'
           this.isSticky = false
-          if (window.win().pageType === 'home' || window.win().pageType === 'nodePage') {
+          if (window.pageType === 'home' || window.pageType === 'nodePage') {
             window.history.back();
           }
         } else {
@@ -237,10 +231,9 @@ export default {
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
-
     close(from) {
       if (from === 'space') {
-        if (this.closePostDetailBySpace) {
+        if (this.config.closePostDetailBySpace) {
           this.$emit('update:modelValue', false)
         }
       } else {

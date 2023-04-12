@@ -32,7 +32,6 @@
     <PostDetail v-model="show"
                 :isNight="isNight"
                 v-model:displayType="config.commentDisplayType"
-                :closePostDetailBySpace="config.closePostDetailBySpace"
                 :loading="loading"/>
     <div class="msgs">
       <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
@@ -111,7 +110,11 @@
           <div class="switch" :class="{active:config.closePostDetailBySpace}"
                @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
         </div>
-
+        <div class="option">
+          <span>正文超长自动折叠：</span>
+          <div class="switch" :class="{active:config.contentAutoCollapse}"
+               @click="config.contentAutoCollapse = !config.contentAutoCollapse"/>
+        </div>
 
         <div class="jieshao">
           如只想要列表预览功能，可关闭 ”点击列表的帖子，打开详情弹框“，”帖子界面自动打开详情弹框“
@@ -154,10 +157,9 @@ export default {
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
-      isLogin: computed(() => !!window.win().user.username),
+      isLogin: computed(() => !!window.user.username),
       pageType: computed(() => this.pageType),
       tags: computed(() => this.tags),
-      clone: window.win().clone,
       post: computed(() => this.current),
       config: computed(() => this.config),
       allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
@@ -171,19 +173,19 @@ export default {
   },
   data() {
     return {
-      loading: window.win().pageType === 'post',
+      loading: window.pageType === 'post',
       loadMore: false,
-      pageType: window.win().pageType,
-      isNight: window.win().isNight,
+      pageType: window.pageType,
+      isNight: window.isNight,
       msgList: [
         // {type: 'success', text: '123', id: Date.now()}
       ],
       show: false,
       showConfig: false,
-      current: window.win().initPost,
+      current: window.initPost,
       list: [],
-      config: window.win().config,
-      tags: window.win().user.tags,
+      config: window.config,
+      tags: window.user.tags,
       tagModal: {
         show: false,
         currentUsername: '',
@@ -227,14 +229,14 @@ export default {
     },
     config: {
       handler(newVal) {
-        let config = {[window.win().user.username ?? 'default']: newVal}
+        let config = {[window.user.username ?? 'default']: newVal}
         window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
-        window.win().config = newVal
+        window.config = newVal
       },
       deep: true
     },
     tags(newVal) {
-      window.win().user.tags = newVal
+      window.user.tags = newVal
     },
     'config.viewType'(newVal) {
       if (!newVal) return
@@ -251,7 +253,7 @@ export default {
   },
   created() {
     // console.log('create', this.current)
-    window.win().cb = this.winCb
+    window.cb = this.winCb
     if (this.config.autoOpenDetail && this.pageType === 'post') {
       this.loading = true
       //这里手动设置一下，postdetail不能使用立即执行监听器，会导致，从帖子页进入列表页是，自动返回
@@ -276,7 +278,7 @@ export default {
         //     let url
         //
         //     if (this.pageType === 'home') {
-        //       url = window.win().url + `/recent?p=1`
+        //       url = window.baseUrl + `/recent?p=1`
         //       this.pageType = 'recent'
         //     } else {
         //       let {href, search, origin, pathname} = window.win().location
@@ -404,21 +406,21 @@ export default {
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
       if (type === 'postContent') {
-        this.current = Object.assign(this.clone(window.win().initPost), this.clone(value))
+        this.current = Object.assign(this.clone(window.initPost), this.clone(value))
       }
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, this.clone(value))
         this.loading = false
       }
       if (type === 'syncData') {
-        this.list = window.win().postList
-        this.config = window.win().config
-        this.tags = window.win().user.tags
-        console.log(this.tags)
+        this.list = window.postList
+        this.config = window.config
+        this.tags = window.user.tags
+        // console.log(this.tags)
       }
     },
     clone(val) {
-      return window.win().clone(val)
+      return window.clone(val)
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
@@ -474,7 +476,7 @@ export default {
         if (rIndex > -1) {
           this.list.splice(rIndex, 1)
         }
-        this.current = this.clone(window.win().initPost)
+        this.current = this.clone(window.initPost)
       })
       eventBus.on(CMD.MERGE, (val) => {
         this.current = Object.assign(this.current, val)
@@ -507,7 +509,7 @@ export default {
           this.current.once = r
         })
         // let that = this
-        // let url = window.win().url + '/t/' + this.current.id
+        // let url = window.baseUrl + '/t/' + this.current.id
         // $.get(url + '?p=1').then(res => {
         //   let hasPermission = res.search('你要查看的页面需要先登录')
         //   if (hasPermission > -1) {
@@ -562,12 +564,12 @@ export default {
       //     }
       //   }
       // }
-      let url = window.win().url + '/t/' + post.id
+      let url = window.baseUrl + '/t/' + post.id
       window.win().doc.body.style.overflow = 'hidden'
       window.win().history.pushState({}, 0, post.href ?? url);
 
       this.current = Object.assign(
-          this.clone(window.win().initPost),
+          this.clone(window.initPost),
           {RightbarHTML: this.current.RightbarHTML},
           this.clone(post))
       //如果，有数据，不显示loading,默默更新即可

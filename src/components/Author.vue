@@ -24,7 +24,7 @@
               <span>{{ i }}</span>
               <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
             </span>
-        <span class="add-tag" @click="addTag" title="添加标签">+</span>
+        <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
         </template>
       </span>
     </div>
