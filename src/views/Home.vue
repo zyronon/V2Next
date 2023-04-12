@@ -17,7 +17,7 @@
         </div>
       </div>
     </template>
-    <template v-if="pageType === 'post'">
+    <!-- <template v-if="pageType === 'post'">
       <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
         <div class="flex">
           自动打开详情弹框 ：
@@ -28,7 +28,7 @@
           点击显示详情弹框
         </div>
       </div>
-    </template>
+    </template> -->
     <PostDetail v-model="show"
                 :isNight="isNight"
                 v-model:displayType="config.commentDisplayType"
