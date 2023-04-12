@@ -562,7 +562,8 @@ export default {
       //     }
       //   }
       // }
-      let url = window.baseUrl + '/t/' + post.id
+      // let url = window.baseUrl + '/t/' + post.id
+      let url = post.id
       window.win().doc.body.style.overflow = 'hidden'
       window.win().history.pushState({}, 0, post.href ?? url);
 
