@@ -132,6 +132,7 @@ export default {
       width: 3rem;
       min-width: 3rem;
       position: relative;
+      opacity: 0;
 
       &:after {
         position: absolute;
