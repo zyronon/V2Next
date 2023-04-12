@@ -99,6 +99,11 @@ export default {
 <style scoped lang="less">
 @import "@/assets/less/variable";
 
+
+.comment>.comment{
+  margin-top: 15px;
+}
+
 .comment {
   width: 100%;
   box-sizing: border-box;
@@ -154,8 +159,11 @@ export default {
       flex: 1;
       width: calc(100% - 3rem);
 
+      top: -20px;
+      position: relative;
+
       .w {
-        padding-left: 1.7rem;
+        padding-left: 27px;
 
         .text {
           color: black;

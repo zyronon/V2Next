@@ -137,7 +137,6 @@ export default {
 
   .Author-left {
     display: flex;
-    align-items: center;
     max-width: 90%;
 
     .username {
@@ -158,8 +157,8 @@ export default {
       display: flex;
 
       img {
-        width: 3.4rem;
-        height: 3.4rem;
+        width: 48px;
+        height: 48px;
         border-radius: .3rem;
       }
 
@@ -170,6 +169,7 @@ export default {
 
     .texts {
       flex: 1;
+      line-height: 200%;
     }
 
     .op {
