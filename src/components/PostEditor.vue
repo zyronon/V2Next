@@ -76,10 +76,10 @@ async function submit() {
   let item = {
     thankCount: 0,
     isThanked: false,
-    isOp: post.value.username === window.win().user.username,
+    isOp: post.value.username === window.user.username,
     id: Date.now(),
-    username: window.win().user.username,
-    avatar: window.win().user.avatar,
+    username: window.user.username,
+    avatar: window.user.avatar,
     date: '几秒前',
     floor: post.value.replyCount + 1,
     reply_content: content.value || Date.now(),
@@ -105,7 +105,7 @@ async function submit() {
   // emits('close')
   // return console.log('item', item)
 
-  let url = `${window.win().url}/t/${post.value.id}`
+  let url = `${window.baseUrl}/t/${post.value.id}`
   $.post(url, {content: content.value, once: post.value.once}).then(
       res => {
         // console.log('回复', res)

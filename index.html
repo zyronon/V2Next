@@ -31,18 +31,18 @@
 
   if (window.top !== window.self) {
     window.win = () => window.top
-    window.win().url = 'https://v2ex.com'
+    window.baseUrl = 'https://v2ex.com'
     window.win().isFrame = true
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
   } else {
     window.win = () => window
     //这里必须一致。不然会报跨域
-    window.win().url = location.origin
+    window.baseUrl = location.origin
     window.win().isFrame = false
   }
 
-  window.win().initPost = {
+  window.initPost = {
     replies: [],
     nestedReplies: [],
     username: '',
@@ -62,28 +62,29 @@
   }
   window.win().doc = window.win().document
   window.win().query = (v) => window.win().document.querySelector(v)
-  window.win().clone = (val) => JSON.parse(JSON.stringify(val))
-  window.win().user = {
+  window.clone = (val) => JSON.parse(JSON.stringify(val))
+  window.user = {
     tagPrefix: '--用户标签--',
     tags: {},
     username: '',
     avatar: '',
     tagsId: ''
   }
-  window.win().pageType = ''
-  window.win().pageData = {pageNo: 1}
-  window.win().config = {
+  window.pageType = ''
+  window.pageData = {pageNo: 1}
+  window.config = {
     autoOpenDetail: true,
     openTag: true,
     clickPostItemOpenDetail: true,
     // newTabOpen: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
+    contentAutoCollapse: true,//点击空白处关闭详情
     viewType: 'card',
     commentDisplayType: 0
   }
-  window.win().isNight = $('.Night').length === 1
-  window.win().cb = null
-  window.win().postList = []
+  window.isNight = $('.Night').length === 1
+  window.cb = null
+  window.postList = []
 
 
   window.parse = {
@@ -185,7 +186,7 @@
           let pages = cells[1].querySelectorAll('a')
           pages = Array.from(pages)
           // console.log(pages)
-          let url = window.win().url + '/t/' + post.id
+          let url = window.baseUrl + '/t/' + post.id
           for (let i = 0; i < pages.length; i++) {
             let currentPageNo = Number(pages[i].innerText)
             if (currentPageNo == pageNo) continue
@@ -495,7 +496,7 @@
     //解析页面帖子列表
     parsePagePostList(list, box) {
       list.forEach(itemDom => {
-        let item = window.win().clone(window.win().initPost)
+        let item = window.clone (window.initPost)
         let item_title = itemDom.querySelector('.item_title a')
         let {href, id} = window.parse.parseA(item_title)
         item.id = id
@@ -503,17 +504,17 @@
         item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add('post-item')
         itemDom.classList.add(`id_${id}`)
-        window.win().postList.push(item)
+        window.postList.push(item)
       })
 
-      Promise.allSettled(window.win().postList.map(item => $.get(item.url))).then(
+      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(
         res => {
           let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
           // let fail = res.filter((r) => r.status === "rejected")
 
           box.style.boxShadow = 'unset'
           box.style.background = 'unset'
-          if (window.win().config.viewType === 'card') {
+          if (window.config.viewType === 'card') {
             list.forEach(itemDom => {
               itemDom.classList.add('preview')
             })
@@ -530,10 +531,10 @@
             toggle.innerText = '点击展开/收起'
             td.append(toggle)
 
-            let index = window.win().postList.findIndex(v => v.id == postItem.id)
+            let index = window.postList.findIndex(v => v.id == postItem.id)
             if (index > -1) {
-              let obj = window.win().postList[index]
-              window.win().postList[index] = Object.assign({}, obj, postItem)
+              let obj = window.postList[index]
+              window.postList[index] = Object.assign({}, obj, postItem)
 
               if (postItem.content_rendered) {
                 let a = document.createElement('a')
@@ -569,7 +570,7 @@
       data.append('content', '--用户标签--')
       data.append('parent_id', 0)
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${window.win().url}/notes/new`, {method: 'post', body: data})
+      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
       console.log(apiRes)
       if (apiRes.redirected && apiRes.status === 200) {
         //成功
@@ -580,9 +581,9 @@
     //标签操作
     async saveTags(val) {
       let data = new FormData()
-      data.append('content', window.win().user.tagPrefix + JSON.stringify(val))
+      data.append('content', window.user.tagPrefix + JSON.stringify(val))
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${window.win().url}/notes/edit/${window.win().user.tagsId}`, {
+      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/edit/${window.user.tagsId}`, {
         method: 'post', body: data
       })
       return apiRes.redirected && apiRes.status === 200;
@@ -597,19 +598,19 @@
   }
 
   async function cbChecker(val, count = 0) {
-    if (window.win().cb) {
-      window.win().cb(val)
+    if (window.cb) {
+      window.cb(val)
     } else {
-      while ((!window.win().cb) && count < 20) {
+      while ((!window.cb) && count < 20) {
         await sleep(500)
         count++
       }
-      window.win().cb && window.win().cb(val)
+      window.cb && window.cb(val)
     }
   }
 
-  // console.log('type===', window.win().pageType, 'pageData===', window.win().pageData)
-  // console.log('postList', window.win().postList)
+  // console.log('type===', window.pageType, 'pageData===', window.pageData)
+  // console.log('postList', window.postList)
   // console.log('init', window.win().init)\
 
   window.win().canParseV2exPage = true
@@ -617,58 +618,58 @@
   if (window.win().canParseV2exPage) {
     let location2 = window.win().location
     if (location2.pathname === '/') {
-      window.win().pageType = 'home'
+      window.pageType = 'home'
     } else if (location2.href.match(/.com\/?tab=/)) {
-      window.win().pageType = 'home'
+      window.pageType = 'home'
     } else if (location2.href.match(/.com\/go\//)) {
       if (!location2.href.includes('/links')) {
-        window.win().pageType = 'nodePage'
+        window.pageType = 'nodePage'
       }
     } else if (location2.href.match(/.com\/recent/)) {
-      window.win().pageType = 'recent'
+      window.pageType = 'recent'
     } else {
       let r = location2.href.match(/.com\/t\/([\d]+)/)
       if (r) {
-        window.win().pageType = 'post'
-        window.win().pageData.id = r[1]
+        window.pageType = 'post'
+        window.pageData.id = r[1]
         if (location2.search) {
           let pr = location2.href.match(/\?p=([\d]+)/)
-          if (pr) window.win().pageData.pageNo = Number(pr[1])
+          if (pr) window.pageData.pageNo = Number(pr[1])
         }
       }
     }
 
     let top2 = window.win().query('.tools .top:nth-child(2)').text
     if (top2 !== '注册') {
-      window.win().user.username = top2
-      window.win().user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
+      window.user.username = top2
+      window.user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
       cbChecker({type: 'syncData'})
 
       //获取或创建记事本的标签
-      $.get(window.win().url + '/notes').then(r => {
+      $.get(window.baseUrl + '/notes').then(r => {
         let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
         let body = $(bodyText[0])
         let items = body.find('#Main .box .note_item_title a')
         let needCreateNoteTags = true
         if (items.length) {
-          let tags = Array.from(items).find(v => v.innerText.includes(window.win().user.tagPrefix))
+          let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
           if (tags) {
             needCreateNoteTags = false
-            window.win().user.tagsId = tags.href.substr(-5)
+            window.user.tagsId = tags.href.substr(-5)
             cbChecker({type: 'syncData'})
-            $.get(window.win().url + '/notes/edit/' + window.win().user.tagsId).then(r2 => {
+            $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
               bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
               body = $(bodyText[0])
               let text = body.find('.note_editor').text()
-              if (text === window.win().user.tagPrefix) {
-                window.win().user.tags = {}
+              if (text === window.user.tagPrefix) {
+                window.user.tags = {}
               } else {
-                let tagJson = text.substring(window.win().user.tagPrefix.length)
+                let tagJson = text.substring(window.user.tagPrefix.length)
                 try {
-                  window.win().user.tags = JSON.parse(tagJson)
+                  window.user.tags = JSON.parse(tagJson)
                 } catch (e) {
                   console.log('tage', tagJson)
-                  window.win().user.tags = {}
+                  window.user.tags = {}
                 }
               }
               cbChecker({type: 'syncData'})
@@ -678,8 +679,8 @@
         if (needCreateNoteTags) {
           window.parse.createTagNote().then(r => {
             if (r) {
-              window.win().user.tagsId = r
-              window.win().user.tags = {}
+              window.user.tagsId = r
+              window.user.tags = {}
               cbChecker({type: 'syncData'})
             }
           })
@@ -691,9 +692,9 @@
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
       let configObj = JSON.parse(configStr)
-      configObj = configObj[window.win().user.username ?? 'default']
+      configObj = configObj[window.user.username ?? 'default']
       if (configObj) {
-        window.win().config = Object.assign(window.win().config, configObj)
+        window.config = Object.assign(window.config, configObj)
       }
     }
 
@@ -702,7 +703,7 @@
 
     let box
     let list
-    switch (window.win().pageType) {
+    switch (window.pageType) {
       case 'nodePage':
         box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
         let topics = box[1].querySelector('#TopicsNode')
@@ -721,23 +722,23 @@
         box = window.win().query('#Wrapper #Main .box')
         box.after($section)
         window.parse.parsePostContent(
-          {id: window.win().pageData.id},
+          {id: window.pageData.id},
           $(window.win().doc.body),
           window.win().doc.documentElement.outerHTML
         ).then(async res => {
           // console.log('详情页-基本信息解析完成', new Date())
-          window.win().pageData.post = res
+          window.pageData.post = res
           await cbChecker({type: 'postContent', value: res}, 0)
         })
 
         window.parse.getPostAllReplies(
-          {id: window.win().pageData.id},
+          {id: window.pageData.id},
           $(window.win().doc.body),
           window.win().doc.documentElement.outerHTML,
-          window.win().pageData.pageNo
+          window.pageData.pageNo
         ).then(async res => {
           // console.log('详情页-回复解析完成', new Date())
-          window.win().pageData.post = Object.assign(window.win().pageData.post, res)
+          window.pageData.post = Object.assign(window.pageData.post, res)
           await cbChecker({type: 'postReplies', value: res}, 0)
         })
         break

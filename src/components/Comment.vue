@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     hide() {
-      let url = `${window.win().url}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
+      let url = `${window.baseUrl}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       eventBus.emit(CMD.REMOVE, this.modelValue.floor)
       $.post(url).then(res => {
         eventBus.emit(CMD.REFRESH_ONCE)

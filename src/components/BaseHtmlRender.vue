@@ -1,8 +1,14 @@
 <script setup>
 import eventBus from "@/eventBus";
 import {CMD} from "@/utils/type";
+import {onMounted, ref, watch} from "vue";
+import {inject} from 'vue'
 
+const config = inject('config')
 const props = defineProps(['html'])
+const contentRef = ref(null)
+const checkHeight = 900
+const mask = ref(false)
 
 function mouseup(e) {
   let selectionText = window.win().getSelection().toString()
@@ -18,8 +24,65 @@ function mouseup(e) {
     }
   }
 }
+
+watch(config.value, (newVale) => {
+  if (!newVale.contentAutoCollapse) {
+    mask.value = false
+  }
+})
+
+watch([() => contentRef.value, () => props.html], () => {
+  if (!contentRef.value || !props.html) return
+  if (!config.value.contentAutoCollapse) return;
+  let rect = contentRef.value.getBoundingClientRect()
+  //如果有图片，还没加载完，此刻content.value的高度不会包括图片的高度
+  contentRef.value.querySelectorAll('img').forEach(item => {
+    item.addEventListener('load', checkContentHeight)
+  })
+  mask.value = rect.height >= checkHeight
+}, {immediate: true, flush: 'post'})
+
+function checkContentHeight() {
+  if (mask.value) return
+  let rect = contentRef.value.getBoundingClientRect()
+  // console.log('rect', rect.height)
+  mask.value = rect.height >= checkHeight
+}
+
 </script>
 <template>
-  <div v-bind="$attrs" v-html="props.html" @mouseup="mouseup"></div>
+  <div class="html-wrapper" v-if="props.html">
+    <div :class="{mask}">
+      <div ref="contentRef" v-bind="$attrs" v-html="props.html" @mouseup="mouseup"></div>
+    </div>
+    <div v-if="mask" class="expand" @click="mask = false">展开</div>
+  </div>
 </template>
+<style lang="less" scoped>
+@import "@/assets/less/index.less";
+
+.html-wrapper {
+  position: relative;
+
+  .mask {
+    max-height: 90rem;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
+  }
+
+  .expand {
+    position: absolute;
+    z-index: 1;
+    bottom: 2rem;
+    padding: .2rem 1.5rem;
+    border-radius: 2rem;
+    border: 1px solid gray;
+    background: white;
+    color: gray;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+  }
+}
+</style>
 
