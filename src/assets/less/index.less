@@ -57,7 +57,6 @@ a {
   }
 }
 
-
 .base-loading {
   @c: #00000033;
   //@c: transparent;
@@ -371,5 +370,31 @@ a {
     left: 0;
     top: 0;
     background: rgba(black, .3);
+  }
+}
+
+
+.radio-group2 {
+  display: inline-flex;
+  border-radius: .5rem;
+  overflow: hidden;
+  @border: rgb(226,226,226);
+  border: 1px solid @border;
+
+  .radio {
+    cursor: pointer;
+    background: transparent;
+    padding: 0.5rem 1.5rem;
+    border-left: 1px solid @border;
+    color: #9ca1a4;
+
+    &:first-child {
+      border-left: none;
+    }
+  }
+
+  .active {
+    background: @border;
+    color: gray;
   }
 }

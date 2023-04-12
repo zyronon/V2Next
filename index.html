@@ -86,7 +86,6 @@
   window.cb = null
   window.postList = []
 
-
   window.parse = {
     //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
@@ -496,7 +495,7 @@
     //解析页面帖子列表
     parsePagePostList(list, box) {
       list.forEach(itemDom => {
-        let item = window.clone (window.initPost)
+        let item = window.clone(window.initPost)
         let item_title = itemDom.querySelector('.item_title a')
         let {href, id} = window.parse.parseA(item_title)
         item.id = id
@@ -754,6 +753,18 @@
      html, body {
           font-size: 62.5%;
       }
+
+         //好像是v2的屏蔽机制，时不时会v2会修复这两个div的宽高，让网页变形
+        #Wrapper {
+          height: unset !important;
+          width: unset !important;
+        }
+
+        #Wrapper > .content {
+          height: unset !important;
+          width: unset !important;
+        }
+
 
       .post-item {
           background: white;
