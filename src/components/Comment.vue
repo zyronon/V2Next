@@ -2,6 +2,7 @@
   <div class="comment" :class="modelValue.isOp?'op':''" ref="comment">
     <Author v-model="expand"
             :comment="modelValue"
+            :content="modelValue.reply_content"
             @reply="edit = !edit"
             @hide="hide"
     />
@@ -17,7 +18,7 @@
         <div class="left expand-line" @click="toggle"></div>
         <div class="right">
           <div class="w">
-            <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
+            <!-- <BaseHtmlRender class="text" :html="modelValue.reply_content"/> -->
             <PostEditor v-if="edit"
                         @close="edit = false"
                         :replyInfo="replyInfo"
@@ -99,11 +100,6 @@ export default {
 <style scoped lang="less">
 @import "@/assets/less/variable";
 
-
-.comment>.comment{
-  margin-top: 15px;
-}
-
 .comment {
   width: 100%;
   box-sizing: border-box;
@@ -158,9 +154,6 @@ export default {
     .right {
       flex: 1;
       width: calc(100% - 3rem);
-
-      top: -20px;
-      position: relative;
 
       .w {
         padding-left: 27px;

@@ -11,7 +11,8 @@
       <a class="icon" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
-      <span class="texts">
+     <div style="display:flex;flex-direction: column;">
+       <span class="texts">
         <strong>
           <a :href="`/member/${comment.username}`" class="username">{{ comment.username }}</a>
         </strong>
@@ -27,6 +28,9 @@
         <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
         </template>
       </span>
+      <span class="reply" v-html="content">
+      </span>
+     </div>
     </div>
     <div class="Author-right">
       <div class="toolbar">
@@ -68,14 +72,17 @@
 <script>
 import Point from "./Point";
 import eventBus from "../eventBus";
-import {CMD} from "../utils/type";
+import { CMD } from "../utils/type";
 
 export default {
   name: "Author",
-  components: {Point},
+  components: { Point },
   inject: ['isDev', 'isLogin', 'tags', 'config'],
   props: {
     modelValue: false,
+    content: {
+      type: String
+    },
     comment: {
       type: Object,
       default() {
@@ -100,21 +107,21 @@ export default {
       eventBus.emit(CMD.ADD_TAG, this.comment.username)
     },
     removeTag(tag) {
-      eventBus.emit(CMD.REMOVE_TAG, {username: this.comment.username, tag})
+      eventBus.emit(CMD.REMOVE_TAG, { username: this.comment.username, tag })
     },
     checkIsLogin(emitName = '') {
       if (!this.isLogin) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
+        eventBus.emit(CMD.SHOW_MSG, { type: 'warning', text: '请先登录！' })
         return false
       }
       this.$emit(emitName)
       return true
     },
     addThank() {
-      eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'add'})
+      eventBus.emit(CMD.CHANGE_COMMENT_THANK, { id: this.comment.id, type: 'add' })
     },
     recallThank() {
-      eventBus.emit(CMD.CHANGE_COMMENT_THANK, {id: this.comment.id, type: 'recall'})
+      eventBus.emit(CMD.CHANGE_COMMENT_THANK, { id: this.comment.id, type: 'recall' })
     },
   }
 }
@@ -129,7 +136,7 @@ export default {
   justify-content: space-between;
   font-size: 1.2rem;
   position: relative;
-  margin-bottom: .4rem;
+  margin-bottom: 0.4rem;
 
   &.expand {
     margin-bottom: 0;
@@ -146,7 +153,7 @@ export default {
 
     .expand-icon {
       cursor: pointer;
-      margin-right: .8rem;
+      margin-right: 0.8rem;
       width: 2rem;
       height: 2rem;
       transform: rotate(90deg);
@@ -155,11 +162,12 @@ export default {
     .icon {
       margin-right: 1rem;
       display: flex;
+      flex-shrink: 0;
 
       img {
         width: 48px;
         height: 48px;
-        border-radius: .3rem;
+        border-radius: 0.3rem;
       }
 
       //border-radius: 50%;
@@ -172,18 +180,23 @@ export default {
       line-height: 200%;
     }
 
+    .reply{
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
     .op {
       display: inline-block;
       background-color: transparent;
       color: @color;
-      border-radius: .3rem;
-      padding: 0 .3rem;
+      border-radius: 0.3rem;
+      padding: 0 0.3rem;
       cursor: default;
       border: 2px solid @color;
       font-size: 1.2rem;
       font-weight: bold;
       margin-right: 1rem;
-      transform: scale(.8);
+      transform: scale(0.8);
     }
 
     .mod {
@@ -207,7 +220,7 @@ export default {
 
       .remove {
         cursor: pointer;
-        margin-left: .5rem;
+        margin-left: 0.5rem;
         display: none;
       }
     }
@@ -220,7 +233,6 @@ export default {
       cursor: pointer;
       display: none;
     }
-
   }
 
   &:hover {
@@ -255,7 +267,7 @@ export default {
       display: inline-block;
       background-color: #f0f0f0;
       color: #ccc;
-      padding: .2rem .5rem;
+      padding: 0.2rem 0.5rem;
       cursor: default;
     }
 

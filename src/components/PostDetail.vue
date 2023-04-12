@@ -10,7 +10,7 @@
         <div class="left-wrapper">
           <div class="my-box post-wrapper">
             <BaseHtmlRender :html="post.headerTemplate"/>
-            <div class="toolbar-wrapper">
+            <!-- <div class="toolbar-wrapper">
               <Point
                   @addThank="addThank"
                   @recallThank="recallThank"
@@ -20,8 +20,8 @@
                 username:post.username
               }"
                   :api-url="'topic/'+post.id"/>
-              <!-- <Toolbar @reply="isSticky = !isSticky"/> -->
-            </div>
+              <Toolbar @reply="isSticky = !isSticky"/>
+            </div> -->
           </div>
           <div class="my-box comment-wrapper" v-if="replies.length || loading">
             <div class="my-cell flex flex-end">
