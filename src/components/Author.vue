@@ -25,7 +25,7 @@
               <span>{{ i }}</span>
               <i class="fa fa-trash-o remove" @click="removeTag(i)"></i>
             </span>
-        <span class="add-tag ago" @click="addTag" title="添加标签">+</span>
+        <!-- <span class="add-tag ago" @click="addTag" title="添加标签">+</span> -->
         </template>
       </span>
       <span class="reply" v-html="content">
@@ -34,19 +34,9 @@
     </div>
     <div class="Author-right">
       <div class="toolbar">
-        <div class="tool" @click="checkIsLogin('reply')">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-            <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span>回复</span>
-        </div>
-        <div class="tool" @click="checkIsLogin('hide')">
+        <!-- <div class="tool" @click="checkIsLogin('hide')">
           <span>隐藏</span>
-        </div>
+        </div> -->
         <!--            <div class="tool">-->
         <!--              <span>报告</span>-->
         <!--            </div>-->
@@ -57,6 +47,16 @@
             @recallThank="recallThank"
             :api-url="'reply/'+comment.id"
         />
+         <div class="tool" @click="checkIsLogin('reply')">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
+            <path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
+            <path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>回复</span>
+        </div>
       </div>
       <Point
           v-if="comment.thankCount"
@@ -250,7 +250,7 @@ export default {
     .toolbar {
       display: flex;
       align-items: center;
-      color: #929596;
+      // color: #929596;
       opacity: 0;
 
       &:hover {

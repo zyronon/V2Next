@@ -24,22 +24,6 @@
             </div> -->
           </div>
           <div class="my-box comment-wrapper" v-if="replies.length || loading">
-            <div class="my-cell flex flex-end">
-              <div class="radio-group2">
-                <div class="radio"
-                     @click="changeOption(0)"
-                     :class="displayType === 0?'active':''">楼中楼
-                </div>
-                <div class="radio"
-                     @click="changeOption(1)"
-                     :class="displayType === 1?'active':''">感谢
-                </div>
-                <div class="radio"
-                     @click="changeOption(2)"
-                     :class="displayType === 2?'active':''">V2原版
-                </div>
-              </div>
-            </div>
             <div class="my-cell flex">
                 <span class="gray">{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
