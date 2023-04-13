@@ -1,33 +1,35 @@
 <template>
   <div class="app-home" :class="[pageType,isNight?'isNight':'']">
-    <template v-if="showList">
-      <div class="nav flex flex-end">
-        <div class="nav-item" @click="showConfig = true">
-          <span>配置</span>
-        </div>
-        <div class="radio-group2">
-          <div class="radio"
-               @click="config.viewType = 'table'"
-               :class="config.viewType === 'table'?'active':''">表格
+    <template v-if="config.showToolbar">
+      <template v-if="isList">
+        <div class="nav flex flex-end">
+          <div class="nav-item" @click="showConfig = true">
+            <span>设置</span>
           </div>
-          <div class="radio"
-               @click="config.viewType = 'card'"
-               :class="config.viewType === 'card'?'active':''">卡片
+          <div class="radio-group2">
+            <div class="radio"
+                 @click="config.viewType = 'table'"
+                 :class="config.viewType === 'table'?'active':''">表格
+            </div>
+            <div class="radio"
+                 @click="config.viewType = 'card'"
+                 :class="config.viewType === 'card'?'active':''">卡片
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <template v-if="pageType === 'post'">
-      <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
-        <div class="flex">
-          自动打开详情弹框 ：
-          <div class="switch" :class="{active:config.autoOpenDetail}"
-               @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+      </template>
+      <template v-if="pageType === 'post'">
+        <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
+          <div class="flex">
+            自动打开详情弹框 ：
+            <div class="switch" :class="{active:config.autoOpenDetail}"
+                 @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+          </div>
+          <div class="button gray" @click="show = true" :class="{loading}">
+            点击显示详情弹框
+          </div>
         </div>
-        <div class="button" @click="show = true" :class="{loading}">
-          点击显示详情弹框
-        </div>
-      </div>
+      </template>
     </template>
     <PostDetail v-model="show"
                 :isNight="isNight"
@@ -41,10 +43,23 @@
       <div class="mask" @click="showConfig = !showConfig"></div>
       <div class="wrapper">
         <div class="title">
-          脚本配置
+          脚本设置
         </div>
         <div class="sub-title">
-          配置自动保存到本地，下次打开依然生效
+          设置自动保存到本地，下次打开依然生效
+        </div>
+        <div class="option">
+          <span>显示工具栏：</span>
+          <div class="switch" :class="{active:config.showToolbar}"
+               @click="config.showToolbar = !config.showToolbar"/>
+        </div>
+        <div class="notice">
+          <div>
+            关闭此选项后，页面上所有的脚本工具栏和按钮，均不显示。
+          </div>
+          <div>
+            点击右上角插件“Tampermonkey”，找到“V2EX - 超级增强”脚本，点击下拉箭头，找到“设置”选项，点击可再次打开本弹框修复设置
+          </div>
         </div>
         <div class="option">
           <span>列表帖子展示方式：</span>
@@ -114,6 +129,14 @@
           <span>正文超长自动折叠：</span>
           <div class="switch" :class="{active:config.contentAutoCollapse}"
                @click="config.contentAutoCollapse = !config.contentAutoCollapse"/>
+        </div>
+        <div class="option">
+          <span>列表hover时显示预览按钮：</span>
+          <div class="switch" :class="{active:config.showPreviewBtn}"
+               @click="config.showPreviewBtn = !config.showPreviewBtn"/>
+        </div>
+        <div class="notice">
+          此项需要刷新页面才能生效
         </div>
 
         <div class="jieshao">
@@ -197,7 +220,7 @@ export default {
     isDev() {
       return import.meta.env.DEV
     },
-    showList() {
+    isList() {
       return this.pageType === 'home' ||
           this.pageType === 'recent' ||
           this.pageType === 'nodePage'
@@ -261,7 +284,7 @@ export default {
       this.show = true
     }
     if (window.win().canParseV2exPage) {
-      if (this.showList) {
+      if (this.isList) {
         // let lastItem = window.win().appNode.nextElementSibling
         // let maxPage = 1000
         // if (this.pageType !== 'home') {
@@ -405,6 +428,9 @@ export default {
     },
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
+      if (type === 'openSetting') {
+        this.showConfig = true
+      }
       if (type === 'postContent') {
         this.current = Object.assign(this.clone(window.initPost), this.clone(value))
       }
@@ -568,10 +594,7 @@ export default {
       window.win().doc.body.style.overflow = 'hidden'
       window.win().history.pushState({}, 0, post.href ?? url);
 
-      this.current = Object.assign(
-          this.clone(window.initPost),
-          {RightbarHTML: this.current.RightbarHTML},
-          this.clone(post))
+      this.current = Object.assign(this.clone(window.initPost), this.clone(post))
       //如果，有数据，不显示loading,默默更新即可
       if (!this.current.replies.length) this.loading = true
 
@@ -683,6 +706,7 @@ export default {
     margin-right: 2rem;
     padding: .6rem;
     border-radius: .4rem;
+    color: #778087;
 
     &.active {
       background: #40a9ff;
@@ -721,10 +745,10 @@ export default {
       margin-bottom: 4rem;
     }
 
-
     .notice {
       font-size: 12px;
       display: flex;
+      flex-direction: column;
       justify-content: flex-start;
       padding-left: 3rem;
       line-break: anywhere;
@@ -743,6 +767,7 @@ export default {
     }
   }
 }
+
 .tag-modal {
   .wrapper {
     z-index: 9;

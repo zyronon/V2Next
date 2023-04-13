@@ -6,77 +6,69 @@
        :class="[isNight?'isNight':'']"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
-      <div class="left">
-        <div class="left-wrapper">
-          <div class="my-box post-wrapper">
-            <BaseHtmlRender :html="post.headerTemplate"/>
-            <div class="toolbar-wrapper">
-              <Point
-                  @addThank="addThank"
-                  @recallThank="recallThank"
-                  :item="{
+      <div class="main-wrapper">
+        <div class="my-box post-wrapper">
+          <BaseHtmlRender :html="post.headerTemplate"/>
+          <div class="toolbar-wrapper">
+            <Point
+                @addThank="addThank"
+                @recallThank="recallThank"
+                :item="{
                 isThanked:post.isThanked,
                 thankCount:post.thankCount,
                 username:post.username
               }"
-                  :api-url="'topic/'+post.id"/>
-              <Toolbar @reply="isSticky = !isSticky"/>
-            </div>
+                :api-url="'topic/'+post.id"/>
+            <Toolbar @reply="isSticky = !isSticky"/>
           </div>
-          <div class="my-box comment-wrapper" v-if="replies.length || loading">
-            <div class="my-cell flex flex-end">
-              <div class="radio-group2">
-                <div class="radio"
-                     @click="changeOption(0)"
-                     :class="displayType === 0?'active':''">楼中楼
-                </div>
-                <div class="radio"
-                     @click="changeOption(1)"
-                     :class="displayType === 1?'active':''">感谢
-                </div>
-                <div class="radio"
-                     @click="changeOption(2)"
-                     :class="displayType === 2?'active':''">V2原版
-                </div>
+        </div>
+        <div class="my-box comment-wrapper" v-if="replies.length || loading">
+          <div class="my-cell flex flex-end" v-if="config.showToolbar">
+            <div class="radio-group2">
+              <div class="radio"
+                   @click="changeOption(0)"
+                   :class="displayType === 0?'active':''">楼中楼
+              </div>
+              <div class="radio"
+                   @click="changeOption(1)"
+                   :class="displayType === 1?'active':''">感谢
+              </div>
+              <div class="radio"
+                   @click="changeOption(2)"
+                   :class="displayType === 2?'active':''">V2原版
               </div>
             </div>
-            <div class="my-cell flex">
+          </div>
+          <div class="my-cell flex">
                 <span class="gray">{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
                 </span>
-              <div class="fr" v-html="post.fr"></div>
-            </div>
-            <div class="loading-wrapper" v-if="loading">
-              <div :class="[isNight?'loading-b':'loading-c']"></div>
-            </div>
-            <div class="comments" ref="comments" v-else>
-              <Comment v-for="(item,index) in replies"
-                       :key="item.floor"
-                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#e2e2e2'};  padding: 1rem;margin-top: 0;`"
-                       v-model="replies[index]"/>
-            </div>
+            <div class="fr" v-html="post.fr"></div>
           </div>
-          <div v-else id="no-comments-yet">目前尚无回复</div>
-          <div v-if="isLogin" class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
-            <div class="my-cell flex">
-              <span>添加一条新回复</span>
-              <div class="notice-right">
-                <a class="float" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
-                <a @click="scrollTop">回到顶部</a>
-              </div>
-            </div>
-            <div class="w">
-              <PostEditor
-                  useType="reply-post"
-                  @click="isSticky = true"/>
-            </div>
+          <div class="loading-wrapper" v-if="loading">
+            <div :class="[isNight?'loading-b':'loading-c']"></div>
+          </div>
+          <div class="comments" ref="comments" v-else>
+            <Comment v-for="(item,index) in replies"
+                     :key="item.floor"
+                     :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
+                     v-model="replies[index]"/>
           </div>
         </div>
-      </div>
-      <div class="right" ref="right">
-        <div id="Rightbar" v-html="post.RightbarHTML"></div>
-        <div class="scroll-top button" @click.stop="scrollTop">
-          回到顶部
+        <div v-else id="no-comments-yet">目前尚无回复</div>
+        <div v-if="isLogin" class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
+          <div class="my-cell flex">
+            <span>添加一条新回复</span>
+            <div class="notice-right">
+              <a class="float" v-if="isSticky" @click="isSticky = false">取消回复框停靠</a>
+              <a @click="scrollTop">回到顶部</a>
+            </div>
+          </div>
+          <div class="w">
+            <PostEditor
+                useType="reply-post"
+                @click="isSticky = true"/>
+          </div>
         </div>
       </div>
       <div class="call-list"
@@ -89,13 +81,11 @@
           <a>{{ item }}</a>
         </div>
       </div>
-      <div class="close-btn" @click="close('btn')">
-        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 8L40 40" :stroke="isNight?'#ffffff':'#000000'" stroke-width="4" stroke-linecap="round"
-                stroke-linejoin="round"/>
-          <path d="M8 40L40 8" :stroke="isNight?'#ffffff':'#000000'" stroke-width="4" stroke-linecap="round"
-                stroke-linejoin="round"/>
-        </svg>
+      <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </div>
+      <div class="scroll-top button gray" @click.stop="scrollTop">
+        <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
       </div>
     </div>
   </div>
@@ -119,7 +109,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post', 'clone', 'isLogin','config'],
+  inject: ['allReplyUsers', 'post', 'isLogin', 'config'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -312,7 +302,6 @@ export default {
   overflow: auto;
   font-size: 1.4rem;
 
-  @width: 77rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -452,26 +441,23 @@ export default {
     }
   }
 
+  @width: 77rem;
   .main {
     display: flex;
     justify-content: flex-end;
-    padding: 6rem 12rem 15rem 12rem;
+    padding: 3rem 8rem 15rem 8rem;
     //margin: auto;
     //box-sizing: border-box;
     //min-height: 100%;
     background: #e2e2e2;
     position: relative;
 
-    > .left {
+    .main-wrapper {
       width: @width;
-
-      .left-wrapper {
-        width: 100%;
-        padding-bottom: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+      padding-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       .post-wrapper {
         .toolbar-wrapper {
@@ -501,7 +487,6 @@ export default {
         }
       }
 
-
       .loading-wrapper {
         height: 20rem;
         display: flex;
@@ -517,17 +502,6 @@ export default {
         margin-bottom: 2rem;
         box-sizing: border-box;
       }
-    }
-
-    > .right {
-      //width: 27rem;
-      //height: 20rem;
-      //background: red;
-      margin-left: 2rem;
-      margin-top: -2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     .call-list {
@@ -570,37 +544,18 @@ export default {
         }
       }
     }
-
   }
 
   @media screen and (max-width: 1500px) {
     @width: 65vw;
-    .main {
-      padding: 8rem;
-      padding-bottom: 15rem;
-
-      > .left {
-        width: @width;
-      }
-
-      > .right {
-        display: none;
-      }
+    .main-wrapper {
+      width: @width!important;
     }
   }
   @media screen and (max-width: 1280px) {
     @width: 75vw;
-    .main {
-      padding: 5rem;
-      padding-bottom: 15rem;
-
-      > .left {
-        width: @width;
-      }
-
-      > .right {
-        display: none;
-      }
+    .main-wrapper {
+      width: @width!important;
     }
   }
 
@@ -608,15 +563,17 @@ export default {
     position: fixed;
     bottom: 3rem;
     z-index: 99;
+    padding: 0.4rem 1.4rem;
+    transform: translateX(6rem);
   }
 
   .close-btn {
+    color: @main-color;
     cursor: pointer;
     position: fixed;
-    top: 6rem;
+    top: 3rem;
     transform: translateX(4rem);
-
-    //margin-left: 50rem;
+    font-size: 2rem;
   }
 }
 </style>

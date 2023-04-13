@@ -139,7 +139,7 @@ export default {
         content: " ";
         height: 100%;
         width: 0;
-        border-right: 1px solid #e1e1e1;
+        border-right: 1px solid #f1f1f1;
       }
 
       &:hover {
