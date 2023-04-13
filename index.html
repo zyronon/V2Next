@@ -27,8 +27,16 @@
       console.log('捕获到异常：', e);
       return true;
     });
+  } else {
+    window.GM_registerMenuCommand = function () {
+    }
+    window.GM_openInTab = function () {
+    }
   }
 
+  //发布脚本，从这里开始复制
+  //发布脚本，从这里开始复制
+  //发布脚本，从这里开始复制
   if (window.top !== window.self) {
     window.win = () => window.top
     window.baseUrl = 'https://v2ex.com'
@@ -58,7 +66,6 @@
     isIgnore: false,
     isThanked: false,
     isReport: false,
-    RightbarHTML: '',
   }
   window.win().doc = window.win().document
   window.win().query = (v) => window.win().document.querySelector(v)
@@ -73,6 +80,8 @@
   window.pageType = ''
   window.pageData = {pageNo: 1}
   window.config = {
+    showToolbar: true,
+    showPreviewBtn: true,
     autoOpenDetail: true,
     openTag: true,
     clickPostItemOpenDetail: true,
@@ -85,7 +94,6 @@
   window.isNight = $('.Night').length === 1
   window.cb = null
   window.postList = []
-
   window.parse = {
     //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
@@ -138,12 +146,6 @@
         }
       }
 
-      let Rightbar = body.find('#Rightbar')
-      if (Rightbar.length) {
-        post.RightbarHTML = Rightbar[0].innerHTML
-        //让修改背景的样式失效
-        post.RightbarHTML = post.RightbarHTML.replace('type="text/css"', 'type="text/css1"')
-      }
       // console.log('基本信息', post)
 
       body.find('.topic_buttons').remove()
@@ -521,14 +523,16 @@
           ok.map(postItem => {
             let itemDom = box.querySelector(`.id_${postItem.id}`)
 
-            //添加切换按钮
-            let td = itemDom.querySelector('td:nth-child(4)')
-            td.style.position = 'relative'
-            let toggle = document.createElement('div')
-            toggle.dataset['id'] = postItem.id
-            toggle.classList.add('toggle')
-            toggle.innerText = '点击展开/收起'
-            td.append(toggle)
+            if (window.config.showPreviewBtn) {
+              //添加切换按钮
+              let td = itemDom.querySelector('td:nth-child(4)')
+              td.style.position = 'relative'
+              let toggle = document.createElement('div')
+              toggle.dataset['id'] = postItem.id
+              toggle.classList.add('toggle')
+              toggle.innerText = '点击展开/收起'
+              td.append(toggle)
+            }
 
             let index = window.postList.findIndex(v => v.id == postItem.id)
             if (index > -1) {
@@ -608,12 +612,128 @@
     }
   }
 
-  // console.log('type===', window.pageType, 'pageData===', window.pageData)
-  // console.log('postList', window.postList)
-  // console.log('init', window.win().init)\
+  //初始化脚本菜单
+  function initMonkeyMenu() {
+    GM_registerMenuCommand("脚本设置", function (event) {
+      cbChecker({type: 'openSetting'})
+    }, "a");
+    GM_registerMenuCommand('💬 反馈 & 建议', function () {
+      GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
+        active: true,
+        insert: true,
+        setParent: true
+      });
+    });
+  }
+
+  //初始化样式表
+  function initStyle() {
+    //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修复这两个div的宽高，让网页变形
+    let style2 = `
+     html, body {
+          font-size: 62.5%;
+      }
+
+        #Wrapper {
+          height: unset !important;
+          width: unset !important;
+        }
+
+         #Wrapper > .content {
+          height: unset !important;
+          width: unset !important;
+        }
+
+
+      .post-item {
+          background: white;
+      }
+
+      .post-item > .post-content {
+          height: 0;
+          margin-top: 0;
+      }
+
+      .post-item:hover .toggle {
+          display: flex;
+      }
+
+      .toggle {
+          position: absolute;
+          right: 0;
+          top: 0.5rem;
+          width: 8rem;
+          height: 100%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-end;
+          cursor: pointer;
+          font-size: 1.2rem;
+          color: #ccc;
+          display: none;
+      }
+
+      .preview {
+          margin: 1rem 0;
+          border: 1px solid #e2e2e2;
+          border-radius: 0.4rem;
+          cursor: pointer;
+      }
+
+      .preview:hover {
+          border: 1px solid #968b8b;
+      }
+
+      .preview > .post-content {
+          height: unset !important;
+          margin-top: 0.5rem !important;
+      }
+
+      .post-content {
+          margin-top: 0.5rem;
+          display: block;
+          max-height: 20rem;
+          overflow: hidden;
+          text-decoration: unset !important;
+          line-break: anywhere;
+      }
+
+      .post-content:link {
+          color: black;
+      }
+
+      .post-content:visited {
+          color: #afb9c1 !important;
+      }
+
+      .Night .post-item {
+          background: #18222d !important;
+      }
+
+      .Night .preview {
+          border: 1px solid #3b536e;
+      }
+
+      .Night .preview > .post-content:link {
+          color: #d1d5d9;
+      }
+
+      .Night .preview > .post-content:visited {
+          color: #393f4e !important;
+      }
+
+    `
+    let addStyle2 = document.createElement("style");
+    addStyle2.rel = "stylesheet";
+    addStyle2.type = "text/css";
+    addStyle2.innerHTML = style2
+    $(window.win().doc.head).append(addStyle2)
+  }
+
+  initMonkeyMenu()
+  initStyle()
 
   window.win().canParseV2exPage = true
-
   if (window.win().canParseV2exPage) {
     let location2 = window.win().location
     if (location2.pathname === '/') {
@@ -747,109 +867,12 @@
     }
   }
 
+
+  //发布脚本，从这里结束复制
+  //发布脚本，从这里结束复制
+  //发布脚本，从这里结束复制
   //开发时自动更新window.top head里面添加的vue style
   if (window.win().isFrame && isDev) {
-    let style2 = `
-     html, body {
-          font-size: 62.5%;
-      }
-
-         //好像是v2的屏蔽机制，时不时会v2会修复这两个div的宽高，让网页变形
-        #Wrapper {
-          height: unset !important;
-          width: unset !important;
-        }
-
-        #Wrapper > .content {
-          height: unset !important;
-          width: unset !important;
-        }
-
-
-      .post-item {
-          background: white;
-      }
-
-      .post-item > .post-content {
-          height: 0;
-          margin-top: 0;
-      }
-
-      .post-item:hover .toggle {
-          display: flex;
-      }
-
-      .toggle {
-          position: absolute;
-          right: 0;
-          top: 0.5rem;
-          width: 8rem;
-          height: 100%;
-          display: flex;
-          justify-content: flex-end;
-          align-items: flex-end;
-          cursor: pointer;
-          font-size: 1.2rem;
-          color: #4d5256;
-          display: none;
-      }
-
-      .preview {
-          margin: 1rem 0;
-          border: 1px solid #e2e2e2;
-          border-radius: 0.4rem;
-          cursor: pointer;
-      }
-
-      .preview:hover {
-          border: 1px solid #968b8b;
-      }
-
-      .preview > .post-content {
-          height: unset !important;
-          margin-top: 0.5rem !important;
-      }
-
-      .post-content {
-          margin-top: 0.5rem;
-          display: block;
-          max-height: 20rem;
-          overflow: hidden;
-          text-decoration: unset !important;
-          line-break: anywhere;
-      }
-
-      .post-content:link {
-          color: black;
-      }
-
-      .post-content:visited {
-          color: #afb9c1 !important;
-      }
-
-      .Night .post-item {
-          background: #18222d !important;
-      }
-
-      .Night .preview {
-          border: 1px solid #3b536e;
-      }
-
-      .Night .preview > .post-content:link {
-          color: #d1d5d9;
-      }
-
-      .Night .preview > .post-content:visited {
-          color: #393f4e !important;
-      }
-
-    `
-    let addStyle2 = document.createElement("style");
-    addStyle2.rel = "stylesheet";
-    addStyle2.type = "text/css";
-    addStyle2.innerHTML = style2
-    $(window.win().doc.head).append(addStyle2)
-
     function getStyle(html) {
       let reg = html.match(/(<title>Vite App<\/title>[\s\S]+)/g)
       if (reg) {
