@@ -58,7 +58,7 @@
             关闭此选项后，页面上所有的脚本工具栏和按钮，均不显示。
           </div>
           <div>
-            点击右上角插件“Tampermonkey”，找到“V2EX - 超级增强”脚本，点击下拉箭头，找到“设置”选项，点击可再次打开本弹框修复设置
+            点击右上角插件“Tampermonkey”，找到“V2EX - 超级增强”脚本，找到“脚本设置”选项，点击可再次打开本弹框修复设置
           </div>
         </div>
         <div class="option">
@@ -590,6 +590,7 @@ export default {
       //     }
       //   }
       // }
+      console.log('window.baseUrl',window.baseUrl)
       let url = window.baseUrl + '/t/' + post.id
       window.win().doc.body.style.overflow = 'hidden'
       window.win().history.pushState({}, 0, post.href ?? url);
