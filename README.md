@@ -138,7 +138,7 @@
 # 打包指南
 
 1. 如果你修改了index.html里面的第一个<script>标签的内容。那么也要复制到脚本里面。注意：const isDev = true 要修改为 const
-   isDev = false。其他的js内容全部复制替换到脚本的第40行之后即可
+   isDev = false。其他的js内容全部复制替换到脚本的大约第80行之后即可
 2. 运行npm run build
 3. 复制dist/assets目录下的css和js，css复制替换到脚本的21行，js复制替换到脚本的32行
 4. 注意，js和css一定要同时复制。vue打包后的"data-v-c9f8a6c7"这种东西，会重新生成

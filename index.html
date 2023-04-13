@@ -15,6 +15,9 @@
 <script>
   const isDev = true
 
+  //发布脚本，从这里开始复制
+  //发布脚本，从这里开始复制
+  //发布脚本，从这里开始复制
   if (!isDev) {
     window.onerror = function (message, source, lineno, colno, error) {
       console.log('捕获到异常：', {message, source, lineno, colno, error});
@@ -34,9 +37,6 @@
     }
   }
 
-  //发布脚本，从这里开始复制
-  //发布脚本，从这里开始复制
-  //发布脚本，从这里开始复制
   if (window.top !== window.self) {
     window.win = () => window.top
     window.baseUrl = 'https://v2ex.com'
@@ -616,7 +616,7 @@
   function initMonkeyMenu() {
     GM_registerMenuCommand("脚本设置", function (event) {
       cbChecker({type: 'openSetting'})
-    }, "a");
+    });
     GM_registerMenuCommand('💬 反馈 & 建议', function () {
       GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
         active: true,
