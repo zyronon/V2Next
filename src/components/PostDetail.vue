@@ -216,7 +216,6 @@ export default {
     })
   },
   beforeUnmount() {
-    this.$refs.right.innerHTML = ''
     window.win().removeEventListener('keydown', this.onKeyDown)
     eventBus.off(CMD.SHOW_CALL)
   },
