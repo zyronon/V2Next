@@ -19,6 +19,9 @@ https://www.v2ex.com/poll_once 好像是换once的
 - [ ]  930155 指定回复我，解析到后面去了。还是要考虑，如果标明了楼层号，尽量以楼层号优先解析
 # 其他问题
 
+- [ ] https://www.v2ex.com/t/932519#reply1 无法显示email
+- [ ] 正文内容短长的，点击展开之后会自动收起
+- 
 - [x] 点击图片无反应 https://www.v2ex.com/t/886814  备注：本来点了也没反应
 - [x]  回复自己的帖子失效 https://www.v2ex.com/t/887103
 - [x]  youtube视频不能占满 704240
@@ -27,7 +30,6 @@ https://www.v2ex.com/poll_once 好像是换once的
 - [ ]  单独打开帖子，不自动显示的情况下，好像把body设为overflow:hidden了
 - [ ]  单独打开帖子，自动显示的情况下，没有滚动到顶部
 - [ ] 经常无法自动打开详情页
-- [ ] https://www.v2ex.com/t/932519#reply1 无法显示email
 
 # TODO
 
