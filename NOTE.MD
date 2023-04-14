@@ -27,6 +27,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - [ ]  单独打开帖子，不自动显示的情况下，好像把body设为overflow:hidden了
 - [ ]  单独打开帖子，自动显示的情况下，没有滚动到顶部
 - [ ] 经常无法自动打开详情页
+- [ ] https://www.v2ex.com/t/932519#reply1 无法显示email
 
 # TODO
 
