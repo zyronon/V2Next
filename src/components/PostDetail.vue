@@ -8,7 +8,7 @@
     <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
       <div class="main-wrapper">
         <div class="my-box post-wrapper">
-          <BaseHtmlRender :html="post.headerTemplate"/>
+          <BaseHtmlRender v-if="modelValue" :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
             <Point
                 @addThank="addThank"

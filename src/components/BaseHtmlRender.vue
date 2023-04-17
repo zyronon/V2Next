@@ -9,6 +9,7 @@ const props = defineProps(['html'])
 const contentRef = ref(null)
 const checkHeight = 900
 const mask = ref(false)
+const handOpen = ref(false)
 
 function mouseup(e) {
   let selectionText = window.win().getSelection().toString()
@@ -34,16 +35,16 @@ watch(config.value, (newVale) => {
 watch([() => contentRef.value, () => props.html], () => {
   if (!contentRef.value || !props.html) return
   if (!config.value.contentAutoCollapse) return;
-  let rect = contentRef.value.getBoundingClientRect()
   //如果有图片，还没加载完，此刻content.value的高度不会包括图片的高度
   contentRef.value.querySelectorAll('img').forEach(item => {
+    item.removeEventListener('load', checkContentHeight)
     item.addEventListener('load', checkContentHeight)
   })
-  mask.value = rect.height >= checkHeight
+  checkContentHeight()
 }, {immediate: true, flush: 'post'})
 
 function checkContentHeight() {
-  if (mask.value) return
+  if (handOpen.value) return;
   let rect = contentRef.value.getBoundingClientRect()
   // console.log('rect', rect.height)
   mask.value = rect.height >= checkHeight
@@ -55,7 +56,7 @@ function checkContentHeight() {
     <div :class="{mask}">
       <div ref="contentRef" v-bind="$attrs" v-html="props.html" @mouseup="mouseup"></div>
     </div>
-    <div v-if="mask" class="expand" @click="mask = false">展开</div>
+    <div v-if="mask" class="expand" @click="mask = false;handOpen = true">展开</div>
   </div>
 </template>
 <style lang="less" scoped>

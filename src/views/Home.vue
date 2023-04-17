@@ -347,9 +347,6 @@ export default {
           let postItem = this.clone(window.initPost)
           if (index > -1) {
             postItem = this.list[index]
-          } else {
-            postItem.member = {}
-            postItem.node = {}
           }
           postItem.id = id
           postItem.href = href
@@ -357,15 +354,15 @@ export default {
             let template = `
             <div class="header">
               <div class="fr">
-                <a href="/member/${postItem.member.username ?? ''}">
-                  <img src="${postItem.member.avatar_large ?? ''}" class="avatar"
+                <a href="/member/${postItem?.member?.username ?? ''}">
+                  <img src="${postItem?.member?.avatar_large ?? ''}" class="avatar"
                        border="0"
-                       align="default" width="73" style="width: 73px; max-height: 73px;" alt="${postItem.member.username ?? ''}">
+                       align="default" width="73" style="width: 73px; max-height: 73px;" alt="${postItem?.member?.username ?? ''}">
                 </a>
               </div>
-              <a href="/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="${postItem.node.url ?? ''}">${postItem.node.title ?? ''}</a>
+              <a href="/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="${postItem?.node?.url ?? ''}">${postItem?.node?.title ?? ''}</a>
               <div class="sep10"></div>
-              <h1>${postItem.title || '加载中...'}</h1>
+              <h1>${postItem?.title || '加载中...'}</h1>
               <div id="topic_930514_votes" class="votes">
                 <a href="javascript:" onclick="null" class="vote">
                   <li class="fa fa-chevron-up"></li>
@@ -376,14 +373,14 @@ export default {
                 </a>
               </div> &nbsp;
               <small class="gray">
-                <a href="/member/zyronon">${postItem.member.username ?? ''}</a> ·
+                <a href="/member/zyronon">${postItem?.member?.username ?? ''}</a> ·
                 <span title="2023-04-07 11:32:28 +08:00">1 天前</span> · 0 次点击
               </small>
             </div>
             <div class="cell">
               <div class="topic_content">
                 <div class="markdown_body">
-                 ${postItem.content_rendered ?? ''}
+                 ${postItem?.content_rendered ?? ''}
                 </div>
               </div>
             </div>

@@ -18,7 +18,7 @@ import {CMD} from "@/utils/type";
 
 export default {
   name: "Point",
-  inject: ['post','isLogin'],
+  inject: ['post', 'isLogin'],
   props: {
     item: {
       type: Object,
@@ -56,22 +56,24 @@ export default {
       if (this.item.isThanked) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '已经感谢过了'})
       }
-      this.$emit('addThank')
-      //https://www.v2ex.com/thank/topic/886147?once=38719
-      let url = `${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`
-      $.post(url).then(res => {
-        console.log('感谢', res)
-        if (!res.success) {
-          this.$emit('recallThank')
-          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
-        }
-        eventBus.emit(CMD.REFRESH_ONCE, res.once)
+      if (confirm(`确认花费 10 个铜币向 @${this.item.username} 的这条回复发送感谢？`)) {
+        this.$emit('addThank')
+        //https://www.v2ex.com/thank/topic/886147?once=38719
+        let url = `${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`
+        $.post(url).then(res => {
+          console.log('感谢', res)
+          if (!res.success) {
+            this.$emit('recallThank')
+            eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})
+          }
+          eventBus.emit(CMD.REFRESH_ONCE, res.once)
 
-      }, err => {
-        this.$emit('recallThank')
-        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
-        eventBus.emit(CMD.REFRESH_ONCE)
-      })
+        }, err => {
+          this.$emit('recallThank')
+          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '感谢失败'})
+          eventBus.emit(CMD.REFRESH_ONCE)
+        })
+      }
     }
   }
 }

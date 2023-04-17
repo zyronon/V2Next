@@ -75,7 +75,6 @@
 如果觉得还不错，就去 Github 点个 [⭐ Star] 鼓励一下下吧（或者多多分享）！
 
 # 待实现
-
 - 自动签到
 - 高亮楼主回复
 - 集成 sov2ex
@@ -88,7 +87,6 @@
 - 链接自动转图片
 - 自动加载下一页
 - 新标签页打开链接
-- 去掉首页配置
 - 表情功能
     - https://greasyfork.org/zh-CN/scripts/435299-v2ex-emoticon/code
 
