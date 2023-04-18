@@ -524,33 +524,35 @@
             })
           }
           ok.map(postItem => {
-            let itemDom = box.querySelector(`.id_${postItem.id}`)
+            if (postItem?.id) {
+              let itemDom = box.querySelector(`.id_${postItem.id}`)
 
-            if (window.config.showPreviewBtn) {
-              //添加切换按钮
-              let td = itemDom.querySelector('td:nth-child(4)')
-              td.style.position = 'relative'
-              let toggle = document.createElement('div')
-              toggle.dataset['id'] = postItem.id
-              toggle.classList.add('toggle')
-              toggle.innerText = '点击展开/收起'
-              td.append(toggle)
-            }
+              if (window.config.showPreviewBtn) {
+                //添加切换按钮
+                let td = itemDom.querySelector('td:nth-child(4)')
+                td.style.position = 'relative'
+                let toggle = document.createElement('div')
+                toggle.dataset['id'] = postItem.id
+                toggle.classList.add('toggle')
+                toggle.innerText = '点击展开/收起'
+                td.append(toggle)
+              }
 
-            let index = window.postList.findIndex(v => v.id == postItem.id)
-            if (index > -1) {
-              let obj = window.postList[index]
-              window.postList[index] = Object.assign({}, obj, postItem)
+              let index = window.postList.findIndex(v => v.id == postItem.id)
+              if (index > -1) {
+                let obj = window.postList[index]
+                window.postList[index] = Object.assign({}, obj, postItem)
 
-              if (postItem.content_rendered) {
-                let a = document.createElement('a')
-                a.href = obj.href
-                a.classList.add('post-content')
-                let div = document.createElement('div')
-                div.innerHTML = postItem.content_rendered
-                a.append(div)
-                // console.log(div.clientHeight)
-                itemDom.append(a)
+                if (postItem.content_rendered) {
+                  let a = document.createElement('a')
+                  a.href = obj.href
+                  a.classList.add('post-content')
+                  let div = document.createElement('div')
+                  div.innerHTML = postItem.content_rendered
+                  a.append(div)
+                  // console.log(div.clientHeight)
+                  itemDom.append(a)
+                }
               }
             }
           })
