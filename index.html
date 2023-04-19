@@ -346,16 +346,13 @@
 
         let endList = list.slice(index + 1)
 
+        item.level = 0
         if (index === 0) {
-          item.level = 0
           nestedList.push(this.findChildren(item, endList, list))
         } else {
           if (!item.isUse) {
             //是否是一级回复
             let isOneLevelReply = false
-            // if (item.replyFloor === -1) {
-            //   isOneLevelReply = true
-            // }
             if (item.replyUsers.length) {
               if (item.replyUsers.length > 1) {
                 isOneLevelReply = true
@@ -379,19 +376,52 @@
     },
     //查找子回复
     findChildren(item, endList, all) {
-      const fn = (child, endList2, parent) => {
+      const fn = (child, endList2, parent,) => {
         child.level = parent.level + 1
         let rIndex = all.findIndex(v => v.floor === child.floor)
         if (rIndex > -1) {
           all[rIndex].isUse = true
         }
-        parent.children.push(this.findChildren(child, endList2, all))
+        parent.children.push(this.findChildren(child, endList2, all,))
       }
       // console.log('endList', endList)
       item.children = []
-      // if (item.floor ==8)debugger
+      // if (item.floor === 46) debugger
+      let floorReplyList = []
+
+      //先找到指定楼层的回复，再去循环查找子回复
+      //原因：问题930155
       for (let i = 0; i < endList.length; i++) {
         let currentItem = endList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+        if (currentItem.replyFloor === item.floor) {
+          //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
+          if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
+            if (item.floor === 3) {
+              console.log('i', i)
+            }
+            //先标记为使用，不然遇到“问题930155”，会出现重复回复
+            currentItem.isUse = true
+            floorReplyList.push({endList: endList.slice(i + 1), currentItem})
+            //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
+            //截图：930155.png
+            // fn(currentItem, endList.slice(i + 1), item)
+          } else {
+            currentItem.isWrong = true
+          }
+        }
+      }
+      floorReplyList.map(({currentItem, endList}) => {
+        fn(currentItem, endList, item)
+      })
+
+      //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
+      let nextMeIndex = endList.findIndex(v => v.username === item.username)
+      let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
+
+      for (let i = 0; i < findList.length; i++) {
+        let currentItem = findList[i]
         //如果已被使用，直接跳过
         if (currentItem.isUse) continue
         let endList2 = endList.slice(i + 1)
@@ -413,6 +443,8 @@
           if (currentItem.username === item.username) return item
         }
       }
+
+      item.children = item.children.sort((a, b) => a.floor - b.floor)
       return item
     },
     findChildren2(item, endList, all) {
@@ -511,54 +543,52 @@
         window.postList.push(item)
       })
 
-      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(
-        res => {
-          let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
-          // let fail = res.filter((r) => r.status === "rejected")
+      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
+        let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
+        // let fail = res.filter((r) => r.status === "rejected")
 
-          box.style.boxShadow = 'unset'
-          box.style.background = 'unset'
-          if (window.config.viewType === 'card') {
-            list.forEach(itemDom => {
-              itemDom.classList.add('preview')
-            })
-          }
-          ok.map(postItem => {
-            if (postItem?.id) {
-              let itemDom = box.querySelector(`.id_${postItem.id}`)
+        box.style.boxShadow = 'unset'
+        box.style.background = 'unset'
+        if (window.config.viewType === 'card') {
+          list.forEach(itemDom => {
+            itemDom.classList.add('preview')
+          })
+        }
+        ok.map(postItem => {
+          if (postItem?.id) {
+            let itemDom = box.querySelector(`.id_${postItem.id}`)
 
-              if (window.config.showPreviewBtn) {
-                //添加切换按钮
-                let td = itemDom.querySelector('td:nth-child(4)')
-                td.style.position = 'relative'
-                let toggle = document.createElement('div')
-                toggle.dataset['id'] = postItem.id
-                toggle.classList.add('toggle')
-                toggle.innerText = '点击展开/收起'
-                td.append(toggle)
-              }
+            if (window.config.showPreviewBtn) {
+              //添加切换按钮
+              let td = itemDom.querySelector('td:nth-child(4)')
+              td.style.position = 'relative'
+              let toggle = document.createElement('div')
+              toggle.dataset['id'] = postItem.id
+              toggle.classList.add('toggle')
+              toggle.innerText = '点击展开/收起'
+              td.append(toggle)
+            }
 
-              let index = window.postList.findIndex(v => v.id == postItem.id)
-              if (index > -1) {
-                let obj = window.postList[index]
-                window.postList[index] = Object.assign({}, obj, postItem)
+            let index = window.postList.findIndex(v => v.id == postItem.id)
+            if (index > -1) {
+              let obj = window.postList[index]
+              window.postList[index] = Object.assign({}, obj, postItem)
 
-                if (postItem.content_rendered) {
-                  let a = document.createElement('a')
-                  a.href = obj.href
-                  a.classList.add('post-content')
-                  let div = document.createElement('div')
-                  div.innerHTML = postItem.content_rendered
-                  a.append(div)
-                  // console.log(div.clientHeight)
-                  itemDom.append(a)
-                }
+              if (postItem.content_rendered) {
+                let a = document.createElement('a')
+                a.href = obj.href
+                a.classList.add('post-content')
+                let div = document.createElement('div')
+                div.innerHTML = postItem.content_rendered
+                a.append(div)
+                // console.log(div.clientHeight)
+                itemDom.append(a)
               }
             }
-          })
-          cbChecker({type: 'syncData'})
-        }
-      )
+          }
+        })
+        cbChecker({type: 'syncData'})
+      })
     },
     parseA(a) {
       let href = a.href
