@@ -18,6 +18,17 @@
         <div class="right">
           <div class="w">
             <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
+            <div v-if="modelValue.isWrong" class="warning">
+              这条回复似乎有点问题，指定的楼层对应不上
+              <br>
+              原因：
+              <br>
+              一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
+              <br>
+              二、忽略回复导致楼层塌陷：原理同上
+              <br>
+              三、回复时指定错了楼层号
+            </div>
             <PostEditor v-if="edit"
                         @close="edit = false"
                         :replyInfo="replyInfo"
@@ -159,6 +170,16 @@ export default {
         .text {
           color: black;
           word-break: break-word;
+        }
+
+        .warning {
+          @border: #e1e1e1;
+          border-top: 1px solid @border;
+          border-bottom: 1px solid @border;
+          padding: 1rem 0;
+          margin-top: 1rem;
+          font-size: 1.2rem;
+          color: red;
         }
 
         .post-editor-wrapper {

@@ -441,6 +441,7 @@ export default {
       }
       if (type === 'postReplies') {
         this.current = Object.assign(this.current, this.clone(value))
+        console.log('当前帖子', this.current)
         this.loading = false
       }
       if (type === 'syncData') {
