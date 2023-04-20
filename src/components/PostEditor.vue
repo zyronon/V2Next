@@ -113,6 +113,17 @@ async function submit() {
         let r = res.search('你上一条回复的内容和这条相同')
         if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
 
+        r = res.search('请不要在每一个回复中都包括外链，这看起来像是在 spamming')
+        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
+          type: 'error',
+          text: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'
+        })
+        r = res.search('你上一条回复的内容和这条相同')
+        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
+          type: 'error',
+          text: '你上一条回复的内容和这条相同'
+        })
+
         let r2 = res.search('创建新回复')
         if (r2 > -1) {
           eventBus.emit(CMD.REFRESH_ONCE, res)

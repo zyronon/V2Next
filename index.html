@@ -30,11 +30,6 @@
       console.log('捕获到异常：', e);
       return true;
     });
-  } else {
-    window.GM_registerMenuCommand = function () {
-    }
-    window.GM_openInTab = function () {
-    }
   }
 
   if (window.top !== window.self) {
@@ -586,16 +581,20 @@
 
   //初始化脚本菜单
   function initMonkeyMenu() {
-    GM_registerMenuCommand("脚本设置", function (event) {
-      cbChecker({type: 'openSetting'})
-    });
-    GM_registerMenuCommand('💬 反馈 & 建议', function () {
-      GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
-        active: true,
-        insert: true,
-        setParent: true
+    try {
+      GM_registerMenuCommand("脚本设置", function (event) {
+        cbChecker({type: 'openSetting'})
       });
-    });
+      GM_registerMenuCommand('💬 反馈 & 建议', function () {
+        GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
+          active: true,
+          insert: true,
+          setParent: true
+        });
+      });
+    } catch (e) {
+      console.error('无法使用Tampermonkey')
+    }
   }
 
   //初始化样式表
