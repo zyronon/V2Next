@@ -390,7 +390,7 @@
       let floorReplyList = []
 
       //先找到指定楼层的回复，再去循环查找子回复
-      //原因：问题930155
+      //原因：问题930155，有图
       for (let i = 0; i < endList.length; i++) {
         let currentItem = endList[i]
         //如果已被使用，直接跳过
@@ -398,9 +398,6 @@
         if (currentItem.replyFloor === item.floor) {
           //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
           if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
-            if (item.floor === 3) {
-              console.log('i', i)
-            }
             //先标记为使用，不然遇到“问题930155”，会出现重复回复
             currentItem.isUse = true
             floorReplyList.push({endList: endList.slice(i + 1), currentItem})
@@ -412,7 +409,9 @@
           }
         }
       }
-      floorReplyList.map(({currentItem, endList}) => {
+      //从后往前找
+      //原因：问题933080，有图
+      floorReplyList.reverse().map(({currentItem, endList}) => {
         fn(currentItem, endList, item)
       })
 
@@ -444,70 +443,8 @@
         }
       }
 
+      //排序，因为指定楼层时，是从后往前找的
       item.children = item.children.sort((a, b) => a.floor - b.floor)
-      return item
-    },
-    findChildren2(item, endList, all) {
-      const fn = (child, endList2, parent) => {
-        child.level = parent.level + 1
-        let rIndex = all.findIndex(v => v.floor === child.floor)
-        if (rIndex > -1) {
-          all[rIndex].isUse = true
-        }
-        parent.children.push(this.findChildren(child, endList2, all))
-      }
-      // console.log('endList', endList)
-      item.children = []
-      // if (item.floor ==8)debugger
-      for (let i = 0; i < endList.length; i++) {
-        let currentItem = endList[i]
-
-        //如果已被使用，直接跳过
-        if (currentItem.isUse) continue
-
-        let endList2 = endList.slice(i + 1)
-        //注： 2022-10-26，回复被忽略、用户被ban，会占据原来的楼层，以楼层号来判断会出问题
-        // if (currentItem.replyFloor !== -1) {
-        //   if (currentItem.replyFloor === item.floor) {
-        //     fn(currentItem, endList2, item)
-        //   }
-        // }
-        if (currentItem.replyUsers.length) {
-          // //找出自己最近一条正常回复，以那条为搜索终点
-          // let rIndex = endList.findIndex(v => v.username === item.username && (currentItem.replyUsers.length === 0 && currentItem.replyFloor === -1))
-          // if (rIndex > -1) {
-          //   endList2 = endList.slice(i + 1, rIndex)
-          // }
-          //如果是下一条是同一人的回复，那么跳出循环。children从下一条开始找
-          if (currentItem.username === item.username) {
-            //自己回复自己的特殊情况
-            if (currentItem.replyUsers[0] === item.username) {
-              fn(currentItem, endList2, item)
-              continue
-            }
-            //有种特殊情况，就是自己连着评论了两条。然后后面的人以#号的方式 回复了自己第一条。
-            //如果检测到下条是自己的回复，直接略过的话就会丢失第一条的所有楼中楼回复
-            //具体如下
-            // 自己：1楼，在for的时候，如果碰到 2楼不能直接跳过，直接略过的话就会丢失第一条的所有楼中楼回复，即3楼。所以应该以3楼为起点
-            //进行楼中楼查找，查找完了再跳过
-            // 自己：2楼
-            // 别人：指定回复1楼
-            // endList2.map((v, vi) => {
-            //   if (v.replyFloor === item.floor) {
-            //     fn(v, endList.slice(vi + 1), item)
-            //   }
-            // })
-            break
-          } else {
-            if (currentItem.replyUsers[0] === item.username) {
-              fn(currentItem, endList2, item)
-            }
-          }
-        } else {
-          //下一条是同一人的回复，并且均未@人。直接跳过
-          if (currentItem.username === item.username) return item
-        }
-      }
       return item
     },
     //解析其他页面
