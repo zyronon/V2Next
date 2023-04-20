@@ -66,6 +66,7 @@
           </div>
           <div class="w">
             <PostEditor
+                v-if="modelValue"
                 useType="reply-post"
                 @click="isSticky = true"/>
           </div>
