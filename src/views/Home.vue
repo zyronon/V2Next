@@ -183,9 +183,10 @@ export default {
       isLogin: computed(() => !!window.user.username),
       pageType: computed(() => this.pageType),
       tags: computed(() => this.tags),
+      show: computed(() => this.show),
       post: computed(() => this.current),
       config: computed(() => this.config),
-      allReplyUsers: computed(() => Array.from(new Set(this.current.replies.map(v => v.username)))),
+      allReplyUsers: computed(() => Array.from(new Set(this.current?.replies?.map(v => v.username) ?? []))),
     }
   },
   components: {

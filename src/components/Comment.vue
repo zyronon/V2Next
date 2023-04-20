@@ -32,6 +32,7 @@
             <PostEditor v-if="edit"
                         @close="edit = false"
                         :replyInfo="replyInfo"
+                        :replyUser="modelValue.username"
                         :replyFloor="modelValue.floor"/>
           </div>
           <Comment v-for="(item,index) in modelValue.children"
@@ -69,8 +70,14 @@ export default {
       cssStyle: null
     }
   },
-  inject: ['post', 'postDetailWidth'],
-  watch: {},
+  inject: ['post', 'postDetailWidth', 'show'],
+  watch: {
+    show(e) {
+      if (e) {
+        this.edit = false
+      }
+    }
+  },
   created() {
     // console.log(this.modelValue)
   },

@@ -153,9 +153,9 @@ export default {
     filterCallList() {
       if (this.showCallList) {
         if (this.replyText) {
-          return this.allReplyUsers.filter(i => i.search(this.replyText) > -1)
+          return ['管理员', '所有人'].concat(this.allReplyUsers).filter(i => i.search(this.replyText) > -1)
         }
-        return this.allReplyUsers
+        return ['管理员', '所有人'].concat(this.allReplyUsers)
       }
       return []
     },
@@ -180,8 +180,8 @@ export default {
         } else {
           window.win().doc.body.style.overflow = 'hidden'
           this.$nextTick(() => {
-            this.$refs.main.focus()
-            this.$refs.detail.scrollTo({top: 0})
+            this.$refs?.main?.focus()
+            this.$refs?.detail?.scrollTo({top: 0})
           })
         }
       },
@@ -441,6 +441,7 @@ export default {
   }
 
   @width: 77rem;
+
   .main {
     display: flex;
     justify-content: flex-end;
@@ -548,13 +549,13 @@ export default {
   @media screen and (max-width: 1500px) {
     @width: 65vw;
     .main-wrapper {
-      width: @width!important;
+      width: @width !important;
     }
   }
   @media screen and (max-width: 1280px) {
     @width: 75vw;
     .main-wrapper {
-      width: @width!important;
+      width: @width !important;
     }
   }
 
