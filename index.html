@@ -342,7 +342,6 @@
 
         let endList = list.slice(index + 1)
 
-        console.log('list', item.floor)
         item.level = 0
         if (index === 0) {
           nestedList.push(this.findChildren(item, endList, list))
@@ -415,8 +414,8 @@
       //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
       let nextMeIndex = endList.findIndex(v => {
         //必须是下一个不是”自己回复自己“的自己
-        //原因：问题887644，有图
-        return (v.username === item.username) && (v.replyUsers[0] !== item.username)
+        //原因：问题887644（1-2），有图
+        return (v.username === item.username) && (v.replyUsers?.[0] !== item.username)
       })
       let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
 
@@ -424,8 +423,15 @@
         let currentItem = findList[i]
         //如果已被使用，直接跳过
         if (currentItem.isUse) continue
-        let endList2 = endList.slice(i + 1)
         if (currentItem.replyUsers.length === 1) {
+          //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
+          //原因：问题887644-3，有图
+          if (currentItem.replyFloor !== -1) {
+            if (all[currentItem.replyFloor].username === currentItem.username) {
+              continue
+            }
+          }
+          let endList2 = endList.slice(i + 1)
           //如果是下一条是同一人的回复，那么跳出循环
           if (currentItem.username === item.username) {
             //自己回复自己的特殊情况
