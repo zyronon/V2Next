@@ -37,7 +37,7 @@ const props = defineProps({
     }
   },
 })
-const { replyUser, replyFloor, useType} = props
+const {replyUser, replyFloor, useType} = props
 const replyInfo = replyUser ? `@${replyUser} #${replyFloor} ` : ''
 const emits = defineEmits(['close'])
 
@@ -136,6 +136,7 @@ async function submit() {
         emits('close')
         eventBus.emit(CMD.REFRESH_ONCE, res)
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
+        console.log('item', item)
         eventBus.emit(CMD.ADD_REPLY, item)
       },
       err => {
