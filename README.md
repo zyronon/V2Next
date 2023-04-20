@@ -54,11 +54,9 @@
 - 注：本脚本不以‘#楼层’ 来做解析。因为v2的回复被忽略后，会占据原来的楼层。导致按‘#楼层’解析，会出问题
 
 # 如何安装/使用该脚本？
+要使用该脚本，需要浏览器安装一个 [Tampermonkey](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)
 
-要使用该脚本，需要浏览器安装一个 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-脚本管理器扩展（Chrome / Firefox / Edge）。
-
-其他基于 Chromium 内核的浏览器（如国内套皮浏览器）都可以使用 Chrome 的扩展。
+脚本管理器扩展（Chrome / Firefox / Edge / Safari）。
 
 请确保使用 Tampermonkey 扩展，其他的用户脚本管理器可能导致无法正常使用脚本。
 
