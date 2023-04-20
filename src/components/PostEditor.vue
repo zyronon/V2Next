@@ -23,23 +23,26 @@
 </template>
 
 <script setup>
-import {computed, h, inject, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, h, inject, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import eventBus from "../eventBus";
 import {CMD} from "../utils/type";
 
-const {replyInfo, replyFloor, useType, isShow} = defineProps({
-  replyInfo: null,
+const props = defineProps({
+  replyUser: null,
   replyFloor: null,
   useType: {
     type: String,
     default() {
       return 'reply-comment'
     }
-  }
+  },
 })
+const { replyUser, replyFloor, useType} = props
+const replyInfo = replyUser ? `@${replyUser} #${replyFloor} ` : ''
 const emits = defineEmits(['close'])
 
 const post = inject('post')
+const show = inject('show')
 const allReplyUsers = inject('allReplyUsers')
 let isFocus = ref(false)
 const loading = ref(false)
@@ -84,7 +87,7 @@ async function submit() {
     floor: post.value.replyCount + 1,
     reply_content: content.value || Date.now(),
     children: [],
-    replyUsers: [],
+    replyUsers: replyUser ? [replyUser] : [],
     replyFloor: replyFloor || -1
   }
   // loading.value = false
@@ -142,13 +145,17 @@ async function submit() {
   )
 }
 
-
 function off() {
   eventBus.emit(CMD.SHOW_CALL, {show: false})
   eventBus.off(CMD.SET_CALL)
 }
 
-function show(text) {
+function checkHeight() {
+  txtRef.value.style.height = 0;
+  txtRef.value.style.height = (txtRef.value.scrollHeight) + "px";
+}
+
+function showCallPopover(text) {
   // console.log('show')
   // let r = getPosition(txtRef.value)
   let r = cursorRef.value.getBoundingClientRect()
@@ -162,6 +169,17 @@ function show(text) {
     let lastCallPos = start.lastIndexOf('@')
     // console.log('e', e)
     start = content.value.slice(0, lastCallPos + 1)
+    if (e === '管理员') {
+      e = 'Livid @Kai @Olivia @GordianZ @sparanoid'
+      setTimeout(checkHeight)
+    }
+    if (e === '所有人') {
+      e = allReplyUsers.value.map((v, i) => {
+        if (i) return '@' + v
+        else return v
+      }).join(' ')
+      setTimeout(checkHeight)
+    }
     content.value = start + e + ' ' + end
     let moveCursorPos = start.length + e.length + 1
     // console.log(moveCursorPos)
@@ -190,6 +208,12 @@ function onKeydown(e) {
     case 40:
       setTimeout(() => onInput({data: ''}), 100)
       break
+      //esc
+    case 27:
+      e.preventDefault();
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+      return false
   }
 }
 
@@ -204,10 +228,10 @@ function onInput(e) {
   if (e.data === '@') {
     if (content.value.length !== 1) {
       if (content.value[cursorPos - 2] === ' ' || content.value[cursorPos - 2] === '\n') {
-        return show('')
+        return showCallPopover('')
       }
     } else {
-      return show('')
+      return showCallPopover('')
     }
     off()
   } else {
@@ -227,14 +251,14 @@ function onInput(e) {
       off()
     } else {
       if (lastCallPos === 0) {
-        return show(callStr.replace('@', ''))
+        return showCallPopover(callStr.replace('@', ''))
       }
       if (content.value.length !== 1) {
         if (content.value[lastCallPos - 1] === ' ' || content.value[lastCallPos - 1] === '\n') {
-          return show(callStr.replace('@', ''))
+          return showCallPopover(callStr.replace('@', ''))
         }
       } else {
-        return show(callStr.replace('@', ''))
+        return showCallPopover(callStr.replace('@', ''))
       }
       off()
       // show(callStr.replace('@', ''))
@@ -247,7 +271,6 @@ function onBlur() {
   // eventBus.off(CMD.SET_CALL)
   isFocus.value = false
 }
-
 
 onMounted(() => {
   $(`.${editorId.value}`).each(function () {

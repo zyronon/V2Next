@@ -34,7 +34,8 @@
 
   if (window.top !== window.self) {
     window.win = () => window.top
-    window.baseUrl = 'https://v2ex.com'
+    // window.baseUrl = 'https://www.v2ex.com'
+    window.baseUrl = window.top.location.origin
     window.win().isFrame = true
     //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
     window.$ = window.win().$
@@ -341,6 +342,7 @@
 
         let endList = list.slice(index + 1)
 
+        console.log('list', item.floor)
         item.level = 0
         if (index === 0) {
           nestedList.push(this.findChildren(item, endList, list))
@@ -411,7 +413,11 @@
       })
 
       //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
-      let nextMeIndex = endList.findIndex(v => v.username === item.username)
+      let nextMeIndex = endList.findIndex(v => {
+        //必须是下一个不是”自己回复自己“的自己
+        //原因：问题887644，有图
+        return (v.username === item.username) && (v.replyUsers[0] !== item.username)
+      })
       let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
 
       for (let i = 0; i < findList.length; i++) {
@@ -426,7 +432,7 @@
             if (currentItem.replyUsers[0] === item.username) {
               fn(currentItem, endList2, item)
             }
-            return item
+            break
           } else {
             if (currentItem.replyUsers[0] === item.username) {
               fn(currentItem, endList2, item)
@@ -434,7 +440,7 @@
           }
         } else {
           //下一条是同一人的回复，并且均未@人。直接跳过
-          if (currentItem.username === item.username) return item
+          if (currentItem.username === item.username) break
         }
       }
 
