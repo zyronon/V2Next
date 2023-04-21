@@ -43,6 +43,7 @@ const emits = defineEmits(['close'])
 
 const post = inject('post')
 const show = inject('show')
+const pageType = inject('pageType')
 const allReplyUsers = inject('allReplyUsers')
 let isFocus = ref(false)
 const loading = ref(false)
@@ -280,7 +281,9 @@ onMounted(() => {
     this.style.height = 0;
     this.style.height = (this.scrollHeight) + "px";
   });
-  txtRef.value && txtRef.value.focus()
+  if (useType === 'reply-comment') {
+    txtRef.value && txtRef.value.focus()
+  }
 })
 onBeforeUnmount(() => {
   $(`.${editorId.value}`).off()

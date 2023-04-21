@@ -3,7 +3,7 @@
        ref="detail"
        @keydown.esc="close()"
        v-show="modelValue"
-       :class="[isNight?'isNight':'']"
+       :class="[isNight?'isNight':'',pageType]"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
       <div class="main-wrapper">
@@ -23,7 +23,12 @@
           </div>
         </div>
         <div class="my-box comment-wrapper" v-if="replies.length || loading">
-          <div class="my-cell flex flex-end" v-if="config.showToolbar">
+          <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
+            <div class="flex" v-if="pageType === 'post'">
+              默认显示楼中楼：
+              <div class="switch" :class="{active:config.autoOpenDetail}"
+                   @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+            </div>
             <div class="radio-group2">
               <div class="radio"
                    @click="changeOption(0)"
@@ -110,7 +115,7 @@ export default {
     Toolbar,
     BaseHtmlRender
   },
-  inject: ['allReplyUsers', 'post', 'isLogin', 'config'],
+  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -172,10 +177,11 @@ export default {
   watch: {
     modelValue: {
       handler(newVal) {
+        if (pageType === 'post') return
         if (!newVal) {
           window.win().doc.body.style.overflow = 'unset'
           this.isSticky = false
-          if (window.pageType === 'home' || window.pageType === 'nodePage') {
+          if (pageType === 'home' || pageType === 'nodePage') {
             window.history.back();
           }
         } else {
@@ -222,6 +228,7 @@ export default {
   },
   methods: {
     close(from) {
+      if (this.pageType === 'post') return
       if (from === 'space') {
         if (this.config.closePostDetailBySpace) {
           this.$emit('update:modelValue', false)
@@ -289,6 +296,20 @@ export default {
 </style>
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
+
+.post {
+  position: unset !important;
+  background: transparent !important;
+
+  .main {
+    background: transparent !important;
+    padding: unset !important;
+  }
+
+  .close-btn {
+    display: none;
+  }
+}
 
 .post-detail {
   text-align: start;

@@ -147,9 +147,11 @@
 
       // console.log('基本信息', post)
 
-      body.find('.topic_buttons').remove()
       let header = body.find('#Main .box').first()
-      post.headerTemplate = `${header.html()} `
+      let temp = header.clone()
+      temp.find('.topic_buttons').remove()
+
+      post.headerTemplate = `${temp.html()} `
       return post
     },
     //获取帖子所有回复
@@ -289,15 +291,7 @@
         }
       }
       // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
-      let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
       let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
-      let hasFloor = str.matchAll(floorReg)
-      let res = [...hasFloor]
-      // console.log('总匹配', res)
-      let floor = -1
-      if (res.length) {
-        floor = Number(res[0][1])
-      }
       let has = str.matchAll(userReg)
       let res2 = [...has]
       // console.log('总匹配', res2)
@@ -311,6 +305,17 @@
       }
       // console.log('用户', users)
       // console.log('楼层', floor)
+      let floor = -1
+      //只有@一个人的时候才去查找是否指定楼层号。
+      if (users.length === 1) {
+        let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
+        let hasFloor = str.matchAll(floorReg)
+        let res = [...hasFloor]
+        // console.log('总匹配', res)
+        if (res.length) {
+          floor = Number(res[0][1])
+        }
+      }
       return {users, floor}
     },
     //获取帖子详情
@@ -544,7 +549,7 @@
           id = href.substring(href.indexOf('/t/') + 3,)
         }
       }
-      return {href, id}
+      return {href, id, title: a.innerText}
     },
     //创建记事本里面的tag标签
     async createTagNote() {
