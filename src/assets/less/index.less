@@ -318,16 +318,18 @@ a {
   position: relative;
   display: flex;
   align-items: center;
-  background: @date-color;
+  border: 1px solid @date-color;
   transition: all .3s;
 
 
   &.active {
-    background: @blue-color;
+    background: @date-color;
+    //background: @blue-color;
 
     &::before {
       right: .2rem;
       //left: unset;
+      background: white;
     }
   }
 
@@ -341,7 +343,7 @@ a {
     width: @w;
     height: @w;
     border-radius: 50%;
-    background: white;
+    background: @date-color;
   }
 }
 

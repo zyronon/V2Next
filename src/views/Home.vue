@@ -18,15 +18,15 @@
           </div>
         </div>
       </template>
-      <template v-if="pageType === 'post'">
+      <template v-if="pageType === 'post' && !show">
         <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
           <div class="flex">
-            自动打开详情弹框 ：
+            默认显示楼中楼 ：
             <div class="switch" :class="{active:config.autoOpenDetail}"
                  @click="config.autoOpenDetail = !config.autoOpenDetail"/>
           </div>
-          <div class="button gray" @click="show = true" :class="{loading}">
-            点击显示详情弹框
+          <div class="button gray" @click="showPost" :class="{loading}">
+            点击显示楼中楼
           </div>
         </div>
       </template>
@@ -97,12 +97,12 @@
                @click="config.openTag = !config.openTag"/>
         </div>
         <div class="option">
-          <span>帖子界面自动打开详情弹框 ：</span>
+          <span>帖子界面默认显示楼中楼 ：</span>
           <div class="switch" :class="{active:config.autoOpenDetail}"
                @click="config.autoOpenDetail = !config.autoOpenDetail"/>
         </div>
         <div class="notice">
-          单独打开这种地址 https://v2ex.com/t/xxxx 时， 是否自动打开详情弹框
+          单独打开这种地址 https://v2ex.com/t/xxxx 时， 是否默认显示楼中楼
         </div>
         <div class="option">
           <span>点击列表的帖子，打开详情弹框 ：</span>
@@ -180,7 +180,7 @@ export default {
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
-      isLogin: computed(() => !!window.user.username),
+      isLogin: computed(() => this.isLogin),
       pageType: computed(() => this.pageType),
       tags: computed(() => this.tags),
       show: computed(() => this.show),
@@ -199,6 +199,7 @@ export default {
     return {
       loading: window.pageType === 'post',
       loadMore: false,
+      isLogin: !!window.user.username,
       pageType: window.pageType,
       isNight: window.isNight,
       msgList: [
@@ -206,7 +207,7 @@ export default {
       ],
       show: false,
       showConfig: false,
-      current: window.initPost,
+      current: window.clone(window.initPost),
       list: [],
       config: window.config,
       tags: window.user.tags,
@@ -278,12 +279,6 @@ export default {
   created() {
     // console.log('create', this.current)
     window.cb = this.winCb
-    if (this.config.autoOpenDetail && this.pageType === 'post') {
-      this.loading = true
-      //这里手动设置一下，postdetail不能使用立即执行监听器，会导致，从帖子页进入列表页是，自动返回
-      window.win().doc.body.style.overflow = 'hidden'
-      this.show = true
-    }
     if (window.win().canParseV2exPage) {
       if (this.isList) {
         // let lastItem = window.win().appNode.nextElementSibling
@@ -341,13 +336,15 @@ export default {
       }
     }
     $(window.win().doc).on('click', 'a', (e) => {
-      let {href, id} = window.parse.parseA(e.currentTarget)
+      let {href, id, title} = window.parse.parseA(e.currentTarget)
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
           if (index > -1) {
             postItem = this.list[index]
+          } else {
+            postItem.title = title ?? '加载中'
           }
           postItem.id = id
           postItem.href = href
@@ -411,6 +408,12 @@ export default {
     eventBus.clear()
   },
   methods: {
+    showPost() {
+      this.show = true
+      $(`#Wrapper #Main .box:lt(3)`).each(function () {
+        $(this).hide()
+      })
+    },
     async addTag() {
       let oldTag = this.clone(this.tags)
       let tags = this.tags[this.tagModal.currentUsername] ?? []
@@ -438,10 +441,14 @@ export default {
         this.showConfig = true
       }
       if (type === 'postContent') {
-        this.current = Object.assign(this.clone(window.initPost), this.clone(value))
+        this.current = Object.assign(this.clone(this.current), this.clone(value))
+        //这时有正文了，再打开，体验比较好
+        if (this.config.autoOpenDetail) {
+          this.showPost()
+        }
       }
       if (type === 'postReplies') {
-        this.current = Object.assign(this.current, this.clone(value))
+        this.current = Object.assign(this.clone(this.current), this.clone(value))
         console.log('当前帖子', this.current)
         this.loading = false
       }
