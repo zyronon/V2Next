@@ -110,23 +110,16 @@
 
 # 如何帮助我
 
-作为开发者，创造对他人有用的东西始终是我们的热情所在，这个项目也不例外。我投入了大量的时间和精力，致力于为 V2EX
+作为开发者，创造对他人有用的东西始终是我的热情所在，这个项目也不例外。我投入了大量的时间和精力，致力于为 V2EX
 用户带来更好的体验。因此，如果我的项目帮助了你，欢迎你为我的项目：
 
-- 点个 Star ⭐️ 或分享给他人，让更多的人知道我们的存在。
-- 提供反馈，帮助我们改进。
+- 点个 Star ⭐️ 或分享给他人，让更多的人知道我的存在。
+- 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/discussions/7)提出。
 
 #### 源代码：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
 #### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
 
-
-# 问题反馈
-
-我需要你的建议和反馈，以持续完善脚本。如果在使用中遇到任何问题，都可以在[这里](https://github.com/zyronon/v2ex-script/discussions/7)
-提出。
-
-如果我的脚本有帮助到你，请在[这里](https://greasyfork.org/zh-CN/scripts/458024/feedback)给我好评！🥰
 
 # 待实现
 
