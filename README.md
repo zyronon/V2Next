@@ -84,7 +84,7 @@
 
 <details>
   <summary>为什么要加载所有回复？</summary>
- 其他脚本的楼中楼功能，是基于当页的回复解析。如果回复没超过一页，显示正常，如果回复超过一页，楼中楼就会显示的莫名奇妙
+ 如果有多页回复，只解析当前页的话，那么许多楼层会找不到@的人，因为有可能@的人在前一页
 </details>
 <details>
   <summary>为什么有的「楼中楼」回复的楼层不正确？</summary>
@@ -94,18 +94,17 @@
   <summary>为什么有的「楼中楼」回复指定了楼层还是不正确？</summary>
 
 - 屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
+  <br/>
 - 忽略回复导致楼层塌陷：原理同上
+  <br/>
 - 回复时指定错了楼层号
+  <br/>
 - 脚本解析错误，请在[这里](https://github.com/zyronon/v2ex-script/discussions/7)反馈给我
 
 </details>
 <details>
   <summary>详情页加载很慢？</summary>
-
-- 回复多时会加载很慢，其实不是脚本的问题。是因为请求V站的其他页的回复，V站迟迟未返回，导致我无法进行后续的解析，所以只能显示加载中...
-
-- V2EX 的帖子详情页，打开时并不总是第一页，比如回复有3页时，打开帖子详情页会自动展示最后一页，所以我需要请求其他页，拿到所有回复，才能进行楼中楼解析
-
+回复多时会加载很慢，其实不是脚本的问题。是因为请求V站的其他页的回复时，V站迟迟未返回，导致我无法进行后续的解析，所以只能显示加载中...
 </details>
 
 # 如何帮助我
@@ -119,7 +118,6 @@
 #### 源代码：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
 #### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
-
 
 # 待实现
 
