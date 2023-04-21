@@ -19,17 +19,17 @@
           <div class="w">
             <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
             <div v-if="modelValue.isWrong" class="warning">
-              这条回复似乎有点问题，指定的楼层对应不上
+              这条回复似乎有点问题，指定的楼层号与@的人对应不上
               <br>
-              原因：
+              原因可能有下面几种：
               <br>
               一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
               <br>
               二、忽略回复导致楼层塌陷：原理同上
               <br>
-              三、回复时指定错了楼层号
+              三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
               <br>
-              四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7" target="_blank">这里</a>反馈给我
+              四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7" target="_blank">这里</a>反馈给
             </div>
             <PostEditor v-if="edit"
                         @close="edit = false"
