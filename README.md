@@ -1,10 +1,49 @@
-# 主要功能
+# 如何安装/使用该脚本？
+
+<details>
+  <summary>点击展开</summary>
+
+1. 先安装一个脚本管理器扩展
+   ### 在线安装
+    - Chrome / Firefox / Edge：安装 [Tampermonkey](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)
+    - Safari：安装 [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887)
+        - Mac上的Tampermonkey收费，如果你已经安装过了Tampermonkey可以不用安装Userscripts
+    - 国产浏览器：请自动百度如何安装Tampermonkey
+   ### 离线安装（无法打开应用商店）
+    - 请在 [这个页面](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)或自行百度 下载Tampermonkey的文件
+        - Chrome、Edge请使用crx后缀的文件
+        - Firefox请使用xpi后缀的文件
+    - 然后重新开启浏览器，进入扩展页面
+        - Chrome、Edge，打开chrome://extensions/页面
+        - Firefox，打开about:addons页面
+    - 把”开发者模式“或”开发人员模式“打开
+    - 拖动下载的文件到浏览器中
+
+
+2. 点击[本页](https://greasyfork.org/zh-CN/scripts/458024)的 “安装此脚本” 按钮
+
+</details>
+
+# 为什么选择V2EX - 超级增强，脚本的优势在哪？
+
+在社区中早已存在众多用于增强 v2ex.com 的[脚本](https://greasyfork.org/zh-CN/scripts/by-site/v2ex.com)
+和[插件](https://chrome.google.com/webstore/search/v2ex?_category=extensions)，然而它们带来的体验良莠不齐，且大多数已经停止更新。
+
+- 秒杀其他脚本或插件的楼中楼功能：
+    - 其他脚本：只解析当前页，如果有很多页回复，楼中楼就会前言不搭后语莫名其妙的
+    - 我：加载所有回复然后再解析楼中楼
+- 长期维护，快速响应，打造最高质量的 V2EX 脚本，提供最佳的体验。
+
+# 功能列表
+
+## ⊙主要功能
 
 ### # 楼中楼
 
 回复以楼中楼的方式展示，并支持按感谢排序
 
 - 加载所有回复，保持楼中楼回复解析正确
+- 如果回复中指定了楼层，优先解析
 - 提供三种展示方式：楼中楼、按感谢排序、V2原版
 - 超过15层嵌套，默认隐藏剩余回复，点击可展开，保证嵌套过多不会导致页面变形
 
@@ -12,8 +51,7 @@
 
 ### # 预览帖子内容
 
-在首页、节点页面，点击列表中的帖子，可直接预览帖子内容。也支持一键展开所有帖子内容和关闭
-
+在首页、节点页面，点击帖子的回复数，可直接预览帖子内容。也支持一键展开所有帖子内容和关闭
 
 ### # 弹框显示帖子内容和回复
 
@@ -31,58 +69,73 @@
 当帖子的正文和回复的内容超长时，自动折叠收起，点击可展开。可在设置里面关闭
 > **默认开启** 如需关闭，请点击[V站首页](v2ex.com)的设置按钮，在设置弹框里面关闭 “正文超长自动折叠”
 
-### # 按钮异步请求
-
-操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面
-
 ### # 划词 base64 解码，支持解码中文
 
 在回复里面，划词弹出base64解码气泡卡片
 
-### # 自适应屏幕宽度，支持黑暗模式
+## ⊙更多功能
 
-帖子详情弹框自适应屏幕宽度，无论什么分辨率都能完美展示，同时也支持黑暗模式
+- 一键@所有人，@管理员：回复时，可一键@所有人和@管理员
+- 回复指定用户添加楼层号：回复时，自动添加楼层号，以保证脚本解析回复时能更准确的判断
+- 自适应屏幕宽度，支持黑暗模式： 帖子详情弹框自适应屏幕宽度，无论什么分辨率都能完美展示，同时也支持黑暗模式
+- 按钮异步请求：操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面
 
-### # 回复指定用户添加楼层号
+# 常见问题
 
-回复时，自动添加楼层号，尽管本脚本不以楼层号来解析，原因在下面。但为了保证其他脚本显示正常也默认加上
+<details>
+  <summary>为什么要加载所有回复？</summary>
+ 其他脚本的楼中楼功能，是基于当页的回复解析。如果回复没超过一页，显示正常，如果回复超过一页，楼中楼就会显示的莫名奇妙
+</details>
+<details>
+  <summary>为什么有的「楼中楼」回复的楼层不正确？</summary>
+由于 V2EX 的原回复并没有记录回复的楼层，本脚本只能根据被回复的用户去寻找此用户的最近一条回复，然后嵌入到这后面去，这种方法并不能保证正确识别用户真正要回复的是哪一个楼层。
+</details>
+<details>
+  <summary>为什么有的「楼中楼」回复指定了楼层还是不正确？</summary>
 
-### # 一键@所有人，@管理员
+- 屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
+- 忽略回复导致楼层塌陷：原理同上
+- 回复时指定错了楼层号
+- 脚本解析错误，请在[这里](https://github.com/zyronon/v2ex-script/discussions/7)反馈给我
 
-回复时，可一键@所有人和@管理员
+</details>
+<details>
+  <summary>详情页加载很慢？</summary>
 
-### 关于楼中楼
+- 回复多时会加载很慢，其实不是脚本的问题。是因为请求V站的其他页的回复，V站迟迟未返回，导致我无法进行后续的解析，所以只能显示加载中...
 
-- 注：其他的脚本的楼中楼回复功能。是基于当前页面做解析。如果回复没超过一页，显示正常，如果回复超过一页，楼中楼就会显示的莫名奇妙
-- 注：v2的帖子详情页，打开时并不总是第一页，比如回复有3页时，打开帖子详情页展示的最后一页的回复
-- 注：本脚本不以‘#楼层’ 来做解析。因为v2的回复被忽略后，会占据原来的楼层。导致按‘#楼层’解析，会出问题
+- V2EX 的帖子详情页，打开时并不总是第一页，比如回复有3页时，打开帖子详情页会自动展示最后一页，所以我需要请求其他页，拿到所有回复，才能进行楼中楼解析
 
-# 如何安装/使用该脚本？
-要使用该脚本，需要浏览器安装一个 [Tampermonkey](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)
+</details>
 
-脚本管理器扩展（Chrome / Firefox / Edge / Safari）。
+# 如何帮助我
 
-请确保使用 Tampermonkey 扩展，其他的用户脚本管理器可能导致无法正常使用脚本。
+作为开发者，创造对他人有用的东西始终是我们的热情所在，这个项目也不例外。我投入了大量的时间和精力，致力于为 V2EX
+用户带来更好的体验。因此，如果我的项目帮助了你，欢迎你为我的项目：
 
-不会离线安装 .crx 扩展？ 请重新开启 Chrome、Edge 隐藏 [拖入安装 .crx 扩展] 功能！
+- 点个 Star ⭐️ 或分享给他人，让更多的人知道我们的存在。
+- 提供反馈，帮助我们改进。
 
-# 更新日志：
+#### 源代码：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
-[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
+#### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
 
-# 源代码
 
-源码请见♥: [https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
+# 问题反馈
 
-如果觉得还不错，就去 Github 点个 [⭐ Star] 鼓励一下下吧（或者多多分享）！
+我需要你的建议和反馈，以持续完善脚本。如果在使用中遇到任何问题，都可以在[这里](https://github.com/zyronon/v2ex-script/discussions/7)
+提出。
+
+如果我的脚本有帮助到你，请在[这里](https://greasyfork.org/zh-CN/scripts/458024/feedback)给我好评！🥰
 
 # 待实现
+
 - 自动签到
 - 高亮楼主回复
 - 如果回复中，指定了楼层，用hover的形式显示
 - 打标签功能
   https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
-- 回复太多，考虑放后台，如924034 
+- 回复太多，考虑放后台，如924034
 - 链接自动转图片
 - 自动加载下一页
 - 新标签页打开链接

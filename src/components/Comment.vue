@@ -28,6 +28,8 @@
               二、忽略回复导致楼层塌陷：原理同上
               <br>
               三、回复时指定错了楼层号
+              <br>
+              四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7" target="_blank">这里</a>反馈给我
             </div>
             <PostEditor v-if="edit"
                         @close="edit = false"
