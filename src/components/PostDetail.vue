@@ -304,6 +304,7 @@ export default {
   .main {
     background: transparent !important;
     padding: unset !important;
+    width: 100% !important;
   }
 
   .close-btn {

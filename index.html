@@ -31,6 +31,10 @@
       return true;
     });
   }
+  if (!window.GM_openInTab) window.GM_openInTab = () => void 0
+  if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
+  if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
+  if (!window.GM_notification) window.GM_notification = () => void 0
 
   if (window.top !== window.self) {
     window.win = () => window.top
@@ -68,6 +72,7 @@
   }
   window.win().doc = window.win().document
   window.win().query = (v) => window.win().document.querySelector(v)
+  window.query = (v) => window.win().document.querySelector(v)
   window.clone = (val) => JSON.parse(JSON.stringify(val))
   window.user = {
     tagPrefix: '--用户标签--',
@@ -596,19 +601,21 @@
     }
   }
 
+  function feedback() {
+    window.GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/7#discussioncomment-5698017', {
+      active: true,
+      insert: true,
+      setParent: true
+    });
+  }
+
   //初始化脚本菜单
   function initMonkeyMenu() {
     try {
-      GM_registerMenuCommand("脚本设置", function (event) {
+      window.GM_registerMenuCommand("脚本设置", function (event) {
         cbChecker({type: 'openSetting'})
       });
-      GM_registerMenuCommand('💬 反馈 & 建议', function () {
-        GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
-          active: true,
-          insert: true,
-          setParent: true
-        });
-      });
+      window.GM_registerMenuCommand('💬 反馈 & 建议', feedback);
     } catch (e) {
       console.error('无法使用Tampermonkey')
     }
@@ -718,11 +725,76 @@
     $(window.win().doc.head).append(addStyle2)
   }
 
-  initMonkeyMenu()
-  initStyle()
+  // 自动签到（后台）
+  function qianDao() {
+    let timeNow = new Date().getUTCFullYear() + '/' + (new Date().getUTCMonth() + 1) + '/' + new Date().getUTCDate() // 当前 UTC-0 时间（V2EX 按这个时间的）
+    // return qianDao_(null, timeNow); //                           后台签到
+    if (window.pageType === 'home') { //                               在首页
+      let qiandao = window.query('.box .inner a[href="/mission/daily"]');
+      if (qiandao) { //                                            如果找到了签到提示
+        qianDao_(qiandao, timeNow); //                           后台签到
+      } else if (window.win().doc.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
+        window.win().doc.getElementById('gift_v2excellent').click();
+        localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+      } else { //                                                  都没有找到，说明已经签过到了
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+      }
+    } else { //                                                      不在首页
+      let timeOld = localStorage.getItem('menu_clockInTime')
+      if (!timeOld || timeOld != timeNow) {
+        qianDaoStatus_(timeNow) //                               后台获取签到状态（并判断是否需要签到）
+      } else { //                                                新旧签到时间一致
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+      }
+    }
+  }
 
-  window.win().canParseV2exPage = true
-  if (window.win().canParseV2exPage) {
+  // 后台签到
+  function qianDao_(qiandao, timeNow) {
+    // let url = window.baseUrl + "/mission/daily"
+    let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
+    console.log('url', url)
+    $.get(url).then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let html = $(bodyText[0])
+      if (html.find('li.fa.fa-ok-sign').length) {
+        html = html.find('#Main').text().match(/已连续登录 (\d+?) 天/)[0];
+        localStorage.setItem('menu_clockInTime', timeNow); // 写入签到时间以供后续比较
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+        if (qiandao) {
+          qiandao.textContent = `自动签到完成！${html}`;
+          qiandao.href = 'javascript:void(0);';
+        }
+      } else {
+        window.GM_notification({
+          text: '自动签到失败！请访问 V2EX 首页试试。\n如果连续几天都签到失败，请联系作者解决！',
+          timeout: 4000,
+          onclick() {
+            feedback()
+          }
+        });
+        console.warn('[V2EX 增强] 自动签到失败！请访问 V2EX 首页试试。如果连续几天都签到失败，请联系作者解决！')
+        if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
+      }
+    })
+  }
+
+  // 后台获取签到状态（并判断是否需要签到）
+  function qianDaoStatus_(timeNow) {
+    $.get(window.baseUrl + '/mission/daily').then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let html = $(bodyText[0])
+      if (html.find('input[value^="领取"]').length) { //     还没有签到...
+        qianDao_(null, timeNow); //                          后台签到
+      } else { //                                              已经签到了...
+        console.info('[V2EX 增强] 已经签过到了。')
+        localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
+      }
+    })
+  }
+
+  function checkPageType() {
     let location2 = window.win().location
     if (location2.pathname === '/') {
       window.pageType = 'home'
@@ -745,56 +817,54 @@
         }
       }
     }
+  }
 
-    let top2 = window.win().query('.tools .top:nth-child(2)').text
-    if (top2 !== '注册') {
-      window.user.username = top2
-      window.user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
-      cbChecker({type: 'syncData'})
-
-      //获取或创建记事本的标签
-      $.get(window.baseUrl + '/notes').then(r => {
-        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        let body = $(bodyText[0])
-        let items = body.find('#Main .box .note_item_title a')
-        let needCreateNoteTags = true
-        if (items.length) {
-          let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-          if (tags) {
-            needCreateNoteTags = false
-            window.user.tagsId = tags.href.substr(-5)
-            cbChecker({type: 'syncData'})
-            $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
-              bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-              body = $(bodyText[0])
-              let text = body.find('.note_editor').text()
-              if (text === window.user.tagPrefix) {
-                window.user.tags = {}
-              } else {
-                let tagJson = text.substring(window.user.tagPrefix.length)
-                try {
-                  window.user.tags = JSON.parse(tagJson)
-                } catch (e) {
-                  console.log('tage', tagJson)
-                  window.user.tags = {}
-                }
-              }
-              cbChecker({type: 'syncData'})
-            })
-          }
-        }
-        if (needCreateNoteTags) {
-          window.parse.createTagNote().then(r => {
-            if (r) {
-              window.user.tagsId = r
+  //初始化标签的记事本数据
+  function initTagNoteData() {
+    //获取或创建记事本的标签
+    $.get(window.baseUrl + '/notes').then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let body = $(bodyText[0])
+      let items = body.find('#Main .box .note_item_title a')
+      let needCreateNoteTags = true
+      if (items.length) {
+        let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+        if (tags) {
+          needCreateNoteTags = false
+          window.user.tagsId = tags.href.substr(-5)
+          cbChecker({type: 'syncData'})
+          $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
+            bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+            body = $(bodyText[0])
+            let text = body.find('.note_editor').text()
+            if (text === window.user.tagPrefix) {
               window.user.tags = {}
-              cbChecker({type: 'syncData'})
+            } else {
+              let tagJson = text.substring(window.user.tagPrefix.length)
+              try {
+                window.user.tags = JSON.parse(tagJson)
+              } catch (e) {
+                console.log('tage', tagJson)
+                window.user.tags = {}
+              }
             }
+            cbChecker({type: 'syncData'})
           })
         }
-      })
-    }
+      }
+      if (needCreateNoteTags) {
+        window.parse.createTagNote().then(r => {
+          if (r) {
+            window.user.tagsId = r
+            window.user.tags = {}
+            cbChecker({type: 'syncData'})
+          }
+        })
+      }
+    })
+  }
 
+  function initConfig() {
     //获取默认配置
     let configStr = window.win().localStorage.getItem('v2ex-config')
     if (configStr) {
@@ -804,6 +874,28 @@
         window.config = Object.assign(window.config, configObj)
       }
     }
+  }
+
+  window.win().canParseV2exPage = true
+  if (window.win().canParseV2exPage) {
+    checkPageType()
+    initMonkeyMenu()
+    initStyle()
+
+    let top2 = window.win().query('.tools .top:nth-child(2)').text
+    if (top2 !== '注册') {
+      window.user.username = top2
+      window.user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
+      cbChecker({type: 'syncData'})
+
+      initTagNoteData()
+      try {
+        qianDao()
+      } catch (e) {
+      }
+    }
+
+    initConfig()
 
     let $section = document.createElement('section')
     $section.id = 'app'
@@ -854,7 +946,6 @@
         break
     }
   }
-
 
   //发布脚本，从这里结束复制
   //发布脚本，从这里结束复制
