@@ -144,7 +144,6 @@ export default {
   },
   data() {
     return {
-      mountTo: window.$('#Main')[0],
       isSticky: false,
       selectCallIndex: 0,
       postDetailWidth: 0,
