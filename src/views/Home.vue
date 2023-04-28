@@ -112,14 +112,14 @@
         <div class="notice">
           若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
         </div>
-        <!--        <div class="option">-->
-        <!--          <span>新标签页打开帖子 ：</span>-->
-        <!--          <div class="switch" :class="{active:config.newTabOpen}"-->
-        <!--               @click="config.newTabOpen = !config.newTabOpen"/>-->
-        <!--        </div>-->
-        <!--        <div class="notice">-->
-        <!--          仅关闭”点击列表的帖子，打开详情弹框“时生效，-->
-        <!--        </div>-->
+        <div class="option">
+          <span>新标签页打开链接 ：</span>
+          <div class="switch" :class="{active:config.newTabOpen}"
+               @click="config.newTabOpen = !config.newTabOpen"/>
+        </div>
+        <div class="notice">
+          此项需要刷新页面才能生效
+        </div>
         <div class="option">
           <span>点击两侧空白处关闭帖子详情：</span>
           <div class="switch" :class="{active:config.closePostDetailBySpace}"
@@ -138,9 +138,13 @@
         <div class="notice">
           此项需要刷新页面才能生效
         </div>
+        <div class="option">
+          <span>划词显示Base64解码框：</span>
+          <div class="switch" :class="{active:config.base64}"
+               @click="config.base64 = !config.base64"/>
+        </div>
 
         <div class="jieshao">
-          如只想要列表预览功能，可关闭 ”点击列表的帖子，打开详情弹框“，”帖子界面自动打开详情弹框“
         </div>
       </div>
     </div>
@@ -186,7 +190,12 @@ export default {
       show: computed(() => this.show),
       post: computed(() => this.current),
       config: computed(() => this.config),
-      allReplyUsers: computed(() => Array.from(new Set(this.current?.replies?.map(v => v.username) ?? []))),
+      allReplyUsers: computed(() => {
+        if (this.current?.replies) {
+          return Array.from(new Set(this.current?.replies?.map(v => v.username) ?? []))
+        }
+        return []
+      }),
     }
   },
   components: {
@@ -335,8 +344,51 @@ export default {
         // observer.observe(lastItem)
       }
     }
+    //A标签的
     $(window.win().doc).on('click', 'a', (e) => {
+      console.log('1')
       let {href, id, title} = window.parse.parseA(e.currentTarget)
+      this.clickPost(e, id, href, title)
+    })
+    let that = this
+    //帖子的
+    $(window.win().doc).on('click', '.post-item', function (e) {
+      //只有预览时，才响应点击
+      if (this.classList.contains('preview')) {
+        //A标签，要么上面的on事件已经处理了，要么就是不需要处理
+        //IMG是头像
+        //toggle是切换按钮
+        if (e.target.tagName !== 'A'
+            &&
+            e.target.tagName !== 'IMG'
+            &&
+            !e.target.classList.contains('toggle')
+        ) {
+          // console.log('点空白处')
+          let id = this.dataset['id']
+          let href = this.dataset['href']
+          that.clickPost(e, id, href)
+        }
+      }
+    })
+    //展开或收起的点击事件
+    $(window.win().doc).on('click', '.toggle', (e) => {
+      let id = e.currentTarget.dataset['id']
+      let itemDom = window.win().query(`.id_${id}`)
+      if (itemDom.classList.contains('preview')) {
+        itemDom.classList.remove('preview')
+      } else {
+        itemDom.classList.add('preview')
+      }
+    })
+    this.initEvent()
+  },
+  beforeUnmount() {
+    // console.log('unmounted')
+    eventBus.clear()
+  },
+  methods: {
+    clickPost(e, id, href, title = '') {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           let index = this.list.findIndex(v => v.id == id)
@@ -390,24 +442,7 @@ export default {
           return false
         }
       }
-    })
-    //展开或收起的点击事件
-    $(window.win().doc).on('click', '.toggle', (e) => {
-      let id = e.currentTarget.dataset['id']
-      let itemDom = window.win().query(`.id_${id}`)
-      if (itemDom.classList.contains('preview')) {
-        itemDom.classList.remove('preview')
-      } else {
-        itemDom.classList.add('preview')
-      }
-    })
-    this.initEvent()
-  },
-  beforeUnmount() {
-    // console.log('unmounted')
-    eventBus.clear()
-  },
-  methods: {
+    },
     showPost() {
       this.show = true
       $(`#Wrapper #Main .box:lt(3)`).each(function () {
