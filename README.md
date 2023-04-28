@@ -126,11 +126,10 @@
 #### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
 
 # 待实现
-
-- 自动签到
+ 
 - 高亮楼主回复
 - 如果回复中，指定了楼层，用hover的形式显示
-- 打标签功能
+- 打标签功能（公共）
   https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
 - 回复太多，考虑放后台，如924034
 - 链接自动转图片
