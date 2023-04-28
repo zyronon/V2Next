@@ -144,6 +144,7 @@ export default {
   },
   data() {
     return {
+      mountTo: window.$('#Main')[0],
       isSticky: false,
       selectCallIndex: 0,
       postDetailWidth: 0,
@@ -177,11 +178,11 @@ export default {
   watch: {
     modelValue: {
       handler(newVal) {
-        if (pageType === 'post') return
+        if (this.pageType === 'post') return
         if (!newVal) {
           window.win().doc.body.style.overflow = 'unset'
           this.isSticky = false
-          if (pageType === 'home' || pageType === 'nodePage') {
+          if (this.pageType === 'home' || this.pageType === 'nodePage') {
             window.history.back();
           }
         } else {
@@ -210,7 +211,11 @@ export default {
         this.replyText = val.text
         //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
         //left要减去父级的left，原理同上
-        this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
+        if (this.pageType === 'post') {
+          this.callStyle.top = val.top + $(window.win()).scrollTop() + -40 + 'px'
+        } else {
+          this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
+        }
         this.callStyle.left = val.left - $('.main')[0].getBoundingClientRect().left + 10 + 'px'
         if (this.selectCallIndex >= this.filterCallList.length) {
           this.selectCallIndex = 0
@@ -277,7 +282,11 @@ export default {
       eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
     },
     scrollTop() {
-      this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
+      if (this.pageType === 'post') {
+        $("body , html").animate({scrollTop: 0}, 300);
+      } else {
+        this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
+      }
     },
   }
 }
@@ -287,6 +296,7 @@ export default {
 .sticky {
   position: sticky;
   bottom: -2px;
+  z-index: 2;
 }
 
 .sticky[stuck] {
@@ -300,6 +310,7 @@ export default {
 .post {
   position: unset !important;
   background: transparent !important;
+  overflow: unset !important;
 
   .main {
     background: transparent !important;

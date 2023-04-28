@@ -87,13 +87,15 @@
     showToolbar: true,
     showPreviewBtn: true,
     autoOpenDetail: true,
-    openTag: true,
+    openTag: true,//给用户打标签
     clickPostItemOpenDetail: true,
     // newTabOpen: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//点击空白处关闭详情
     viewType: 'card',
-    commentDisplayType: 0
+    commentDisplayType: 0,
+    newTabOpen: true,//新标签打开
+    base64: true//base功能
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -494,13 +496,15 @@
         item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add('post-item')
         itemDom.classList.add(`id_${id}`)
+        itemDom.dataset['href'] = href
+        itemDom.dataset['id'] = id
         window.postList.push(item)
       })
+
 
       Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
         let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
         // let fail = res.filter((r) => r.status === "rejected")
-
         box.style.boxShadow = 'unset'
         box.style.background = 'unset'
         if (window.config.viewType === 'card') {
@@ -657,7 +661,7 @@
           position: absolute;
           right: 0;
           top: 0.5rem;
-          width: 8rem;
+          width: 9rem;
           height: 100%;
           display: flex;
           justify-content: flex-end;
@@ -684,6 +688,10 @@
           margin-top: 0.5rem !important;
       }
 
+       .preview  .topic-link:link {
+          color: black !important;
+      }
+
       .post-content {
           margin-top: 0.5rem;
           display: block;
@@ -694,8 +702,9 @@
       }
 
       .post-content:link {
-          color: black;
+          color: #494949;
       }
+
 
       .post-content:visited {
           color: #afb9c1 !important;
@@ -897,6 +906,10 @@
 
     initConfig()
 
+    if (window.config.newTabOpen) {
+      window.win().doc.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
+    }
+
     let $section = document.createElement('section')
     $section.id = 'app'
 
@@ -905,6 +918,7 @@
     switch (window.pageType) {
       case 'nodePage':
         box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+
         let topics = box[1].querySelector('#TopicsNode')
         list = topics.querySelectorAll('.cell')
         list[0].before($section)

@@ -12,6 +12,7 @@ const mask = ref(false)
 const handOpen = ref(false)
 
 function mouseup(e) {
+  if (!config.value.base64) return;
   let selectionText = window.win().getSelection().toString()
   // console.log(selectionText)
   if (selectionText) {

@@ -134,7 +134,7 @@
 - 回复太多，考虑放后台，如924034
 - 链接自动转图片
 - 自动加载下一页
-- 新标签页打开链接
+- 增加自动解析显示 base64 (https://github.com/bjzhou/v2ex-base64-decoder)
 - 表情功能
     - https://greasyfork.org/zh-CN/scripts/435299-v2ex-emoticon/code
 
