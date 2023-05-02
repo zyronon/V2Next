@@ -2,25 +2,36 @@
 
 <details>
   <summary>点击展开</summary>
-
+<br/>
 1. 先安装一个脚本管理器扩展
-   ### 在线安装
-    - Chrome / Firefox / Edge：安装 [Tampermonkey](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)
-    - Safari：安装 [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887)
-        - Mac上的Tampermonkey收费，如果你已经安装过了Tampermonkey可以不用安装Userscripts
-    - 国产浏览器：请自动百度如何安装Tampermonkey
-   ### 离线安装（无法打开应用商店）
-    - 请在 [这个页面](https://www.tampermonkey.net/index.php?browser=chrome&locale=zh)或自行百度 下载Tampermonkey的文件
-        - Chrome、Edge请使用crx后缀的文件
-        - Firefox请使用xpi后缀的文件
-    - 然后重新开启浏览器，进入扩展页面
-        - Chrome、Edge，打开chrome://extensions/页面
-        - Firefox，打开about:addons页面
-    - 把”开发者模式“或”开发人员模式“打开
-    - 拖动下载的文件到浏览器中
+<br/>
+<h3>在线安装</h3>
+<ul>
+<li>
+Chrome / Firefox / Edge：安装 <a href="https://www.tampermonkey.net/index.php?browser=chrome&locale=zh">Tampermonkey</a>
+</li>
+<li>
+Safari：安装 <a href="https://apps.apple.com/us/app/userscripts/id1463298887">Userscripts</a>
+        <ul><li> Mac上的Tampermonkey收费，如果你已经安装过了Tampermonkey可以不用安装Userscripts</li></ul>
+</li>
+<li>
+国产浏览器：请自动百度如何安装Tampermonkey
+</li>
+</ul>
+<h3>离线安装（无法打开应用商店）</h3>
+<ul>
+<li>
+请在 <a href="https://www.tampermonkey.net/index.php?browser=chrome&locale=zh">这个页面</a>或自行百度 下载Tampermonkey的文件
+<ul>
+<li>Chrome、Edge请使用crx后缀的文件</li>
+<li>Firefox请使用xpi后缀的文件</li>
+</ul>
+</li>
+<li>然后重新开启浏览器，进入扩展页面</li>
+<li>拖动下载的文件到浏览器中</li>
+</ul>
 
-
-2. 点击[本页](https://greasyfork.org/zh-CN/scripts/458024)的 “安装此脚本” 按钮
+2. 点击 <a href=" https://greasyfork.org/zh-CN/scripts/458024">本页</a>的 “安装此脚本” 按钮
 
 </details>
 
@@ -86,7 +97,8 @@
 - 回复指定用户添加楼层号：回复时，自动添加楼层号，以保证脚本解析回复时能更准确的判断
 - 自适应屏幕宽度，支持黑暗模式： 帖子详情弹框自适应屏幕宽度，无论什么分辨率都能完美展示，同时也支持黑暗模式
 - 按钮异步请求：操作按钮（感谢、收藏、回复、隐藏）异步请求，不会刷新页面
-- 新标签页打开链接，可单独关闭
+- 新标签页打开链接，默认打开，可单独关闭
+- 使用 SOV2EX 搜索，默认关闭，可单独打开
 
 
 # 常见问题

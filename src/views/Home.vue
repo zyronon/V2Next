@@ -97,12 +97,12 @@
                @click="config.openTag = !config.openTag"/>
         </div>
         <div class="option">
-          <span>帖子界面默认显示楼中楼 ：</span>
+          <span>单独打开帖子时默认显示楼中楼 ：</span>
           <div class="switch" :class="{active:config.autoOpenDetail}"
                @click="config.autoOpenDetail = !config.autoOpenDetail"/>
         </div>
         <div class="notice">
-          单独打开这种地址 https://v2ex.com/t/xxxx 时， 是否默认显示楼中楼
+          单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
         </div>
         <div class="option">
           <span>点击列表的帖子，打开详情弹框 ：</span>
@@ -121,7 +121,7 @@
           此项需要刷新页面才能生效
         </div>
         <div class="option">
-          <span>点击两侧空白处关闭帖子详情：</span>
+          <span>点击左右两侧透明处关闭帖子详情弹框：</span>
           <div class="switch" :class="{active:config.closePostDetailBySpace}"
                @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
         </div>
@@ -142,6 +142,14 @@
           <span>划词显示Base64解码框：</span>
           <div class="switch" :class="{active:config.base64}"
                @click="config.base64 = !config.base64"/>
+        </div>
+        <div class="option">
+          <span>使用 SOV2EX 搜索：</span>
+          <div class="switch" :class="{active:config.sov2ex}"
+               @click="config.sov2ex = !config.sov2ex"/>
+        </div>
+        <div class="notice">
+          此项需要刷新页面才能生效
         </div>
 
         <div class="jieshao">
@@ -235,7 +243,7 @@ export default {
       return this.pageType === 'home' ||
           this.pageType === 'recent' ||
           this.pageType === 'nodePage'
-    }
+    },
   },
   watch: {
     'current.replies': {
@@ -284,6 +292,7 @@ export default {
         })
       }
     },
+
   },
   created() {
     // console.log('create', this.current)
@@ -348,7 +357,9 @@ export default {
     $(window.win().doc).on('click', 'a', (e) => {
       console.log('1')
       let {href, id, title} = window.parse.parseA(e.currentTarget)
-      this.clickPost(e, id, href, title)
+      if (this.clickPost(e, id, href, title)) {
+        return false
+      }
     })
     let that = this
     //帖子的
@@ -367,7 +378,9 @@ export default {
           // console.log('点空白处')
           let id = this.dataset['id']
           let href = this.dataset['href']
-          that.clickPost(e, id, href)
+          if (that.clickPost(e, id, href)) {
+            return false
+          }
         }
       }
     })
@@ -381,6 +394,14 @@ export default {
         itemDom.classList.add('preview')
       }
     })
+
+    window.win().onpopstate = (event) => {
+      if (event.state) {
+        if (!this.show) this.show = true
+      } else {
+        if (this.show) this.show = false
+      }
+    };
     this.initEvent()
   },
   beforeUnmount() {
@@ -439,7 +460,7 @@ export default {
           }
           this.getPostDetail(postItem)
           e.preventDefault()
-          return false
+          return true
         }
       }
     },
@@ -691,51 +712,69 @@ export default {
 <style lang="less">
 @import "../assets/less/variable";
 
+.isNight {
+  background: #22303f;
+  @border: rgb(69, 72, 71);
+
+  .open-post, .nav {
+    color: white;
+    background: #18222d;
+    border: none;
+  }
+
+  .setting-modal {
+    .wrapper {
+      background: #22303f;
+
+      .option {
+        color: black;
+
+        span {
+          color: gray !important;
+        }
+      }
+    }
+  }
+
+  .tag-modal {
+    .wrapper {
+      background: #22303f;
+
+      .option {
+        color: white;
+
+        span {
+          color: gray !important;
+        }
+      }
+    }
+  }
+
+  .radio-group2 {
+    @border: rgb(69, 72, 71);
+    border: 1px solid @border;
+
+    .radio {
+      border-left: 1px solid @border;
+      color: white;
+
+    }
+
+    .active {
+      background: #165c94;
+    }
+  }
+
+  .base64_tooltip {
+    background: #22303f;
+  }
+}
+
 .app-home {
   position: relative;
 
   &.home, &.recent, &.nodePage {
     background: rgb(226, 226, 226);
-  }
-
-  &.isNight {
-    background: #22303f;
-    @border: rgb(69, 72, 71);
-
-    .open-post, .nav {
-      color: white;
-      background: #18222d;
-      border: none;
-    }
-
-    .setting-modal {
-      .wrapper {
-        background: #22303f;
-
-        .option {
-          color: black;
-
-          span {
-            color: gray !important;
-          }
-        }
-      }
-    }
-
-    .radio-group2 {
-      @border: rgb(69, 72, 71);
-      border: 1px solid @border;
-
-      .radio {
-        border-left: 1px solid @border;
-        color: white;
-
-      }
-
-      .active {
-        background: #165c94;
-      }
-    }
   }
 }
 

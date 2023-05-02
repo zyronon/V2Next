@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
-    <style>
-    </style>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
+  <style>
+  </style>
 </head>
 <body>
 <div id="app"></div>
@@ -95,7 +95,8 @@
     viewType: 'card',
     commentDisplayType: 0,
     newTabOpen: true,//新标签打开
-    base64: true//base功能
+    base64: true,//base功能
+    sov2ex: true
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -878,15 +879,43 @@
   }
 
   function initConfig() {
-    //获取默认配置
-    let configStr = window.win().localStorage.getItem('v2ex-config')
-    if (configStr) {
-      let configObj = JSON.parse(configStr)
-      configObj = configObj[window.user.username ?? 'default']
-      if (configObj) {
-        window.config = Object.assign(window.config, configObj)
+    return new Promise(resolve => {
+      //获取默认配置
+      let configStr = window.win().localStorage.getItem('v2ex-config')
+      if (configStr) {
+        let configObj = JSON.parse(configStr)
+        configObj = configObj[window.user.username ?? 'default']
+        if (configObj) {
+          window.config = Object.assign(window.config, configObj)
+        }
       }
-    }
+      resolve(window.config)
+    })
+  }
+
+  // 替换为 sov2ex 搜索，代码来自 v2ex-plus 扩展：https://github.com/sciooga/v2ex-plus （懒得重复造轮子了~）
+  function initSoV2ex() {
+    var $search = $('#search')
+    var searchEvents = $._data($search[0], "events")
+    var oKeydownEvent = searchEvents['keydown'][0]['handler']
+    var oInputEvent = searchEvents['input'][0]['handler']
+    $search.attr("placeholder", "sov2ex")
+    $search.unbind('keydown', oKeydownEvent)
+    $search.unbind('input', oInputEvent)
+    $search.on('input', function (e) {
+      oInputEvent(e)
+      $('.search-item:last').attr('href', 'https://www.sov2ex.com/?q=' + $search.val()).text('sov2ex ' + $search.val());
+    })
+    $search.keydown(function (e) {
+      if (e.code == 'Enter' || e.code == 'NumpadEnter' || e.keyCode === 13) {
+        if ($('.search-item:last').is('.active')) {
+          $(this).val($(this).val().replace(/[#%&]/g, ""));//用户输入不能包含特殊字符#%&
+          window.open("https://www.sov2ex.com/?q=" + $(this).val());
+          return 0
+        }
+      }
+      oKeydownEvent(e)
+    })
   }
 
   window.win().canParseV2exPage = true
@@ -908,11 +937,14 @@
       }
     }
 
-    initConfig()
-
-    if (window.config.newTabOpen) {
-      window.win().doc.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
-    }
+    initConfig().then(r => {
+      if (window.config.sov2ex) {
+        initSoV2ex()
+      }
+      if (window.config.newTabOpen) {
+        window.win().doc.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
+      }
+    })
 
     let $section = document.createElement('section')
     $section.id = 'app'
