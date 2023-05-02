@@ -181,8 +181,10 @@ export default {
         if (!newVal) {
           window.win().doc.body.style.overflow = 'unset'
           this.isSticky = false
-          if (this.pageType === 'home' || this.pageType === 'nodePage') {
-            window.history.back();
+          if ((this.pageType === 'home' || this.pageType === 'nodePage') &&
+              window.win().location.pathname !== '/'
+          ) {
+            window.win().history.back();
           }
         } else {
           window.win().doc.body.style.overflow = 'hidden'
@@ -348,6 +350,15 @@ export default {
       @bg1: #22303f;
       @line: #22303f;
       @text: #d1d5d9;
+
+      .toolbar-wrapper {
+        border-top: unset !important;
+      }
+
+      .button.gray {
+        background: @bg !important;
+        border: 1px solid @bg !important;
+      }
 
       .my-box {
         color: white;

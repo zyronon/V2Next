@@ -66,9 +66,22 @@ function copy() {
   }
 }
 
+function base64ToArrayBuffer(base64) {
+  var binary_string = window.atob(base64);
+  var len = binary_string.length;
+  var bytes = new Uint8Array(len);
+  for (var i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 function decode() {
   try {
-    decodeText.value = window.atob(originalText.value)
+    // decodeText.value = window.atob(originalText.value)
+    new Blob([base64ToArrayBuffer(originalText.value)]).text().then(r => {
+      decodeText.value = r
+    })
   } catch (e) {
     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: 'Base64解码失败！不是标准数据！'})
   }
