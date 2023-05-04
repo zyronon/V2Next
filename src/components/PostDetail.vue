@@ -8,7 +8,7 @@
     <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
       <div class="main-wrapper">
         <div class="my-box post-wrapper">
-          <BaseHtmlRender v-if="modelValue" :html="post.headerTemplate"/>
+          <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
             <Point
                 @addThank="addThank"
@@ -54,10 +54,12 @@
             <div :class="[isNight?'loading-b':'loading-c']"></div>
           </div>
           <div class="comments" ref="comments" v-else>
-            <Comment v-for="(item,index) in replies"
-                     :key="item.floor"
-                     :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
-                     v-model="replies[index]"/>
+            <template v-if="modelValue">
+              <Comment v-for="(item,index) in replies"
+                       :key="item.floor"
+                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
+                       v-model="replies[index]"/>
+            </template>
           </div>
         </div>
         <div v-else id="no-comments-yet">目前尚无回复</div>

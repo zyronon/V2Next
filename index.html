@@ -89,12 +89,11 @@
     autoOpenDetail: true,
     openTag: true,//给用户打标签
     clickPostItemOpenDetail: true,
-    // newTabOpen: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
-    contentAutoCollapse: true,//点击空白处关闭详情
+    contentAutoCollapse: true,//正文超长自动折叠
     viewType: 'card',
     commentDisplayType: 0,
-    newTabOpen: true,//新标签打开
+    newTabOpen: false,//新标签打开
     base64: true,//base功能
     sov2ex: false
   }
@@ -158,8 +157,10 @@
       let header = body.find('#Main .box').first()
       let temp = header.clone()
       temp.find('.topic_buttons').remove()
-
-      post.headerTemplate = `${temp.html()} `
+      let html = temp.html()
+      html = this.photoLink2Img(html)
+      // console.log('html', html)
+      post.headerTemplate = html
       return post
     },
     //获取帖子所有回复
@@ -467,25 +468,6 @@
       item.children = item.children.sort((a, b) => a.floor - b.floor)
       return item
     },
-    //解析其他页面
-    parseOtherPage(html, pageType) {
-      let bodyText = html.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-      let body = $(bodyText[0])
-
-      if (pageType === 'recent') {
-        let list = body.find('.item')
-        let res = this.parsePagePostList(Array.from(list))
-        let page = body.find('.cell:last').html()
-        return {...res, page}
-      }
-      if (pageType === 'nodePage') {
-        let topics = body.find('#TopicsNode')
-        let list = topics.children()
-        let res = this.parsePagePostList(Array.from(list))
-        let page = topics.next().html()
-        return {...res, page}
-      }
-    },
     //解析页面帖子列表
     parsePagePostList(list, box) {
       list.forEach(itemDom => {
@@ -584,6 +566,16 @@
         method: 'post', body: data
       })
       return apiRes.redirected && apiRes.status === 200;
+    },
+    //图片链接转Img标签
+    photoLink2Img(str) {
+      let imgWebs = [
+        /<a href="https?:\/\/[^<a]*imgur.com[^<a]*>([\s\S]*?)<\/a>/g,
+      ]
+      imgWebs.map(v => {
+        str = str.replace(v, '<img src="$1.png" alt="">')
+      })
+      return str
     }
   }
 
@@ -607,7 +599,7 @@
   }
 
   function feedback() {
-    window.GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/7#discussioncomment-5698017', {
+    window.GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/', {
       active: true,
       insert: true,
       setParent: true
@@ -897,7 +889,7 @@
   function initSoV2ex() {
     var $search = $('#search')
     var searchEvents = $._data($search[0], "events")
-    console.log($search,searchEvents)
+    console.log($search, searchEvents)
     var oKeydownEvent = searchEvents['keydown'][0]['handler']
     var oInputEvent = searchEvents['input'][0]['handler']
     $search.attr("placeholder", "sov2ex")
@@ -940,7 +932,7 @@
 
     initConfig().then(r => {
       if (window.config.sov2ex) {
-        setTimeout(initSoV2ex,1000)
+        setTimeout(initSoV2ex, 1000)
       }
       if (window.config.newTabOpen) {
         window.win().doc.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
