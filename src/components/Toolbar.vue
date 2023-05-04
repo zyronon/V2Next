@@ -69,27 +69,6 @@
       </svg>
       <span>{{ post.isReport ? '你已对本主题进行了报告' : '报告这个主题' }}</span>
     </div>
-    <div class="tool no-hover" v-if="post.once"
-         @mouseenter="showTooltipHandler"
-         @mouseleave="hideTooltip"
-    >
-      <div v-if="showTooltip"
-           class="tooltip"
-           @mouseenter="showTooltipHandler"
-           @mouseleave="hideTooltip"
-      >
-        脚本有问题？<a target="_blank" href="https://github.com/zyronon/v2ex-script/issues">点击这里提一个Issue</a>
-      </div>
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 44H12H16" stroke="#929596" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round"/>
-        <path d="M12 44V4" stroke="#929596" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round"/>
-        <path d="M40 6H12V22H40L36 14L40 6Z" fill="none" stroke="#929596" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>脚本有问题？</span>
-    </div>
   </div>
 </template>
 
@@ -107,7 +86,6 @@ export default {
   data() {
     return {
       timer: null,
-      showTooltip: false,
       loading: false,
       loading2: false,
       loading3: false,
@@ -128,19 +106,10 @@ export default {
     getIsFull(val) {
       return val ? '#ff4500' : 'none'
     },
-    showTooltipHandler() {
-      this.timer && clearTimeout(this.timer)
-      this.showTooltip = true
-    },
-    hideTooltip() {
-      this.timer = setTimeout(() => {
-        this.showTooltip = false
-      }, 500)
-    },
     tweet() {
       if (!this.checkIsLogin()) return
       let username = window.user.username
-      let url = `https://twitter.com/share?url=${window.baseUrl}/t/${this.post.id}?r=${username}&amp;related=v2ex&amp;hashtags=apple&amp;text=${this.post.title}`
+      let url = `https://twitter.com/intent/tweet?url=${window.baseUrl}/t/${this.post.id}?r=${username}&related=v2ex&text=${this.post.title}`
       window.win().open(url, '_blank', 'width=550,height=370');
     },
     report() {
@@ -217,22 +186,6 @@ export default {
   display: flex;
   align-items: center;
   color: @tool-color;
-
-  .tooltip {
-    //box-shadow: 0 0 0 3px gray;
-    box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
-    background: white;
-    padding: 1rem;
-    top: 4rem;
-    left: -3rem;
-    width: 15rem;
-    position: absolute;
-    z-index: 99;
-
-    a {
-      color: @blue-color !important;
-    }
-  }
 }
 
 </style>
