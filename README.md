@@ -103,7 +103,7 @@ Safari：安装 <a href="https://apps.apple.com/us/app/userscripts/id1463298887"
 
 # 常见问题
 
-<details>
+<details>y
   <summary>为什么要加载所有回复？</summary>
  如果有多页回复，只解析当前页的话，那么许多楼层会找不到@的人，因为有可能@的人在前一页
 </details>

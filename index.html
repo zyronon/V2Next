@@ -570,10 +570,13 @@
     //图片链接转Img标签
     photoLink2Img(str) {
       let imgWebs = [
-        /<a href="https?:\/\/[^<a]*imgur.com[^<a]*>([\s\S]*?)<\/a>/g,
+        /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
       ]
       imgWebs.map(v => {
-        str = str.replace(v, '<img src="$1.png" alt="">')
+        // let has = str.matchAll(v)
+        // let res2 = [...has]
+        // console.log('总匹配', res2)
+        str = str.replace(v, '<img src="$4.png" alt="" style="width: 100%">')
       })
       return str
     }
