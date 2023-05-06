@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" href="/favicon.ico"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-  <title>Vite App</title>
-  <style>
-  </style>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+    <title>Vite App</title>
+    <style>
+    </style>
 </head>
 <body>
 <div id="app"></div>
@@ -22,15 +22,13 @@
     window.onerror = function (message, source, lineno, colno, error) {
       console.log('捕获到异常：', {message, source, lineno, colno, error});
     }
-    window.addEventListener('error', (error) => {
-      console.log('捕获到异常：', error);
-    }, true)
     window.addEventListener("unhandledrejection", function (e) {
       e.preventDefault()
       console.log('捕获到异常：', e);
       return true;
     });
   }
+
   if (!window.GM_openInTab) window.GM_openInTab = () => void 0
   if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
   if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
@@ -49,6 +47,18 @@
     window.baseUrl = location.origin
     window.win().isFrame = false
   }
+
+  window.win().addEventListener('error', (e) => {
+    if (e.target.tagName.toUpperCase() === 'IMG') {
+      let img = e.srcElement;
+      img.onerror = null;
+      let link = img.dataset['originurl'] ?? img.src;
+      img.outerHTML = `<a href="${link}">${link}</a>`
+      console.log('捕获到图片加载失败异常：', e);
+    }else {
+      console.log('捕获到其他异常：', e);
+    }
+  }, true)
 
   window.initPost = {
     replies: [],
@@ -100,6 +110,7 @@
   window.isNight = $('.Night').length === 1
   window.cb = null
   window.postList = []
+
   window.parse = {
     //解析帖子内容
     async parsePostContent(post = {}, body, htmlText) {
@@ -158,7 +169,7 @@
       let temp = header.clone()
       temp.find('.topic_buttons').remove()
       let html = temp.html()
-      html = this.photoLink2Img(html)
+      html = this.checkPhotoLink2Img(html)
       // console.log('html', html)
       post.headerTemplate = html
       return post
@@ -243,7 +254,7 @@
         }
         let reply_content = node.querySelector('.reply_content')
         // console.log('reply_content',reply_content)
-        item.reply_content = reply_content.innerHTML
+        item.reply_content = this.checkPhotoLink2Img(reply_content.innerHTML)
         item.reply_text = reply_content.innerText
 
         let {users, floor} = this.parseReplyContent(item.reply_content)
@@ -484,7 +495,6 @@
         window.postList.push(item)
       })
 
-
       Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
         let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
         // let fail = res.filter((r) => r.status === "rejected")
@@ -568,16 +578,37 @@
       return apiRes.redirected && apiRes.status === 200;
     },
     //图片链接转Img标签
-    photoLink2Img(str) {
-      let imgWebs = [
-        /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
-      ]
-      imgWebs.map(v => {
-        // let has = str.matchAll(v)
-        // let res2 = [...has]
-        // console.log('总匹配', res2)
-        str = str.replace(v, '<img src="$4.png" alt="" style="width: 100%">')
-      })
+    checkPhotoLink2Img(str) {
+      if (!str) return
+      try {
+        let imgWebs = [
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*.[gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG]((?!<a).)*>(((?!<a).)*)<\/a>/g,
+        ]
+        imgWebs.map(v => {
+          let has = str.matchAll(v)
+          let res2 = [...has]
+          // console.log('总匹配', res2)
+          res2.map(r => {
+            if (r[4]) {
+              let link = r[4].toLowerCase()
+              let src = r[4]
+              if (
+                link.includes('.png') ||
+                link.includes('.jpg') ||
+                link.includes('.jpeg') ||
+                link.includes('.gif')
+              ) {
+              } else {
+                src = r[4] + '.png'
+              }
+              str = str.replace(r[0], `<img src="${src}" data-originUrl="${r[4]}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
+            }
+          })
+        })
+      } catch (e) {
+        console.log('正则解析html里面的a标签的图片链接出错了')
+      }
       return str
     }
   }
