@@ -105,6 +105,8 @@ function decode() {
   border-radius: .5rem;
   cursor: pointer;
   line-break: anywhere;
+  font-size: 1.4rem;
+  color: white;
 
   svg {
     margin-left: 1rem;
