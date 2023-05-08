@@ -767,6 +767,7 @@ export default {
 
   .base64_tooltip {
     background: #22303f;
+    color: #ccc;
   }
 }
 

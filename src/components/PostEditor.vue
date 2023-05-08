@@ -53,6 +53,8 @@ const txtRef = ref(null)
 const cursorRef = ref(null)
 const none = ref('<span style="white-space:pre-wrap;"> </span>')
 
+defineExpose({content})
+
 const editorClass = computed(() => {
   return [useType, isFocus.value ? 'isFocus' : '']
 })

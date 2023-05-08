@@ -73,7 +73,7 @@
           </div>
           <div class="w">
             <PostEditor
-                v-if="modelValue"
+                ref="post-editor"
                 useType="reply-post"
                 @click="isSticky = true"/>
           </div>
@@ -177,6 +177,11 @@ export default {
     },
   },
   watch: {
+    'post.id'(n, o) {
+      if (this.$refs["post-editor"]){
+        this.$refs["post-editor"].content = ''
+      }
+    },
     modelValue: {
       handler(newVal) {
         if (this.pageType === 'post') return
