@@ -73,6 +73,7 @@
           </div>
           <div class="w">
             <PostEditor
+                @close="goBottom"
                 ref="post-editor"
                 useType="reply-post"
                 @click="isSticky = true"/>
@@ -178,7 +179,7 @@ export default {
   },
   watch: {
     'post.id'(n, o) {
-      if (this.$refs["post-editor"]){
+      if (this.$refs["post-editor"]) {
         this.$refs["post-editor"].content = ''
       }
     },
@@ -240,6 +241,18 @@ export default {
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    goBottom() {
+      this.isSticky = false
+      setTimeout(() => {
+        if (this.pageType === 'post') {
+          let body = $('body , html')
+          let scrollHeight = body.prop("scrollHeight");
+          body.animate({scrollTop: scrollHeight - 850}, 300);
+        } else {
+          this.$refs.detail.scrollTo({top: this.$refs.detail.scrollHeight, behavior: 'smooth'})
+        }
+      })
+    },
     close(from) {
       if (this.pageType === 'post') return
       if (from === 'space') {
@@ -612,10 +625,11 @@ export default {
 
   .scroll-top {
     position: fixed;
-    bottom: 3rem;
+    bottom: 10rem;
     z-index: 99;
-    padding: 0.4rem 1.4rem;
+    padding: 0.8rem 1.4rem;
     transform: translateX(6rem);
+    font-size: 2rem;
   }
 
   .close-btn {
