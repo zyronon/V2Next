@@ -583,16 +583,17 @@
       try {
         let imgWebs = [
           /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
-          /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.[gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG]((?!<a).)*>(((?!<a).)*)<\/a>/g,
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)((?!<a).)*>(((?!<a).)*)<\/a>/g,
         ]
-        imgWebs.map(v => {
+        imgWebs.map((v, i) => {
           let has = str.matchAll(v)
           let res2 = [...has]
           // console.log('总匹配', res2)
           res2.map(r => {
-            if (r[4]) {
-              let link = r[4].toLowerCase()
-              let src = r[4]
+            let p = i === 0 ? r[4] : r[5]
+            if (p) {
+              let link = p.toLowerCase()
+              let src = p
               if (
                 link.includes('.png') ||
                 link.includes('.jpg') ||
@@ -600,9 +601,9 @@
                 link.includes('.gif')
               ) {
               } else {
-                src = r[4] + '.png'
+                src = p + '.png'
               }
-              str = str.replace(r[0], `<img src="${src}" data-originUrl="${r[4]}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
+              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
             }
           })
         })
