@@ -1,6 +1,10 @@
-
 https://www.v2ex.com/poll_once 好像是换once的
 
+# 待修复的bug
+
+- 启用脚本后无法显示代码高亮 https://v2ex.com/t/937951
+- 楼中楼解析的问题：艾特的人和楼层号都是对的，但是解析出来的结果却歪了。帖子地址：https://v2ex.com/t/938387
+- 
 # 测试数据
 
 - 362535 回复巨多
@@ -8,13 +12,15 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 898448 超级多,313楼看乐了
 - 667520 嵌套比较多
 - 918489 @人不存在帖子的
-- 930155 
+- 930155
 - 724408
 - 889129 有附言的
-- 
+-
+
 # 回复问题
+
 - [x]  bug：https://greasyfork.org/zh-CN/scripts/397787-v2ex-pro/discussions/51302
-- 
+
 # 其他问题
 
 - [ ] https://www.v2ex.com/t/932519#reply1 无法显示email

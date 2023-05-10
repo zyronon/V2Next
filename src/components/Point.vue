@@ -1,11 +1,11 @@
 <template>
-  <div class="point" :class="type">
+  <div class="point">
     <div class="up" @click.stop="thank">
       <svg :class="{disabled}" width="19" height="19" viewBox="0 0 48 48" fill="none"
            xmlns="http://www.w3.org/2000/svg">
         <path
             d="M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z"
-            :fill="getIsFull(item.isThanked)" :stroke="getColor(item.isThanked)" stroke-width="2" stroke-linecap="round"
+            fill="#ff4500" stroke="#ff4500" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round"/>
       </svg>
     </div>
@@ -26,12 +26,6 @@ export default {
         return {}
       }
     },
-    type: {
-      type: String,
-      default() {
-        return 'horizontal'
-      }
-    },
     apiUrl: '',
   },
   computed: {
@@ -40,12 +34,6 @@ export default {
     }
   },
   methods: {
-    getColor(val) {
-      return val ? '#ff4500' : '#929596'
-    },
-    getIsFull(val) {
-      return val ? '#ff4500' : 'none'
-    },
     async thank() {
       if (!this.isLogin) {
         return eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '请先登录！'})
@@ -82,25 +70,17 @@ export default {
 <style scoped lang="less">
 @import "@/assets/less/variable";
 
-.horizontal {
-  flex-direction: row !important;
-  //min-width: 6rem !important;
-  padding: 0 !important;
-
-  .num {
-    margin-left: .2rem;
-  }
-}
-
 .point {
+  margin-left: 1rem;
   font-size: 1.2rem;
-  padding: 1rem 0;
   min-width: 4rem;
   //background: rgb(248, 249, 250);
   border-radius: @border-radius 0 0 @border-radius;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: row !important;
+  //min-width: 6rem !important;
+  padding: 0 !important;
 
   .up {
     display: flex;
@@ -110,6 +90,7 @@ export default {
   }
 
   .num {
+    margin-left: .2rem;
     font-weight: 700;
     color: black;
     user-select: none;
@@ -123,13 +104,17 @@ export default {
     &:hover {
       background: rgb(229, 229, 229);
     }
-  }
 
-  .disabled {
-    &:hover {
-      background: unset;
+    &.disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        background: unset !important;
+      }
     }
   }
+
+
 }
 
 </style>
