@@ -13,6 +13,7 @@
             <Point
                 @addThank="addThank"
                 @recallThank="recallThank"
+                :full="false"
                 :item="{
                 isThanked:post.isThanked,
                 thankCount:post.thankCount,
