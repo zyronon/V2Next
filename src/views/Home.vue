@@ -115,10 +115,7 @@
         <div class="option">
           <span>新标签页打开链接 ：</span>
           <div class="switch" :class="{active:config.newTabOpen}"
-               @click="config.newTabOpen = !config.newTabOpen"/>
-        </div>
-        <div class="notice">
-          此项需要刷新页面才能生效
+               @click="config.newTabOpen = !config.newTabOpen;config.clickPostItemOpenDetail = !config.newTabOpen"/>
         </div>
         <div class="option">
           <span>点击左右两侧透明处关闭帖子详情弹框：</span>
@@ -375,11 +372,13 @@ export default {
             &&
             !e.target.classList.contains('toggle')
         ) {
-          // console.log('点空白处')
+          console.log('点空白处')
           let id = this.dataset['id']
           let href = this.dataset['href']
           if (that.clickPost(e, id, href)) {
             return false
+          } else {
+            window.win().location.href = href
           }
         }
       }
@@ -460,6 +459,19 @@ export default {
           }
           this.getPostDetail(postItem)
           e.preventDefault()
+          return true
+        }
+        if (this.config.newTabOpen) {
+          let tempId = 'a_blank_' + Date.now()
+          let a = win().doc.createElement("a");
+          a.setAttribute("href", href);
+          a.setAttribute("target", "_blank");
+          a.setAttribute("id", tempId);
+          // 防止反复添加
+          if (!win().doc.getElementById(tempId)) {
+            win().doc.body.appendChild(a);
+          }
+          a.click();
           return true
         }
       }

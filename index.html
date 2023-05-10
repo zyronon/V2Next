@@ -969,9 +969,6 @@
       if (window.config.sov2ex) {
         setTimeout(initSoV2ex, 1000)
       }
-      if (window.config.newTabOpen) {
-        window.win().doc.head.appendChild(document.createElement('base')).target = '_blank'; // 让所有链接默认以新标签页打开
-      }
     })
 
     let $section = document.createElement('section')

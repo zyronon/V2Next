@@ -29,7 +29,10 @@
       </span>
     </div>
     <div class="Author-right">
-      <div class="toolbar">
+      <div class="toolbar" v-if="isLogin">
+        <div class="tool" @click="hide">
+          <span>隐藏</span>
+        </div>
         <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
@@ -40,12 +43,6 @@
           </svg>
           <span>回复</span>
         </div>
-        <div class="tool" @click="checkIsLogin('hide')">
-          <span>隐藏</span>
-        </div>
-        <!--            <div class="tool">-->
-        <!--              <span>报告</span>-->
-        <!--            </div>-->
         <Point
             v-if="!comment.thankCount"
             :item="pointInfo"
@@ -101,6 +98,11 @@ export default {
     },
     removeTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.comment.username, tag})
+    },
+    hide() {
+      if (confirm('确认隐藏这条回复？')) {
+        this.$emit('hide')
+      }
     },
     checkIsLogin(emitName = '') {
       if (!this.isLogin) {
@@ -194,8 +196,7 @@ export default {
     }
 
     .my-tag {
-      font-size: 1.3rem;
-      font-weight: bold;
+      font-size: 1.4rem;
       color: red;
       margin-left: 1rem;
 
@@ -213,7 +214,8 @@ export default {
     }
 
     .add-tag {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      transform: translateY(.2rem);
       line-height: 1rem;
       display: inline-block;
       margin-left: 1rem;

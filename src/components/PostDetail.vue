@@ -445,7 +445,6 @@ export default {
       }
 
       :deep(.point) {
-        margin-left: .5rem;
 
         svg {
           &:hover {
