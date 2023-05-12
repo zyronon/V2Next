@@ -1,5 +1,6 @@
-# 如何安装/使用该脚本？
+# 脚本油猴安装地址：https://greasyfork.org/zh-CN/scripts/458024
 
+# 如何安装/使用该脚本？
 <details>
   <summary>点击展开</summary>
 <br/>
