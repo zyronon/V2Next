@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-    <title>Vite App</title>
-    <style>
-    </style>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+  <title>Vite App</title>
+  <style>
+  </style>
 </head>
 <body>
 <div id="app"></div>
@@ -53,9 +53,11 @@
       let img = e.srcElement;
       img.onerror = null;
       let link = img.dataset['originurl'] ?? img.src;
-      img.outerHTML = `<a href="${link}">${link}</a>`
-      console.log('捕获到图片加载失败异常：', e);
-    }else {
+      if (!link.includes('avatar')) {
+        img.outerHTML = `<a href="${link}">${link}</a>`
+        console.log('捕获到图片加载失败异常：', e);
+      }
+    } else {
       console.log('捕获到其他异常：', e);
     }
   }, true)
@@ -105,7 +107,8 @@
     commentDisplayType: 0,
     newTabOpen: false,//新标签打开
     base64: true,//base功能
-    sov2ex: false
+    sov2ex: false,
+    postWidth: '',
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -655,22 +658,21 @@
 
   //初始化样式表
   function initStyle() {
-    //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修复这两个div的宽高，让网页变形
+    //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
     let style2 = `
-     html, body {
-          font-size: 62.5%;
-      }
+       html, body {
+            font-size: 62.5%;
+        }
 
         #Wrapper {
           height: unset !important;
           width: unset !important;
         }
 
-         #Wrapper > .content {
-          height: unset !important;
-          width: unset !important;
-        }
-
+       #Wrapper > .content {
+        height: unset !important;
+        width: unset !important;
+      }
 
       .post-item {
           background: white;
@@ -993,6 +995,24 @@
         window.parse.parsePagePostList(list, box)
         break
       case 'post':
+        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面抖动和一闪而过
+        if (config.postWidth) {
+          //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
+          //Rightbar的float就失效了，所以把他移动右边
+          let Main = $('#Main')
+          Main.css({
+            'width': config.postWidth,
+            margin: 'unset',
+          })
+          $('#Wrapper > .content').css({
+            'max-width': 'unset',
+            display: 'flex',
+            'justify-content': 'center',
+            gap: '20px'
+          })
+          Main.after($('#Rightbar'))
+        }
+
         box = window.win().query('#Wrapper #Main .box')
         box.after($section)
         window.parse.parsePostContent(

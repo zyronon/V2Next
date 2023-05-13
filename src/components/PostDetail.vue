@@ -6,7 +6,7 @@
        :class="[isNight?'isNight':'',pageType]"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
-      <div class="main-wrapper">
+      <div class="main-wrapper" :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
@@ -315,6 +315,7 @@ export default {
 </script>
 
 <style lang="less">
+
 .sticky {
   position: sticky;
   bottom: -2px;

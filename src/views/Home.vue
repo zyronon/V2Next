@@ -148,7 +148,19 @@
         <div class="notice">
           此项需要刷新页面才能生效
         </div>
-
+        <div class="option">
+          <span>帖子宽度：</span>
+          <input type="text" v-model="config.postWidth">
+        </div>
+        <div class="notice">
+          默认为77rem。接受合法的width值：
+          <a href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
+             target="_blank">rem、px、vw、vh</a>。
+          vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
+        </div>
+        <div class="notice">
+          提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
+        </div>
         <div class="jieshao">
         </div>
       </div>
@@ -851,12 +863,12 @@ export default {
 
     .notice {
       font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
       padding-left: 3rem;
-      line-break: anywhere;
       text-align: left;
+
+      a {
+        color: blue;
+      }
     }
 
     .jieshao {
