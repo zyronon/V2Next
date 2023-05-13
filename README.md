@@ -1,4 +1,4 @@
-# 代码开源，欢迎大家审计。也可自动构建出js文件复制到Tampermonkey里面私人使用。构建方法在本文最下面
+# 代码开源，欢迎大家审计。也可自行构建出js文件复制到Tampermonkey里面私人使用。构建方法在本文最下面
 
 # 脚本油猴安装地址：https://greasyfork.org/zh-CN/scripts/458024
 

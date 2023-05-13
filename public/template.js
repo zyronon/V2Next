@@ -22,9 +22,13 @@
   //Vue打包后的的css和js文件一定要同时复制。同一次build的js和css是匹配的，打包后的"data-v-c9f8a6c7"这种东西，会重新生成，不能混用！！！
   //Vue打包后的的css和js文件一定要同时复制。同一次build的js和css是匹配的，打包后的"data-v-c9f8a6c7"这种东西，会重新生成，不能混用！！！
   let style = `
+  
+  
     这里放Vue打包的css，位置在dist/assets/index-hash值.css，把这个css文件里面的内容，全部复制粘贴到这里
     这里放Vue打包的css，位置在dist/assets/index-hash值.css，把这个css文件里面的内容，全部复制粘贴到这里
     这里放Vue打包的css，位置在dist/assets/index-hash值.css，把这个css文件里面的内容，全部复制粘贴到这里
+    
+    
     `
   let addStyle = document.createElement("style");
   addStyle.rel = "stylesheet";
@@ -33,9 +37,13 @@
   document.head.append(addStyle)
 
   setTimeout(function () {
+
+
     '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
     '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
     '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
+
+
   })
   const isDev = false
 
