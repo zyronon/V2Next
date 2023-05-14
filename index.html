@@ -548,11 +548,7 @@
       let href = a.href
       let id
       if (href.includes('/t/')) {
-        if (href.includes('#')) {
-          id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-        } else {
-          id = href.substring(href.indexOf('/t/') + 3,)
-        }
+        id = href.substring(href.indexOf('/t/') + 3,href.indexOf('/t/') +9)
       }
       return {href, id, title: a.innerText}
     },
@@ -948,7 +944,7 @@
     })
   }
 
-  window.win().canParseV2exPage = true
+  window.win().canParseV2exPage = !window.win().location.href.includes('script=0')
   if (window.win().canParseV2exPage) {
     checkPageType()
     initMonkeyMenu()
@@ -1040,6 +1036,8 @@
         console.error('未知页面')
         break
     }
+  }else {
+    alert('脚本无法查看此主题，已为您单独打开此主题')
   }
 
   //发布脚本，从这里结束复制

@@ -364,7 +364,6 @@ export default {
     }
     //A标签的
     $(window.win().doc).on('click', 'a', (e) => {
-      console.log('1')
       let {href, id, title} = window.parse.parseA(e.currentTarget)
       if (this.clickPost(e, id, href, title)) {
         return false
@@ -684,7 +683,6 @@ export default {
       //     }
       //   }
       // }
-      console.log('window.baseUrl', window.baseUrl)
       let url = window.baseUrl + '/t/' + post.id
       window.win().doc.body.style.overflow = 'hidden'
       window.win().history.pushState({}, 0, post.href ?? url);
@@ -699,6 +697,13 @@ export default {
       if (apiRes.status === 404) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '主题未找到'})
         return this.loading = false
+      }
+      if (apiRes.status === 403) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '脚本无法查看此主题，已为您单独打开此主题'})
+        this.loading = false
+        this.show = false
+        window.win().open(`https://www.v2ex.com/t/${post.id}?p=1&script=0`, '_black')
+        return
       }
       //如果是重定向了，那么就是没权限
       if (apiRes.redirected) {
