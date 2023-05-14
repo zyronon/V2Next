@@ -1,6 +1,14 @@
-# 代码开源，欢迎大家审计。也可自行构建出js文件复制到Tampermonkey里面私人使用。构建方法在本文最下面
+# 关于本项目
+1. 代码完全开源，欢迎大家审计。也可自行构建出js文件复制到Tampermonkey里面个人使用，构建方法在本文最下面
+2. 脚本油猴安装地址：https://greasyfork.org/zh-CN/scripts/458024
+3. git仓库地址：https://github.com/zyronon/v2ex-script
 
-# 脚本油猴安装地址：https://greasyfork.org/zh-CN/scripts/458024
+### 脚本做了什么？
+因v2ex-plus的[爬虫事件](https://www.v2ex.com/t/939486#reply172)，在此做个解释
+
+使用本脚本会增加额外请求，但不会用你的账号爬取其他信息
+1. 打开v2ex首页（节点）时，脚本会遍历帖子列表拿到每一条帖子的id，然后批量调用v站的公开接口：[https://www.v2ex.com/api/topics/show.json?id=id](https://www.v2ex.com/api/topics/show.json?id=id)，调用此接口是用于预览正文
+2. 打开详情页时，如果有多页回复，会请求其他页回复。因为拿到所有的回复才能拼凑出完整楼中楼
 
 # 如何安装/使用该脚本？
 <details>
@@ -108,7 +116,7 @@ Safari：安装 <a href="https://apps.apple.com/us/app/userscripts/id1463298887"
 
 <details>y
   <summary>为什么要加载所有回复？</summary>
- 如果有多页回复，只解析当前页的话，那么许多楼层会找不到@的人，因为有可能@的人在前一页
+如果有多页回复，只解析当前页的话，那么许多楼层会找不到@的人，因为有可能@的人在前一页
 </details>
 <details>
   <summary>为什么有的「楼中楼」回复的楼层不正确？</summary>
