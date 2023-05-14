@@ -53,12 +53,21 @@
     if (Vue) runVueCode()
   } catch (e) {
     console.log('Vue报错不存在', e)
-    let $vue = document.createElement("script");
-    $vue.src = 'https://cdn.jsdelivr.net/npm/vue@3.3.2/dist/vue.runtime.global.prod.js'
-    $vue.addEventListener('load', runVueCode)
-    document.body.appendChild($vue);
+    let vueScript = document.createElement("script");
+    vueScript.src = 'https://cdn.jsdelivr.net/npm/vue@3.3.2/dist/vue.runtime.global.prod.js'
+    vueScript.addEventListener('load', runVueCode)
+    document.body.appendChild(vueScript);
   }
 
+  try {
+    if ($) {
+    }
+  } catch (e) {
+    console.log('$报错不存在', e)
+    let jqScript = document.createElement("script");
+    jqScript.src = 'https://unpkg.com/jquery@3.7.0/dist/jquery.min.js'
+    document.body.appendChild(jqScript);
+  }
 
   const isDev = false
 
