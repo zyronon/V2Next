@@ -22,7 +22,9 @@
   //Vue打包后的的css和js文件一定要同时复制。同一次build的js和css是匹配的，打包后的"data-v-c9f8a6c7"这种东西，会重新生成，不能混用！！！
   //Vue打包后的的css和js文件一定要同时复制。同一次build的js和css是匹配的，打包后的"data-v-c9f8a6c7"这种东西，会重新生成，不能混用！！！
   let style = `
+
   html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p0{padding:0!important}.post-author{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username{font-size:1.2rem}.sticky{position:sticky;bottom:0}.sticky[stuck]{box-shadow:0 2px 20px #00000059}a{color:#778087;text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}.base-loading{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear}.loading-c{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;width:3rem;height:3rem}.loading-b{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button.info{color:#000;border:1px solid #40a9ff;background:white}.button.gray{color:#fff;border:1px solid #b6b6b6;background:#b6b6b6}.button:hover{opacity:.9}.button:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading{cursor:not-allowed;opacity:.5}.button.loading:before{display:block}.button.disabled{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.tool{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading{cursor:not-allowed;opacity:.5}.tool.loading:before{display:block}.tool.loading:hover{background:unset}.tool>svg{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool:hover{background:#e8e8e8}.tool.no-hover{cursor:default}.tool.no-hover:hover{background:unset}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node:hover{text-decoration:none;background:#e2e2e2}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left{background:#40a9ff}.msg.warning .left{background:#c8c002}.msg.error .left{background:red}.msg .left{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg{margin:0 .3rem;cursor:pointer}.msg .right{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line{border-bottom:1px solid #e2e2e2}.my-box{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;box-sizing:border-box}.my-cell{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14{font-size:1.4rem}.switch{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;border:1px solid #ccc;transition:all .3s}.switch.active{background:#ccc}.switch.active:before{right:.2rem;background:white}.switch:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%;background:#ccc}.modal{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0}.modal .mask{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:#e2e2e2;color:gray}.point[data-v-3d4ad43b]{margin-left:1rem;font-size:1.2rem;min-width:4rem;border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;flex-direction:row!important;padding:0!important}.point .up[data-v-3d4ad43b]{display:flex;flex-direction:column;align-items:center;justify-content:center}.point .num[data-v-3d4ad43b]{margin-left:.2rem;font-weight:700;color:#000;user-select:none}.point svg[data-v-3d4ad43b]{width:2rem;padding:.4rem;border-radius:.2rem}.point svg[data-v-3d4ad43b]:hover{background:#e5e5e5}.point svg.disabled[data-v-3d4ad43b]{cursor:not-allowed}.point svg.disabled[data-v-3d4ad43b]:hover{background:unset!important}.Author[data-v-3c4615fc]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative;margin-bottom:.4rem}.Author.expand[data-v-3c4615fc]{margin-bottom:0}.Author .Author-left[data-v-3c4615fc]{display:flex;align-items:center;max-width:90%}.Author .Author-left .username[data-v-3c4615fc]{font-size:1.4rem;margin-right:1rem}.Author .Author-left .expand-icon[data-v-3c4615fc]{cursor:pointer;margin-right:.8rem;width:2rem;height:2rem;transform:rotate(90deg)}.Author .Author-left .icon[data-v-3c4615fc]{margin-right:1rem;display:flex}.Author .Author-left .icon img[data-v-3c4615fc]{width:3.4rem;height:3.4rem;border-radius:.3rem}.Author .Author-left .texts[data-v-3c4615fc]{flex:1}.Author .Author-left .op[data-v-3c4615fc]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .mod[data-v-3c4615fc]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.Author .Author-left .my-tag[data-v-3c4615fc]{font-size:1.4rem;color:red;margin-left:1rem}.Author .Author-left .my-tag:hover .remove[data-v-3c4615fc]{display:inline}.Author .Author-left .my-tag .remove[data-v-3c4615fc]{cursor:pointer;margin-left:.5rem;display:none}.Author .Author-left .add-tag[data-v-3c4615fc]{font-size:2.5rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;display:none}.Author:hover .add-tag[data-v-3c4615fc]{display:inline-block}.Author .Author-right[data-v-3c4615fc]{position:absolute;right:0;display:flex;align-items:center}.Author .Author-right .toolbar[data-v-3c4615fc]{display:flex;align-items:center;color:#929596;opacity:0}.Author .Author-right .toolbar[data-v-3c4615fc]:hover{background:white;opacity:1}.Author .Author-right .floor[data-v-3c4615fc]{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}.Author .Author-right .isDev[data-v-3c4615fc]{color:#000!important}.post-editor-wrapper[data-v-9afb34da]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s}.post-editor-wrapper.reply-post .post-editor[data-v-9afb34da]{border:1px solid #e2e2e2;border-radius:.4rem}.post-editor-wrapper.reply-post.isFocus .post-editor[data-v-9afb34da]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment[data-v-9afb34da]{border:1px solid #e2e2e2;border-radius:.4rem;overflow:hidden}.post-editor-wrapper.reply-comment.isFocus[data-v-9afb34da]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment .toolbar[data-v-9afb34da]{background:#f6f7f8}.post-editor-wrapper .post-editor[data-v-9afb34da]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none}.post-editor-wrapper .toolbar[data-v-9afb34da]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar span[data-v-9afb34da]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-9afb34da]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;position:absolute;top:0;z-index:-100}html[data-v-6959f800],body[data-v-6959f800]{font-size:62.5%}.flex[data-v-6959f800]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-6959f800]{justify-content:flex-end}.flex-center[data-v-6959f800]{justify-content:center}.p1[data-v-6959f800]{padding:1rem}.p0[data-v-6959f800]{padding:0!important}.post-author[data-v-6959f800]{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username[data-v-6959f800]{font-size:1.2rem}.sticky[data-v-6959f800]{position:sticky;bottom:0}.sticky[stuck][data-v-6959f800]{box-shadow:0 2px 20px #00000059}a[data-v-6959f800]{color:#778087;text-decoration:none;cursor:pointer}a[data-v-6959f800]:hover{text-decoration:underline}.base-loading[data-v-6959f800]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-6959f800 infinite 1s linear}.loading-c[data-v-6959f800]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-6959f800 infinite 1s linear;width:3rem;height:3rem}.loading-b[data-v-6959f800]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-6959f800 infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle-6959f800{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button[data-v-6959f800]{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button.info[data-v-6959f800]{color:#000;border:1px solid #40a9ff;background:white}.button.gray[data-v-6959f800]{color:#fff;border:1px solid #b6b6b6;background:#b6b6b6}.button[data-v-6959f800]:hover{opacity:.9}.button[data-v-6959f800]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-6959f800 infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading[data-v-6959f800]{cursor:not-allowed;opacity:.5}.button.loading[data-v-6959f800]:before{display:block}.button.disabled[data-v-6959f800]{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.tool[data-v-6959f800]{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool[data-v-6959f800]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-6959f800 infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading[data-v-6959f800]{cursor:not-allowed;opacity:.5}.tool.loading[data-v-6959f800]:before{display:block}.tool.loading[data-v-6959f800]:hover{background:unset}.tool>svg[data-v-6959f800]{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool[data-v-6959f800]:hover{background:#e8e8e8}.tool.no-hover[data-v-6959f800]{cursor:default}.tool.no-hover[data-v-6959f800]:hover{background:unset}.my-node[data-v-6959f800]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-6959f800]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-6959f800]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg[data-v-6959f800]{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left[data-v-6959f800]{background:#40a9ff}.msg.warning .left[data-v-6959f800]{background:#c8c002}.msg.error .left[data-v-6959f800]{background:red}.msg .left[data-v-6959f800]{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg[data-v-6959f800]{margin:0 .3rem;cursor:pointer}.msg .right[data-v-6959f800]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line[data-v-6959f800]{border-bottom:1px solid #e2e2e2}.my-box[data-v-6959f800]{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;box-sizing:border-box}.my-cell[data-v-6959f800]{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14[data-v-6959f800]{font-size:1.4rem}.switch[data-v-6959f800]{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;border:1px solid #ccc;transition:all .3s}.switch.active[data-v-6959f800]{background:#ccc}.switch.active[data-v-6959f800]:before{right:.2rem;background:white}.switch[data-v-6959f800]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%;background:#ccc}.modal[data-v-6959f800]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-6959f800]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-6959f800]{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0}.modal .mask[data-v-6959f800]{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2[data-v-6959f800]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio[data-v-6959f800]{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio[data-v-6959f800]:first-child{border-left:none}.radio-group2 .active[data-v-6959f800]{background:#e2e2e2;color:gray}.html-wrapper[data-v-6959f800]{position:relative}.html-wrapper .mask[data-v-6959f800]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-6959f800]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%);cursor:pointer}.comment[data-v-55446f68]{width:100%;box-sizing:border-box;margin-top:1rem;background:white}.comment .comment-content-w[data-v-55446f68]{background:white}.comment .comment-content-w .more[data-v-55446f68]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-55446f68]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-55446f68]{cursor:pointer;width:3rem;min-width:3rem;position:relative}.comment .comment-content .expand-line[data-v-55446f68]:after{position:absolute;left:calc(60% - 1px);content:" ";height:100%;width:0;border-right:1px solid #f1f1f1}.comment .comment-content .expand-line[data-v-55446f68]:hover:after{border-right:2px solid #0079D3}.comment .comment-content .right[data-v-55446f68]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-55446f68]{padding-left:1.7rem}.comment .comment-content .right .w .text[data-v-55446f68]{color:#000;word-break:break-word}.comment .comment-content .right .w .warning[data-v-55446f68]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.comment .comment-content .right .w .post-editor-wrapper[data-v-55446f68]{margin-top:1rem}.toolbar[data-v-25defeac]{display:flex;align-items:center;color:#929596}.sticky{position:sticky;bottom:-2px;z-index:2}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.post[data-v-f0c26696]{position:unset!important;background:transparent!important;overflow:unset!important}.post .main[data-v-f0c26696]{background:transparent!important;padding:unset!important;width:100%!important}.post .close-btn[data-v-f0c26696]{display:none}.post-detail[data-v-f0c26696]{text-align:start;position:fixed;z-index:99;left:0;right:0;bottom:0;top:0;background:rgba(46,47,48,.8);overflow:auto;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail.isNight[data-v-f0c26696]{background:rgba(46,47,48,.8)}.post-detail.isNight .main[data-v-f0c26696]{background:#22303f}.post-detail.isNight .main .toolbar-wrapper[data-v-f0c26696]{border-top:unset!important}.post-detail.isNight .main .button.gray[data-v-f0c26696]{background:#18222d!important;border:1px solid #18222d!important}.post-detail.isNight .main .my-box[data-v-f0c26696]{color:#fff;background:#18222d}.post-detail.isNight .main .my-box .title[data-v-f0c26696],.post-detail.isNight .main .my-box .content[data-v-f0c26696]{color:#d1d5d9!important}.post-detail.isNight .main .my-box .base-info[data-v-f0c26696],.post-detail.isNight .main .my-box .content[data-v-f0c26696]{border:1px solid #22303f!important}.post-detail.isNight .main[data-v-f0c26696] .subtle .fade{color:#b2c3d4!important}.post-detail.isNight .main[data-v-f0c26696] .subtle .topic_content{color:#d1d5d9!important}.post-detail.isNight .main .my-cell[data-v-f0c26696]{border-bottom:1px solid #22303f!important}.post-detail.isNight .main[data-v-f0c26696] .comment{background:#18222d}.post-detail.isNight .main[data-v-f0c26696] .comment .expand-line:after{border-right:1px solid #202c39!important}.post-detail.isNight .main[data-v-f0c26696] .comment .expand-line:hover:after{border-right:2px solid #0079D3!important}.post-detail.isNight .main[data-v-f0c26696] .comment .comment-content{background:#18222d!important}.post-detail.isNight .main[data-v-f0c26696] .comment .comment-content .w>.text{color:#d1d5d9!important}.post-detail.isNight .main[data-v-f0c26696] .Author-right .toolbar:hover{background:#18222d!important}.post-detail.isNight .main[data-v-f0c26696] .Author-right .tool{background:#22303f!important}.post-detail.isNight .main[data-v-f0c26696] .point svg:hover{background:#22303f}.post-detail.isNight .main[data-v-f0c26696] .point .num{color:#d1d5d9!important}.post-detail.isNight .main[data-v-f0c26696] .floor{background:#393f4e!important;color:#d1d5d9!important}.post-detail.isNight .main .editor-wrapper[data-v-f0c26696]{background:#393f4e!important}.post-detail.isNight .main[data-v-f0c26696] .post-editor-wrapper .post-editor{background:#18222d;border:transparent;color:#fff}.post-detail.isNight .main[data-v-f0c26696] .post-editor-wrapper .toolbar{background:#393f4e!important}.post-detail.isNight .main .call-list[data-v-f0c26696]{background:#22303f}.post-detail.isNight .main .call-list .call-item[data-v-f0c26696]{border-top:1px solid #18222d}.post-detail.isNight .main .call-list .call-item .select[data-v-f0c26696],.post-detail.isNight .main .call-list .call-item[data-v-f0c26696]:hover,.post-detail.isNight .main .call-list .call-item.select[data-v-f0c26696]{background-color:#393f4e;text-decoration:none}.post-detail .main[data-v-f0c26696]{display:flex;justify-content:flex-end;padding:3rem 8rem 15rem;background:#e2e2e2;position:relative}.post-detail .main .main-wrapper[data-v-f0c26696]{width:77rem;padding-bottom:2rem;display:flex;flex-direction:column;align-items:center}.post-detail .main .main-wrapper .post-wrapper .toolbar-wrapper[data-v-f0c26696]{border-top:1px solid #e2e2e2;height:4rem;padding-left:.6rem;display:flex;align-items:center}.post-detail .main .main-wrapper .editor-wrapper .float[data-v-f0c26696]{margin-right:2rem}.post-detail .main .main-wrapper .editor-wrapper .w[data-v-f0c26696]{padding:1.2rem}.post-detail .main .main-wrapper .comment-wrapper .comments[data-v-f0c26696]{width:100%;box-sizing:border-box}.post-detail .main .main-wrapper .loading-wrapper[data-v-f0c26696]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .main .main-wrapper #no-comments-yet[data-v-f0c26696]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .main .call-list[data-v-f0c26696]{z-index:9;position:absolute;top:12rem;border:1px solid #ccc;background-color:#fff;box-shadow:0 5px 15px #0000001a;overflow:hidden;max-height:30rem;min-width:8rem;box-sizing:content-box}.post-detail .main .call-list .call-item[data-v-f0c26696]{border-top:1px solid #ccc;height:3rem;display:flex;padding:0 1rem;align-items:center;cursor:pointer;font-size:14px;box-sizing:border-box}.post-detail .main .call-list .call-item .select[data-v-f0c26696],.post-detail .main .call-list .call-item[data-v-f0c26696]:hover,.post-detail .main .call-list .call-item.select[data-v-f0c26696]{background-color:#f0f0f0;text-decoration:none}.post-detail .main .call-list .call-item[data-v-f0c26696]:nth-child(1){border-top:1px solid transparent}@media screen and (max-width: 1500px){.post-detail .main-wrapper[data-v-f0c26696]{width:65vw!important}}@media screen and (max-width: 1280px){.post-detail .main-wrapper[data-v-f0c26696]{width:75vw!important}}.post-detail .scroll-top[data-v-f0c26696]{position:fixed;bottom:10rem;z-index:99;padding:.8rem 1.4rem;transform:translate(6rem);font-size:2rem}.post-detail .close-btn[data-v-f0c26696]{color:#b6b6b6;cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2rem}p:first-child{margin-top:0}p:last-child{margin-bottom:0}.post[data-v-71df4ceb]{font-size:1.4rem;background:white;text-align:start;padding:1rem;overflow:hidden}.post.isNight[data-v-71df4ceb]{background:#18222d;border:none!important}.post.isNight .title a[data-v-71df4ceb]{color:#a9bcd6!important}.post.isNight .bottom .date[data-v-71df4ceb]{color:#738292}.post.isNight .post-content-wrapper[data-v-71df4ceb]{color:#d1d5d9!important}.post.isNight .my-node[data-v-71df4ceb]{background:#393f4e;color:#9caec7}.post.isNight .my-node[data-v-71df4ceb]:hover{background:#9caec7;color:#001d25}.post.isNight .count[data-v-71df4ceb]{background:#393f4e!important;color:#d1d5d9!important}.post.isNight.visited .count[data-v-71df4ceb]{background:#001d25!important;color:#393f4e!important}.post.isNight.visited .title a[data-v-71df4ceb]{color:#393f4e!important}.post.isNight.visited .post-content-wrapper[data-v-71df4ceb]{color:#576077!important}.post.table[data-v-71df4ceb]{border-bottom:1px solid #e2e2e2}.post.table .post-content-wrapper[data-v-71df4ceb]{display:none}.post.table .title a[data-v-71df4ceb]{color:#778087;font-size:1.6rem}.post.card[data-v-71df4ceb]{margin-top:1.1rem;border:1px solid #e2e2e2;border-radius:.4rem;cursor:pointer}.post.card[data-v-71df4ceb]:hover{border:1px solid #968b8b}.post.card .title a[data-v-71df4ceb]{color:#000;font-size:1.8rem}.post.visited .title a[data-v-71df4ceb]{color:#afb9c1!important}.post.visited .post-content-wrapper[data-v-71df4ceb]{opacity:.6}.post .base-info[data-v-71df4ceb]{box-sizing:border-box;display:flex;justify-content:space-between;align-items:flex-start}.post .base-info .left[data-v-71df4ceb]{display:flex;width:95%}.post .base-info .left .avatar[data-v-71df4ceb]{margin-right:1rem}.post .base-info .left .avatar img[data-v-71df4ceb]{border-radius:.4rem;width:4.8rem;min-width:4.8rem;min-height:4.8rem}.post .base-info .left .right[data-v-71df4ceb]{display:flex;flex-direction:column;justify-content:space-between}.post .base-info .left .right .title[data-v-71df4ceb]{display:inline;align-items:center}.post .base-info .left .right .bottom[data-v-71df4ceb]{font-size:1.2rem;line-height:1.2rem;display:flex;align-items:center;color:#ccc}.post .base-info .count[data-v-71df4ceb]{margin-top:1.8rem;line-height:12px;font-weight:700;color:#fff;background-color:#aab0c6;display:inline-block;padding:2px 10px;-moz-border-radius:12px;-webkit-border-radius:12px;border-radius:12px;text-decoration:none;cursor:pointer}.post .base-info .count[data-v-71df4ceb]:hover{background-color:#969cb1}.post .post-content-wrapper[data-v-71df4ceb]{max-height:20rem;overflow:hidden;margin-top:.6rem;color:#000;position:relative;line-break:anywhere;font-size:1.4rem}.post .post-content-wrapper.mask[data-v-71df4ceb]{-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent)}.base64_tooltip[data-v-9ed998f0]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:white;min-height:2.2rem;max-width:20rem;padding:.8rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;cursor:pointer;line-break:anywhere;font-size:1.4rem;color:#000}.base64_tooltip svg[data-v-9ed998f0]{margin-left:1rem;min-width:1.8rem}.base64_tooltip .button[data-v-9ed998f0]{margin-top:1rem;margin-left:2rem}.isNight{background:#22303f}.isNight .open-post,.isNight .nav{color:#fff;background:#18222d;border:none}.isNight .setting-modal .wrapper{background:#22303f}.isNight .setting-modal .wrapper .option{color:#000}.isNight .setting-modal .wrapper .option span{color:gray!important}.isNight .tag-modal .wrapper{background:#22303f}.isNight .tag-modal .wrapper .option{color:#fff}.isNight .tag-modal .wrapper .option span{color:gray!important}.isNight .radio-group2{border:1px solid #454847}.isNight .radio-group2 .radio{border-left:1px solid #454847;color:#fff}.isNight .radio-group2 .active{background:#165c94}.isNight .base64_tooltip{background:#22303f;color:#ccc}.app-home{position:relative}.app-home.home,.app-home.recent,.app-home.nodePage{background:#e2e2e2}.page.card{margin-top:1rem}.nav{font-size:1.4rem;background:white;text-align:start;padding:1rem;border:1px solid #e2e2e2}.nav .nav-item{cursor:pointer;display:flex;margin-right:2rem;padding:.6rem;border-radius:.4rem;color:#778087}.nav .nav-item.active{background:#40a9ff;color:#fff}.nav .nav-item.active:hover{background:#40a9ff;opacity:.8}.nav .nav-item:hover{background:#e2e2e2}.nav .nav-item span{margin-left:.4rem}.setting-modal .wrapper{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem 6rem 4rem;width:45rem}.setting-modal .wrapper .sub-title{color:gray;font-size:1.4rem;margin-bottom:4rem}.setting-modal .wrapper .notice{font-size:12px;padding-left:3rem;text-align:left}.setting-modal .wrapper .notice a{color:#00f}.setting-modal .wrapper .jieshao{margin-top:2rem;font-size:15px;font-weight:700;color:red;display:flex;justify-content:flex-start;line-break:anywhere;text-align:left}.tag-modal .wrapper{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem 6rem 4rem;width:25rem}.tag-modal .wrapper input{margin-bottom:3rem;width:100%;height:3rem;outline:unset;border:1px solid #e1e1e1;padding:0 .5rem;border-radius:5px;box-sizing:border-box}.tag-modal .wrapper .btns{display:flex;justify-content:flex-end;gap:1rem}
+
 
     `
   let addStyle = document.createElement("style");
@@ -31,7 +33,10 @@
   addStyle.innerHTML = style
   document.head.append(addStyle)
 
-  setTimeout(function () {
+
+  function runVueCode() {
+    setTimeout(function () {
+
 
     (function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))r(o);new MutationObserver(o=>{for(const n of o)if(n.type==="childList")for(const u of n.addedNodes)u.tagName==="LINK"&&u.rel==="modulepreload"&&r(u)}).observe(document,{childList:!0,subtree:!0});function s(o){const n={};return o.integrity&&(n.integrity=o.integrity),o.referrerPolicy&&(n.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?n.credentials="include":o.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function r(o){if(o.ep)return;o.ep=!0;const n=s(o);fetch(o.href,n)}})();const a={eventMap:new Map,on(t,e){let s=this.eventMap.get(t);s?s.push(e):s=[e],this.eventMap.set(t,s)},emit(t,e){let s=this.eventMap.get(t);s&&s.map(r=>r(e))},off(t){this.eventMap.has(t)&&this.eventMap.delete(t)},clear(){this.eventMap=new Map}},c={SHOW_TOOLTIP:"SHOW_TOOLTIP",SHOW_MSG:"SHOW_MSG",SET_CALL:"SET_CALL",SHOW_CALL:"SHOW_CALL",REFRESH_ONCE:"REFRESH_ONCE",ADD_REPLY:"ADD_REPLY",IGNORE:"IGNORE",MERGE:"MERGE",REMOVE:"REMOVE",CHANGE_COMMENT_THANK:"CHANGE_COMMENT_THANK",CHANGE_POST_THANK:"CHANGE_POST_THANK",ADD_TAG:"ADD_TAG",REMOVE_TAG:"REMOVE_TAG"};const y=(t,e)=>{const s=t.__vccOpts||t;for(const[r,o]of e)s[r]=o;return s},X={name:"Point",inject:["post","isLogin"],props:{item:{type:Object,default(){return{}}},full:{type:Boolean,default(){return!0}},apiUrl:""},computed:{disabled(){return this.item.username===window.user.username||this.item.isThanked}},methods:{getColor(){return this.item.isThanked||this.full?"#ff4500":"#929596"},getIsFull(){return this.item.isThanked||this.full?"#ff4500":"none"},async thank(){if(!this.isLogin)return a.emit(c.SHOW_MSG,{type:"warning",text:"请先登录！"});if(this.item.username===window.user.username)return a.emit(c.SHOW_MSG,{type:"warning",text:"不能感谢自己"});if(this.item.isThanked)return a.emit(c.SHOW_MSG,{type:"warning",text:"已经感谢过了"});if(confirm(`确认花费 10 个铜币向 @${this.item.username} 的这条回复发送感谢？`)){this.$emit("addThank");let t=`${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`;$.post(t).then(e=>{console.log("感谢",e),e.success||(this.$emit("recallThank"),a.emit(c.SHOW_MSG,{type:"error",text:e.message})),a.emit(c.REFRESH_ONCE,e.once)},e=>{this.$emit("recallThank"),a.emit(c.SHOW_MSG,{type:"error",text:"感谢失败"}),a.emit(c.REFRESH_ONCE)})}}}},Y={class:"point"},J=["fill","stroke"],Q={class:"num"};function ee(t,e,s,r,o,n){return Vue.openBlock(),Vue.createElementBlock("div",Y,[Vue.createElementVNode("div",{class:"up",onClick:e[0]||(e[0]=Vue.withModifiers((...u)=>n.thank&&n.thank(...u),["stop"]))},[(Vue.openBlock(),Vue.createElementBlock("svg",{class:Vue.normalizeClass({disabled:n.disabled}),width:"19",height:"19",viewBox:"0 0 48 48",fill:"none",xmlns:"http://www.w3.org/2000/svg"},[Vue.createElementVNode("path",{d:"M15 8C8.92487 8 4 12.9249 4 19C4 30 17 40 24 42.3262C31 40 44 30 44 19C44 12.9249 39.0751 8 33 8C29.2797 8 25.9907 9.8469 24 12.6738C22.0093 9.8469 18.7203 8 15 8Z",fill:n.getIsFull(),stroke:n.getColor(),"stroke-width":"2","stroke-linecap":"round","stroke-linejoin":"round"},null,8,J)],2))]),Vue.createElementVNode("div",Q,Vue.toDisplayString(s.item.thankCount?s.item.thankCount:"感谢"),1)])}const M=y(X,[["render",ee],["__scopeId","data-v-3d4ad43b"]]);const te={name:"Author",components:{Point:M},inject:["isDev","isLogin","tags","config"],props:{modelValue:!1,comment:{type:Object,default(){return{}}}},computed:{pointInfo(){return{isThanked:this.comment.isThanked,thankCount:this.comment.thankCount,username:this.comment.username}},myTags(){return this.tags[this.comment.username]??[]}},methods:{addTag(){a.emit(c.ADD_TAG,this.comment.username)},removeTag(t){a.emit(c.REMOVE_TAG,{username:this.comment.username,tag:t})},hide(){confirm("确认隐藏这条回复？")&&this.$emit("hide")},checkIsLogin(t=""){return this.isLogin?(this.$emit(t),!0):(a.emit(c.SHOW_MSG,{type:"warning",text:"请先登录！"}),!1)},addThank(){a.emit(c.CHANGE_COMMENT_THANK,{id:this.comment.id,type:"add"})},recallThank(){a.emit(c.CHANGE_COMMENT_THANK,{id:this.comment.id,type:"recall"})}}},x=t=>(Vue.pushScopeId("data-v-3c4615fc"),t=t(),Vue.popScopeId(),t),oe={class:"Author-left"},ne=x(()=>Vue.createElementVNode("path",{d:"M22 42H6V26",stroke:"#177EC9","stroke-width":"4","stroke-linecap":"round","stroke-linejoin":"round"},null,-1)),se=x(()=>Vue.createElementVNode("path",{d:"M26 6H42V22",stroke:"#177EC9","stroke-width":"4","stroke-linecap":"round","stroke-linejoin":"round"},null,-1)),le=[ne,se],ie=["href"],re=["src"],ae={class:"texts"},ce=["href"],ue={key:0,class:"op"},de={key:1,class:"mod"},me={class:"ago"},pe={class:"my-tag"},he=x(()=>Vue.createElementVNode("i",{class:"fa fa-tag"},null,-1)),Ve=["onClick"],fe={class:"Author-right"},ge={key:0,class:"toolbar"},ve=x(()=>Vue.createElementVNode("span",null,"隐藏",-1)),_e=[ve],we=Vue.createStaticVNode('<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" data-v-3c4615fc><path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-v-3c4615fc></path><path d="M23 21H25.0025" stroke="#929596" stroke-width="2" stroke-linecap="round" data-v-3c4615fc></path><path d="M33.001 21H34.9999" stroke="#929596" stroke-width="2" stroke-linecap="round" data-v-3c4615fc></path><path d="M13.001 21H14.9999" stroke="#929596" stroke-width="2" stroke-linecap="round" data-v-3c4615fc></path></svg><span data-v-3c4615fc>回复</span>',2),ke=[we];function ye(t,e,s,r,o,n){const u=Vue.resolveComponent("Point");return Vue.openBlock(),Vue.createElementBlock("div",{class:Vue.normalizeClass(["Author",{expand:!s.modelValue}])},[Vue.createElementVNode("div",oe,[s.modelValue?Vue.createCommentVNode("",!0):(Vue.openBlock(),Vue.createElementBlock("svg",{key:0,class:"expand-icon",onClick:e[0]||(e[0]=m=>t.$emit("update:modelValue",!0)),width:"24",height:"24",viewBox:"0 0 48 48",fill:"none",xmlns:"http://www.w3.org/2000/svg"},le)),Vue.createElementVNode("a",{class:"icon",href:`/member/${s.comment.username}`},[Vue.createElementVNode("img",{src:s.comment.avatar,alt:""},null,8,re)],8,ie),Vue.createElementVNode("span",ae,[Vue.createElementVNode("strong",null,[Vue.createElementVNode("a",{href:`/member/${s.comment.username}`,class:"username"},Vue.toDisplayString(s.comment.username),9,ce)]),s.comment.isOp?(Vue.openBlock(),Vue.createElementBlock("div",ue,"OP")):Vue.createCommentVNode("",!0),s.comment.isMod?(Vue.openBlock(),Vue.createElementBlock("div",de,"MOD")):Vue.createCommentVNode("",!0),Vue.createElementVNode("span",me,Vue.toDisplayString(s.comment.date),1),n.isLogin&&n.config.openTag?(Vue.openBlock(),Vue.createElementBlock(Vue.Fragment,{key:2},[(Vue.openBlock(!0),Vue.createElementBlock(Vue.Fragment,null,Vue.renderList(n.myTags,m=>(Vue.openBlock(),Vue.createElementBlock("span",pe,[he,Vue.createElementVNode("span",null,Vue.toDisplayString(m),1),Vue.createElementVNode("i",{class:"fa fa-trash-o remove",onClick:h=>n.removeTag(m)},null,8,Ve)]))),256)),Vue.createElementVNode("span",{class:"add-tag ago",onClick:e[1]||(e[1]=(...m)=>n.addTag&&n.addTag(...m)),title:"添加标签"},"+")],64)):Vue.createCommentVNode("",!0)])]),Vue.createElementVNode("div",fe,[n.isLogin?(Vue.openBlock(),Vue.createElementBlock("div",ge,[Vue.createElementVNode("div",{class:"tool",onClick:e[2]||(e[2]=(...m)=>n.hide&&n.hide(...m))},_e),Vue.createElementVNode("div",{class:"tool",onClick:e[3]||(e[3]=m=>n.checkIsLogin("reply"))},ke),s.comment.thankCount?Vue.createCommentVNode("",!0):(Vue.openBlock(),Vue.createBlock(u,{key:0,item:n.pointInfo,onAddThank:n.addThank,onRecallThank:n.recallThank,"api-url":"reply/"+s.comment.id},null,8,["item","onAddThank","onRecallThank","api-url"]))])):Vue.createCommentVNode("",!0),s.comment.thankCount?(Vue.openBlock(),Vue.createBlock(u,{key:1,item:n.pointInfo,onAddThank:n.addThank,onRecallThank:n.recallThank,"api-url":"reply/"+s.comment.id},null,8,["item","onAddThank","onRecallThank","api-url"])):Vue.createCommentVNode("",!0),Vue.createElementVNode("div",{class:Vue.normalizeClass(["floor",{isDev:n.isDev}])},Vue.toDisplayString((n.isDev?"a":"")+s.comment.floor),3)])],2)}const Ee=y(te,[["render",ye],["__scopeId","data-v-3c4615fc"]]);const Ce=t=>(Vue.pushScopeId("data-v-9afb34da"),t=t(),Vue.popScopeId(),t),Ne={class:"get-cursor"},Te=["innerHTML"],xe={class:"toolbar"},Se=Ce(()=>Vue.createElementVNode("span",null,"请尽量让自己的回复能够对别人有帮助",-1)),Be={__name:"PostEditor",props:{replyUser:null,replyFloor:null,useType:{type:String,default(){return"reply-comment"}}},emits:["close"],setup(t,{expose:e,emit:s}){const r=t,{replyUser:o,replyFloor:n,useType:u}=r,m=o?`@${o} #${n} `:"",h=Vue.inject("post");Vue.inject("show"),Vue.inject("pageType");const i=Vue.inject("allReplyUsers");let d=Vue.ref(!1);const l=Vue.ref(!1),v=Vue.ref("editorId_"+Date.now()),p=Vue.ref(m),k=Vue.ref(null),L=Vue.ref(null),W=Vue.ref('<span style="white-space:pre-wrap;"> </span>');e({content:p});const z=Vue.computed(()=>[u,d.value?"isFocus":""]),j=Vue.computed(()=>{var V;if(!k.value||!p.value)return"";let _=((V=k.value)==null?void 0:V.selectionStart)||0;return p.value.substring(0,_).replace(/</g,"<").replace(/>/g,">").replace(/\n/g,"<br/>").replace(/\s/g,W.value)}),O=Vue.computed(()=>p.value?p.value===m:!0);async function F(){if(O.value||l.value)return;l.value=!0;let _={thankCount:0,isThanked:!1,isOp:h.value.username===window.user.username,id:Date.now(),username:window.user.username,avatar:window.user.avatar,date:"几秒前",floor:h.value.replyCount+1,reply_content:p.value||Date.now(),children:[],replyUsers:o?[o]:[],replyFloor:n||-1},V=p.value.match(/@([\w]+?[\s])/g);V&&V.map(g=>{let f=g.replace("@","").replace(" ","");_.reply_content=_.reply_content.replace(f,`<a href="/member/${f}">${f}</a>`)});let w=`${window.baseUrl}/t/${h.value.id}`;$.post(w,{content:p.value,once:h.value.once}).then(g=>{l.value=!1;let f=g.search("你上一条回复的内容和这条相同");if(f>-1)return a.emit(c.SHOW_MSG,{type:"error",text:"你上一条回复的内容和这条相同"});if(f=g.search("请不要在每一个回复中都包括外链，这看起来像是在 spamming"),f>-1)return a.emit(c.SHOW_MSG,{type:"error",text:"请不要在每一个回复中都包括外链，这看起来像是在 spamming"});if(f=g.search("你上一条回复的内容和这条相同"),f>-1)return a.emit(c.SHOW_MSG,{type:"error",text:"你上一条回复的内容和这条相同"});if(g.search("创建新回复")>-1)return a.emit(c.REFRESH_ONCE,g),a.emit(c.SHOW_MSG,{type:"error",text:"回复失败"});p.value=m,s("close"),a.emit(c.REFRESH_ONCE,g),a.emit(c.SHOW_MSG,{type:"success",text:"回复成功"}),console.log("item",_),a.emit(c.ADD_REPLY,_)},g=>{l.value=!1,a.emit(c.SHOW_MSG,{type:"error",text:"回复失败"})})}function E(){a.emit(c.SHOW_CALL,{show:!1}),a.off(c.SET_CALL)}function H(){k.value.style.height=0,k.value.style.height=k.value.scrollHeight+"px"}function N(_){let V=L.value.getBoundingClientRect();a.emit(c.SHOW_CALL,{show:!0,top:V.top,left:V.left,text:_}),a.off(c.SET_CALL),a.on(c.SET_CALL,w=>{let g=k.value.selectionStart,f=p.value.slice(0,g),b=p.value.slice(g,p.value.length),Z=f.lastIndexOf("@");f=p.value.slice(0,Z+1),w==="管理员"&&(w="Livid @Kai @Olivia @GordianZ @sparanoid",setTimeout(H)),w==="所有人"&&(w=i.value.map((R,q)=>q?"@"+R:R).join(" "),setTimeout(H)),p.value=f+w+" "+b;let D=f.length+w.length+1;setTimeout(()=>{k.value.setSelectionRange(D,D)}),a.off(c.SET_CALL)})}function U(_){switch(_.keyCode){case 8:p.value==="@"&&E();break;case 37:case 38:case 39:case 40:setTimeout(()=>I({data:""}),100);break;case 27:return _.preventDefault(),_.stopPropagation(),_.stopImmediatePropagation(),!1}}function I(_){let V=k.value.selectionStart;if(p.value){if(_.data===" ")return E();if(_.data==="@"){if(p.value.length!==1){if(p.value[V-2]===" "||p.value[V-2]===`
     `)return N("")}else return N("");E()}else{let w=p.value.slice(0,V),g=w.lastIndexOf("@");if(g===-1)return E();let f=w.slice(g,V);if(f.includes(" "))E();else{if(g===0)return N(f.replace("@",""));if(p.value.length!==1){if(p.value[g-1]===" "||p.value[g-1]===`
@@ -71,1033 +76,1050 @@
                 `;l.headerTemplate=v}return this.getPostDetail(l),t.preventDefault(),!0}if(this.config.newTabOpen){let d="a_blank_"+Date.now(),l=win().doc.createElement("a");return l.setAttribute("href",s),l.setAttribute("target","_blank"),l.setAttribute("id",d),win().doc.getElementById(d)||win().doc.body.appendChild(l),l.click(),!0}}},showPost(){this.show=!0,$("#Wrapper #Main .box:lt(3)").each(function(){$(this).hide()})},async addTag(){let t=this.clone(this.tags),e=this.tags[this.tagModal.currentUsername]??[];if(e.findIndex(o=>o===this.tagModal.tag)>-1){a.emit(c.SHOW_MSG,{type:"warning",text:"标签已存在！"});return}else e.push(this.tagModal.tag);this.tags[this.tagModal.currentUsername]=e,this.tagModal.tag="",this.tagModal.show=!1;let r=await window.parse.saveTags(this.tags);return r||(a.emit(c.SHOW_MSG,{type:"error",text:"标签添加失败！"}),this.tags=t),console.log("res",r),console.log(this.tags)},async winCb({type:t,value:e}){t==="openSetting"&&(this.showConfig=!0),t==="postContent"&&(this.current=Object.assign(this.clone(this.current),this.clone(e)),this.config.autoOpenDetail&&this.showPost()),t==="postReplies"&&(this.current=Object.assign(this.clone(this.current),this.clone(e)),console.log("当前帖子",this.current),this.loading=!1),t==="syncData"&&(this.list=window.postList,this.config=window.config,this.tags=window.user.tags)},clone(t){return window.clone(t)},initEvent(){a.on(c.CHANGE_COMMENT_THANK,t=>{const{id:e,type:s}=t;let r=this.current.replies.findIndex(o=>o.id===e);r>-1&&(this.current.replies[r].isThanked=s==="add",s==="add"?this.current.replies[r].thankCount++:this.current.replies[r].thankCount--)}),a.on(c.CHANGE_POST_THANK,t=>{const{id:e,type:s}=t;this.current.isThanked=s==="add",s==="add"?this.current.thankCount++:this.current.thankCount--;let r=this.list.findIndex(o=>o.id===e);r>-1&&(this.list[r].isThanked=s==="add",s==="add"?this.list[r].thankCount++:this.list[r].thankCount++)}),a.on(c.REMOVE,t=>{let e=this.current.replies.findIndex(r=>r.floor===t);e>-1&&this.current.replies.splice(e,1);let s=this.list.findIndex(r=>r.id===this.current.id);s>-1&&(this.list[s]=Object.assign(this.list[s],t))}),a.on(c.SHOW_MSG,t=>{this.msgList.push({...t,id:Date.now()})}),a.on(c.IGNORE,()=>{this.show=!1;let t=this.list.findIndex(e=>e.id===this.current.id);t>-1&&this.list.splice(t,1),this.current=this.clone(window.initPost)}),a.on(c.MERGE,t=>{this.current=Object.assign(this.current,t);let e=this.list.findIndex(s=>s.id===this.current.id);e>-1&&(this.list[e]=Object.assign(this.list[e],t))}),a.on(c.ADD_REPLY,t=>{this.current.replies.push(t)}),a.on(c.REFRESH_ONCE,async t=>{if(t){if(typeof t=="string"){let e=t.match(/var once = "([\d]+)";/);if(e&&e[1]){this.current.once=Number(e[1]);return}}if(typeof t=="number"){this.current.once=t;return}}window.win().fetchOnce().then(e=>{this.current.once=e})}),a.on(c.ADD_TAG,t=>{console.log("use",t),this.tagModal.currentUsername=t,this.tagModal.show=!0}),a.on(c.REMOVE_TAG,async({username:t,tag:e})=>{let s=this.clone(this.tags),r=this.tags[t]??[],o=r.findIndex(u=>u===e);o>-1&&r.splice(o,1),this.tags[t]=r,await window.parse.saveTags(this.tags)||(a.emit(c.SHOW_MSG,{type:"error",text:"标签删除失败！"}),this.tags=s)})},removeMsg(t){let e=this.msgList.findIndex(s=>s.id===t);e>-1&&this.msgList.splice(e,1)},async getPostDetail(t,e){this.show=!0,console.log("window.baseUrl",window.baseUrl);let s=window.baseUrl+"/t/"+t.id;window.win().doc.body.style.overflow="hidden",window.win().history.pushState({},0,t.href??s),this.current=Object.assign(this.clone(window.initPost),this.clone(t)),this.current.replies.length||(this.loading=!0);let r=await window.win().fetch(s+"?p=1");if(r.status===404)return a.emit(c.SHOW_MSG,{type:"error",text:"主题未找到"}),this.loading=!1;if(r.redirected)return a.emit(c.SHOW_MSG,{type:"error",text:"没有权限"}),this.loading=!1;let o=await r.text();if(o.search("你要查看的页面需要先登录")>-1)return a.emit(c.SHOW_MSG,{type:"error",text:"你要查看的页面需要先登录"}),this.loading=!1;let u=o.match(/<body[^>]*>([\s\S]+?)<\/body>/g),m=$(u[0]);if(this.current=await window.parse.getPostDetail(this.current,m,o),this.current.replies.length){let h=this.list.findIndex(i=>i.id==t.id);h>-1?(this.list[h].replies=this.current.replies,this.list[h].nestedReplies=this.current.nestedReplies,this.list[h].once=this.current.once,this.list[h].createDate=this.current.createDate):this.list.push(this.clone(this.current))}this.loading=!1,console.log("当前帖子",this.current)}}},ao={key:0,class:"nav flex flex-end"},co=Vue.createElementVNode("span",null,"设置",-1),uo=[co],mo={class:"radio-group2"},po={key:1,class:"my-box flex f14 open-post",style:{margin:"1rem 0 0 0",padding:"1rem"}},ho={class:"flex"},Vo={class:"msgs"},fo={key:1,class:"setting-modal modal"},go={class:"wrapper"},vo=Vue.createElementVNode("div",{class:"title"}," 脚本设置 ",-1),_o=Vue.createElementVNode("div",{class:"sub-title"}," 设置自动保存到本地，下次打开依然生效 ",-1),wo={class:"option"},ko=Vue.createElementVNode("span",null,"显示工具栏：",-1),yo=Vue.createElementVNode("div",{class:"notice"},[Vue.createElementVNode("div",null," 关闭此选项后，页面上所有的脚本工具栏和按钮，均不显示。 "),Vue.createElementVNode("div",null," 点击右上角插件“Tampermonkey”，找到“V2EX - 超级增强”脚本，找到“脚本设置”选项，点击可再次打开本弹框修改设置 ")],-1),Eo={class:"option"},Co=Vue.createElementVNode("span",null,"列表帖子展示方式：",-1),No={class:"radio-group2"},To={class:"option"},xo=Vue.createElementVNode("span",null,"回复展示方式：",-1),So={class:"radio-group2"},Bo={class:"option"},bo=Vue.createElementVNode("span",null,"用户打标签：",-1),Mo={class:"option"},Lo=Vue.createElementVNode("span",null,"单独打开帖子时默认显示楼中楼 ：",-1),Oo=Vue.createElementVNode("div",{class:"notice"}," 单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼 ",-1),Ho={class:"option"},Io=Vue.createElementVNode("span",null,"点击列表的帖子，打开详情弹框 ：",-1),Do=Vue.createElementVNode("div",{class:"notice"}," 若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页 ",-1),Ro={class:"option"},Ao=Vue.createElementVNode("span",null,"新标签页打开链接 ：",-1),Po={class:"option"},Go=Vue.createElementVNode("span",null,"点击左右两侧透明处关闭帖子详情弹框：",-1),Wo={class:"option"},zo=Vue.createElementVNode("span",null,"正文超长自动折叠：",-1),jo={class:"option"},Fo=Vue.createElementVNode("span",null,"列表hover时显示预览按钮：",-1),Uo=Vue.createElementVNode("div",{class:"notice"}," 此项需要刷新页面才能生效 ",-1),$o={class:"option"},Ko=Vue.createElementVNode("span",null,"划词显示Base64解码框：",-1),Zo={class:"option"},qo=Vue.createElementVNode("span",null,"使用 SOV2EX 搜索：",-1),Xo=Vue.createElementVNode("div",{class:"notice"}," 此项需要刷新页面才能生效 ",-1),Yo={class:"option"},Jo=Vue.createElementVNode("span",null,"帖子宽度：",-1),Qo=Vue.createElementVNode("div",{class:"notice"},[Vue.createTextVNode(" 默认为77rem。接受合法的width值： "),Vue.createElementVNode("a",{href:"https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D",target:"_blank"},"rem、px、vw、vh"),Vue.createTextVNode("。 vw代表屏幕百分比，如想要屏幕的66%，请填写66vw ")],-1),en=Vue.createElementVNode("div",{class:"notice"}," 提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解 ",-1),tn=Vue.createElementVNode("div",{class:"jieshao"},null,-1),on={key:2,class:"tag-modal modal"},nn={class:"wrapper"},sn=Vue.createElementVNode("div",{class:"title"}," 添加标签 ",-1),ln={class:"option"},rn=Vue.createElementVNode("span",null,"用户：",-1),an={class:"btns"};function cn(t,e,s,r,o,n){const u=Vue.resolveComponent("PostDetail"),m=Vue.resolveComponent("Msg"),h=Vue.resolveComponent("Base64Tooltip");return Vue.openBlock(),Vue.createElementBlock("div",{class:Vue.normalizeClass(["app-home",[o.pageType,o.isNight?"isNight":""]])},[o.config.showToolbar?(Vue.openBlock(),Vue.createElementBlock(Vue.Fragment,{key:0},[n.isList?(Vue.openBlock(),Vue.createElementBlock("div",ao,[Vue.createElementVNode("div",{class:"nav-item",onClick:e[0]||(e[0]=i=>o.showConfig=!0)},uo),Vue.createElementVNode("div",mo,[Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.viewType==="table"?"active":""]),onClick:e[1]||(e[1]=i=>o.config.viewType="table")},"表格 ",2),Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.viewType==="card"?"active":""]),onClick:e[2]||(e[2]=i=>o.config.viewType="card")},"卡片 ",2)])])):Vue.createCommentVNode("",!0),o.pageType==="post"&&!o.show?(Vue.openBlock(),Vue.createElementBlock("div",po,[Vue.createElementVNode("div",ho,[Vue.createTextVNode(" 默认显示楼中楼 ： "),Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.autoOpenDetail}]),onClick:e[3]||(e[3]=i=>o.config.autoOpenDetail=!o.config.autoOpenDetail)},null,2)]),Vue.createElementVNode("div",{class:Vue.normalizeClass(["button gray",{loading:o.loading}]),onClick:e[4]||(e[4]=(...i)=>n.showPost&&n.showPost(...i))}," 点击显示楼中楼 ",2)])):Vue.createCommentVNode("",!0)],64)):Vue.createCommentVNode("",!0),Vue.createVNode(u,{modelValue:o.show,"onUpdate:modelValue":e[5]||(e[5]=i=>o.show=i),isNight:o.isNight,displayType:o.config.commentDisplayType,"onUpdate:displayType":e[6]||(e[6]=i=>o.config.commentDisplayType=i),loading:o.loading},null,8,["modelValue","isNight","displayType","loading"]),Vue.createElementVNode("div",Vo,[(Vue.openBlock(!0),Vue.createElementBlock(Vue.Fragment,null,Vue.renderList(o.msgList,i=>(Vue.openBlock(),Vue.createBlock(m,{key:i.id,type:i.type,text:i.text,onClose:d=>n.removeMsg(i.id)},null,8,["type","text","onClose"]))),128))]),Vue.createVNode(h),o.showConfig?(Vue.openBlock(),Vue.createElementBlock("div",fo,[Vue.createElementVNode("div",{class:"mask",onClick:e[7]||(e[7]=i=>o.showConfig=!o.showConfig)}),Vue.createElementVNode("div",go,[vo,_o,Vue.createElementVNode("div",wo,[ko,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.showToolbar}]),onClick:e[8]||(e[8]=i=>o.config.showToolbar=!o.config.showToolbar)},null,2)]),yo,Vue.createElementVNode("div",Eo,[Co,Vue.createElementVNode("div",No,[Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.viewType==="table"?"active":""]),onClick:e[9]||(e[9]=i=>o.config.viewType="table")},"表格 ",2),Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.viewType==="card"?"active":""]),onClick:e[10]||(e[10]=i=>o.config.viewType="card")},"卡片 ",2)])]),Vue.createElementVNode("div",To,[xo,Vue.createElementVNode("div",So,[Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.commentDisplayType===0?"active":""]),onClick:e[11]||(e[11]=i=>o.config.commentDisplayType=0)},"楼中楼 ",2),Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.commentDisplayType===1?"active":""]),onClick:e[12]||(e[12]=i=>o.config.commentDisplayType=1)},"感谢最多 ",2),Vue.createElementVNode("div",{class:Vue.normalizeClass(["radio",o.config.commentDisplayType===2?"active":""]),onClick:e[13]||(e[13]=i=>o.config.commentDisplayType=2)},"V2原版 ",2)])]),Vue.createElementVNode("div",Bo,[bo,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.openTag}]),onClick:e[14]||(e[14]=i=>o.config.openTag=!o.config.openTag)},null,2)]),Vue.createElementVNode("div",Mo,[Lo,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.autoOpenDetail}]),onClick:e[15]||(e[15]=i=>o.config.autoOpenDetail=!o.config.autoOpenDetail)},null,2)]),Oo,Vue.createElementVNode("div",Ho,[Io,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.clickPostItemOpenDetail}]),onClick:e[16]||(e[16]=i=>o.config.clickPostItemOpenDetail=!o.config.clickPostItemOpenDetail)},null,2)]),Do,Vue.createElementVNode("div",Ro,[Ao,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.newTabOpen}]),onClick:e[17]||(e[17]=i=>{o.config.newTabOpen=!o.config.newTabOpen,o.config.clickPostItemOpenDetail=!o.config.newTabOpen})},null,2)]),Vue.createElementVNode("div",Po,[Go,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.closePostDetailBySpace}]),onClick:e[18]||(e[18]=i=>o.config.closePostDetailBySpace=!o.config.closePostDetailBySpace)},null,2)]),Vue.createElementVNode("div",Wo,[zo,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.contentAutoCollapse}]),onClick:e[19]||(e[19]=i=>o.config.contentAutoCollapse=!o.config.contentAutoCollapse)},null,2)]),Vue.createElementVNode("div",jo,[Fo,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.showPreviewBtn}]),onClick:e[20]||(e[20]=i=>o.config.showPreviewBtn=!o.config.showPreviewBtn)},null,2)]),Uo,Vue.createElementVNode("div",$o,[Ko,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.base64}]),onClick:e[21]||(e[21]=i=>o.config.base64=!o.config.base64)},null,2)]),Vue.createElementVNode("div",Zo,[qo,Vue.createElementVNode("div",{class:Vue.normalizeClass(["switch",{active:o.config.sov2ex}]),onClick:e[22]||(e[22]=i=>o.config.sov2ex=!o.config.sov2ex)},null,2)]),Xo,Vue.createElementVNode("div",Yo,[Jo,Vue.withDirectives(Vue.createElementVNode("input",{type:"text","onUpdate:modelValue":e[23]||(e[23]=i=>o.config.postWidth=i)},null,512),[[Vue.vModelText,o.config.postWidth]])]),Qo,en,tn])])):Vue.createCommentVNode("",!0),o.tagModal.show?(Vue.openBlock(),Vue.createElementBlock("div",on,[Vue.createElementVNode("div",{class:"mask",onClick:e[24]||(e[24]=Vue.withModifiers(i=>o.tagModal.show=!1,["stop"]))}),Vue.createElementVNode("div",nn,[sn,Vue.createElementVNode("div",ln,[rn,Vue.createElementVNode("div",null,Vue.toDisplayString(o.tagModal.currentUsername),1)]),Vue.withDirectives(Vue.createElementVNode("input",{type:"text",autofocus:"","onUpdate:modelValue":e[25]||(e[25]=i=>o.tagModal.tag=i),onKeydown:e[26]||(e[26]=Vue.withKeys((...i)=>n.addTag&&n.addTag(...i),["enter"]))},null,544),[[Vue.vModelText,o.tagModal.tag]]),Vue.createElementVNode("div",an,[Vue.createElementVNode("div",{class:"button info",onClick:e[27]||(e[27]=i=>o.tagModal.show=!1)},"取消"),Vue.createElementVNode("div",{class:"button",onClick:e[28]||(e[28]=(...i)=>n.addTag&&n.addTag(...i))},"确定")])])])):Vue.createCommentVNode("",!0)],2)}const un=y(ro,[["render",cn]]);let T;window.win().isFrame?T=$("#app",window.win().doc)[0]:T=window.win().query("#app");window.win().vue&&window.win().vue.unmount();let B=Vue.createApp(un);window.win().vue=B;window.win().appNode=T;B.config.unwrapInjectedRef=!0;B.config.errorHandler=(t,e,s)=>{console.error("通过vue errorHandler捕获的错误"),console.error(t),console.error(e),console.error(s)};B.mount(T);
     //# sourceMappingURL=index-c1088e5c.js.map
 
+    })
+  }
 
-  })
+  let VueReady = false
+  try {
+    if (Vue) VueReady = true
+  } catch (e) {
+    console.log('Vue不存在报错', e)
+  }
+
+  if (!VueReady) {
+    let $vue = document.createElement("script");
+    $vue.src = 'https://cdn.jsdelivr.net/npm/vue@3.3.2/dist/vue.runtime.global.prod.js'
+    $vue.addEventListener('load', runVueCode)
+    document.body.appendChild($vue);
+  } else {
+    runVueCode()
+  }
+
+
   const isDev = false
 
-  //这里放index.html里面<script>标签的第18行以后的js内容，复制粘贴到这里
-
-   if (!isDev) {
-      window.onerror = function (message, source, lineno, colno, error) {
-        console.log('捕获到异常：', {message, source, lineno, colno, error});
-      }
-      window.addEventListener("unhandledrejection", function (e) {
-        e.preventDefault()
-        console.log('捕获到异常：', e);
-        return true;
-      });
+if (!isDev) {
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log('捕获到异常：', {message, source, lineno, colno, error});
     }
+    window.addEventListener("unhandledrejection", function (e) {
+      e.preventDefault()
+      console.log('捕获到异常：', e);
+      return true;
+    });
+  }
 
-    if (!window.GM_openInTab) window.GM_openInTab = () => void 0
-    if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
-    if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
-    if (!window.GM_notification) window.GM_notification = () => void 0
+  if (!window.GM_openInTab) window.GM_openInTab = () => void 0
+  if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
+  if (!window.GM_registerMenuCommand) window.GM_registerMenuCommand = () => void 0
+  if (!window.GM_notification) window.GM_notification = () => void 0
 
-    if (window.top !== window.self) {
-      window.win = () => window.top
-      // window.baseUrl = 'https://www.v2ex.com'
-      window.baseUrl = window.top.location.origin
-      window.win().isFrame = true
-      //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
-      window.$ = window.win().$
+  if (window.top !== window.self) {
+    window.win = () => window.top
+    // window.baseUrl = 'https://www.v2ex.com'
+    window.baseUrl = window.top.location.origin
+    window.win().isFrame = true
+    //直接使用v2的jquery，因为v2对jquery作了修改，加了一些header，缺少这些header发送请求会报403
+    window.$ = window.win().$
+  } else {
+    window.win = () => window
+    //这里必须一致。不然会报跨域
+    window.baseUrl = location.origin
+    window.win().isFrame = false
+  }
+
+  window.win().addEventListener('error', (e) => {
+    if (e.target.tagName.toUpperCase() === 'IMG') {
+      let img = e.srcElement;
+      img.onerror = null;
+      let link = img.dataset['originurl'] ?? img.src;
+      if (!link.includes('avatar')) {
+        img.outerHTML = `<a href="${link}">${link}</a>`
+        console.log('捕获到图片加载失败异常：', e);
+      }
     } else {
-      window.win = () => window
-      //这里必须一致。不然会报跨域
-      window.baseUrl = location.origin
-      window.win().isFrame = false
+      console.log('捕获到其他异常：', e);
     }
+  }, true)
 
-    window.win().addEventListener('error', (e) => {
-      if (e.target.tagName.toUpperCase() === 'IMG') {
-        let img = e.srcElement;
-        img.onerror = null;
-        let link = img.dataset['originurl'] ?? img.src;
-        if (!link.includes('avatar')) {
-          img.outerHTML = `<a href="${link}">${link}</a>`
-          console.log('捕获到图片加载失败异常：', e);
-        }
-      } else {
-        console.log('捕获到其他异常：', e);
+  window.initPost = {
+    replies: [],
+    nestedReplies: [],
+    username: '',
+    member: {},
+    node: {},
+    headerTemplate: '',
+    title: '',
+    id: '',
+    type: 'post',
+    once: '',
+    replyCount: 0,
+    clickCount: 0,
+    thankCount: 0,
+    collectCount: 0,
+    isFavorite: false,
+    isIgnore: false,
+    isThanked: false,
+    isReport: false,
+  }
+  window.win().doc = window.win().document
+  window.win().query = (v) => window.win().document.querySelector(v)
+  window.query = (v) => window.win().document.querySelector(v)
+  window.clone = (val) => JSON.parse(JSON.stringify(val))
+  window.user = {
+    tagPrefix: '--用户标签--',
+    tags: {},
+    username: '',
+    avatar: '',
+    tagsId: ''
+  }
+  window.pageType = ''
+  window.pageData = {pageNo: 1}
+  window.config = {
+    showToolbar: true,
+    showPreviewBtn: true,
+    autoOpenDetail: true,
+    openTag: true,//给用户打标签
+    clickPostItemOpenDetail: true,
+    closePostDetailBySpace: true,//点击空白处关闭详情
+    contentAutoCollapse: true,//正文超长自动折叠
+    viewType: 'card',
+    commentDisplayType: 0,
+    newTabOpen: false,//新标签打开
+    base64: true,//base功能
+    sov2ex: false,
+    postWidth: '',
+  }
+  window.isNight = $('.Night').length === 1
+  window.cb = null
+  window.postList = []
+
+  window.parse = {
+    //解析帖子内容
+    async parsePostContent(post = {}, body, htmlText) {
+      let once = htmlText.match(/var once = "([\d]+)";/)
+      // console.log(once)
+      if (once && once[1]) {
+        post.once = once[1]
       }
-    }, true)
 
-    window.initPost = {
-      replies: [],
-      nestedReplies: [],
-      username: '',
-      member: {},
-      node: {},
-      headerTemplate: '',
-      title: '',
-      id: '',
-      type: 'post',
-      once: '',
-      replyCount: 0,
-      clickCount: 0,
-      thankCount: 0,
-      collectCount: 0,
-      isFavorite: false,
-      isIgnore: false,
-      isThanked: false,
-      isReport: false,
-    }
-    window.win().doc = window.win().document
-    window.win().query = (v) => window.win().document.querySelector(v)
-    window.query = (v) => window.win().document.querySelector(v)
-    window.clone = (val) => JSON.parse(JSON.stringify(val))
-    window.user = {
-      tagPrefix: '--用户标签--',
-      tags: {},
-      username: '',
-      avatar: '',
-      tagsId: ''
-    }
-    window.pageType = ''
-    window.pageData = {pageNo: 1}
-    window.config = {
-      showToolbar: true,
-      showPreviewBtn: true,
-      autoOpenDetail: true,
-      openTag: true,//给用户打标签
-      clickPostItemOpenDetail: true,
-      closePostDetailBySpace: true,//点击空白处关闭详情
-      contentAutoCollapse: true,//正文超长自动折叠
-      viewType: 'card',
-      commentDisplayType: 0,
-      newTabOpen: false,//新标签打开
-      base64: true,//base功能
-      sov2ex: false,
-      postWidth: '',
-    }
-    window.isNight = $('.Night').length === 1
-    window.cb = null
-    window.postList = []
+      post.isReport = htmlText.includes('你已对本主题进行了报告')
 
-    window.parse = {
-      //解析帖子内容
-      async parsePostContent(post = {}, body, htmlText) {
-        let once = htmlText.match(/var once = "([\d]+)";/)
-        // console.log(once)
-        if (once && once[1]) {
-          post.once = once[1]
+      let topic_buttons = body.find('.topic_buttons')
+      if (topic_buttons.length) {
+        let favoriteNode = topic_buttons.find('.tb:first')
+        if (favoriteNode.length) {
+          post.isFavorite = favoriteNode[0].innerText === '取消收藏'
+        }
+        let ignoreNode = topic_buttons.find('.tb:nth-child(3)')
+        if (ignoreNode.length) {
+          post.isIgnore = ignoreNode[0].innerText === '取消忽略'
+        }
+        //
+        let thankNode = topic_buttons.find('#topic_thank .tb')
+        if (!thankNode.length) {
+          post.isThanked = true
         }
 
-        post.isReport = htmlText.includes('你已对本主题进行了报告')
-
-        let topic_buttons = body.find('.topic_buttons')
-        if (topic_buttons.length) {
-          let favoriteNode = topic_buttons.find('.tb:first')
-          if (favoriteNode.length) {
-            post.isFavorite = favoriteNode[0].innerText === '取消收藏'
+        let topic_stats = topic_buttons.find('.topic_stats')
+        //topic_stats = $(`<div class="fr topic_stats" style="padding-top: 4px;">9569 次点击 &nbsp;∙&nbsp; 28 人收藏 &nbsp; ∙&nbsp; 1 人感谢 &nbsp; </div>`)
+        //收藏数、感谢数
+        if (topic_stats.length) {
+          let text = topic_stats[0].innerText
+          let reg1 = text.matchAll(/([\d]+)[\s]*人收藏/g)
+          let collectCountReg = [...reg1]
+          if (collectCountReg.length) {
+            post.collectCount = Number(collectCountReg[0][1])
           }
-          let ignoreNode = topic_buttons.find('.tb:nth-child(3)')
-          if (ignoreNode.length) {
-            post.isIgnore = ignoreNode[0].innerText === '取消忽略'
+          // console.log([...collectCountReg])
+          let reg2 = text.matchAll(/([\d]+)[\s]*人感谢/g)
+          let thankCountReg = [...reg2]
+          if (thankCountReg.length) {
+            post.thankCount = Number(thankCountReg[0][1])
           }
-          //
-          let thankNode = topic_buttons.find('#topic_thank .tb')
-          if (!thankNode.length) {
-            post.isThanked = true
+          let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
+          let clickCountReg = [...reg3]
+          if (clickCountReg.length) {
+            post.clickCount = Number(clickCountReg[0][1])
           }
-
-          let topic_stats = topic_buttons.find('.topic_stats')
-          //topic_stats = $(`<div class="fr topic_stats" style="padding-top: 4px;">9569 次点击 &nbsp;∙&nbsp; 28 人收藏 &nbsp; ∙&nbsp; 1 人感谢 &nbsp; </div>`)
-          //收藏数、感谢数
-          if (topic_stats.length) {
-            let text = topic_stats[0].innerText
-            let reg1 = text.matchAll(/([\d]+)[\s]*人收藏/g)
-            let collectCountReg = [...reg1]
-            if (collectCountReg.length) {
-              post.collectCount = Number(collectCountReg[0][1])
-            }
-            // console.log([...collectCountReg])
-            let reg2 = text.matchAll(/([\d]+)[\s]*人感谢/g)
-            let thankCountReg = [...reg2]
-            if (thankCountReg.length) {
-              post.thankCount = Number(thankCountReg[0][1])
-            }
-            let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
-            let clickCountReg = [...reg3]
-            if (clickCountReg.length) {
-              post.clickCount = Number(clickCountReg[0][1])
-            }
-            // console.log([...thankCountReg])
-          }
+          // console.log([...thankCountReg])
         }
+      }
 
-        // console.log('基本信息', post)
+      // console.log('基本信息', post)
 
-        let header = body.find('#Main .box').first()
-        let temp = header.clone()
-        temp.find('.topic_buttons').remove()
-        let html = temp.html()
-        html = this.checkPhotoLink2Img(html)
-        // console.log('html', html)
-        post.headerTemplate = html
+      let header = body.find('#Main .box').first()
+      let temp = header.clone()
+      temp.find('.topic_buttons').remove()
+      let html = temp.html()
+      html = this.checkPhotoLink2Img(html)
+      // console.log('html', html)
+      post.headerTemplate = html
+      return post
+    },
+    //获取帖子所有回复
+    async getPostAllReplies(post = {}, body, htmlText, pageNo = 1) {
+      if (body.find('#no-comments-yet').length) {
         return post
-      },
-      //获取帖子所有回复
-      async getPostAllReplies(post = {}, body, htmlText, pageNo = 1) {
-        if (body.find('#no-comments-yet').length) {
-          return post
-        }
-
-        let box = body.find('#Main > .box')[1]
-        let cells = box.querySelectorAll('.cell')
-        post.fr = cells[0].querySelector('.cell .fr').innerHTML
-        cells = Array.from(cells)
-
-        //获取创建时间
-        let snow = cells[0].querySelector('.snow')
-        post.createDate = snow?.nextSibling.nodeValue.trim() || ''
-
-        let repliesMap = []
-        if (cells[1].id) {
-          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
-          let replies = this.getAllReply(repliesMap)
-          post.replies = replies
-          post.replyCount = replies.length
-          post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-          let nestedList = this.createNestedList(replies, post.allReplyUsers)
-          if (nestedList) post.nestedReplies = nestedList
-          return post
-        } else {
-          let promiseList = []
-          // console.log(this.current.repliesMap)
-          return new Promise((resolve, reject) => {
-            repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
-
-            let pages = cells[1].querySelectorAll('a')
-            pages = Array.from(pages)
-            // console.log(pages)
-            let url = window.baseUrl + '/t/' + post.id
-            for (let i = 0; i < pages.length; i++) {
-              let currentPageNo = Number(pages[i].innerText)
-              if (currentPageNo == pageNo) continue
-              promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
-            }
-            Promise.allSettled(promiseList).then(
-              (results) => {
-                results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-                let replies = this.getAllReply(repliesMap)
-                post.replies = replies
-                post.replyCount = replies.length
-                post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-                let nestedList = this.createNestedList(replies, post.allReplyUsers)
-                if (nestedList) post.nestedReplies = nestedList
-                resolve(post)
-              }
-            );
-          })
-        }
-      },
-      //请求帖子其他页的回复
-      fetchPostOtherPageReplies(url, pageNo) {
-        return new Promise(resolve => {
-          $.get(url).then(res => {
-            let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-            let box = $(s[0]).find('#Main .box')[1]
-            let cells = box.querySelectorAll('.cell')
-            cells = Array.from(cells)
-            resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
-          })
-        })
-      },
-      //解析页面的回复
-      parsePageReplies(nodes) {
-        let replyList = []
-        nodes.forEach((node, index) => {
-          if (!node.id) return
-          let item = {
-            thankCount: 0,
-            isThanked: false,
-            isOp: false,
-            id: node.id.replace('r_', '')
-          }
-          let reply_content = node.querySelector('.reply_content')
-          // console.log('reply_content',reply_content)
-          item.reply_content = this.checkPhotoLink2Img(reply_content.innerHTML)
-          item.reply_text = reply_content.innerText
-
-          let {users, floor} = this.parseReplyContent(item.reply_content)
-          item.replyUsers = users
-          item.replyFloor = floor
-          if (index === 5) {
-            // console.log(item)
-            // console.log(reply_content.innerText)
-            // console.log(reply_content.innerHTML)
-          }
-          let ago = node.querySelector('.ago')
-          item.date = ago.innerText
-
-          let userNode = node.querySelector('strong a')
-          item.username = userNode.innerText
-          let avatar = node.querySelector('td img')
-          item.avatar = avatar.src
-          let no = node.querySelector('.no')
-          item.floor = Number(no.innerText)
-
-          let thank_area = node.querySelector('.thank_area')
-          if (thank_area) {
-            item.isThanked = thank_area.classList.contains('thanked')
-          }
-          let small = node.querySelector('.small')
-          if (small) {
-            item.thankCount = Number(small.innerText)
-          }
-          let op = node.querySelector('.op')
-          if (op) {
-            item.isOp = true
-          }
-          let mod = node.querySelector('.mod')
-          if (mod) {
-            item.isMod = true
-          }
-          // console.log('item', item)
-
-          replyList.push(item)
-        })
-        return replyList
-      },
-      //解析回复内容，解析出@用户，回复楼层。用于后续生成嵌套楼层
-      parseReplyContent(str) {
-        if (!str) return
-        let users = []
-        let getUsername = (userStr) => {
-          let endIndex = userStr.indexOf('">')
-          if (endIndex > -1) {
-            let user = userStr.substring(0, endIndex)
-            if (!users.find(i => i === user)) {
-              users.push(user)
-            }
-          }
-        }
-        // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
-        let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
-        let has = str.matchAll(userReg)
-        let res2 = [...has]
-        // console.log('总匹配', res2)
-        if (res2.length > 1) {
-          res2.map(item => {
-            getUsername(item[1])
-          })
-        }
-        if (res2.length === 1) {
-          getUsername(res2[0][1])
-        }
-        // console.log('用户', users)
-        // console.log('楼层', floor)
-        let floor = -1
-        //只有@一个人的时候才去查找是否指定楼层号。
-        if (users.length === 1) {
-          let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
-          let hasFloor = str.matchAll(floorReg)
-          let res = [...hasFloor]
-          // console.log('总匹配', res)
-          if (res.length) {
-            floor = Number(res[0][1])
-          }
-        }
-        return {users, floor}
-      },
-      //获取帖子详情
-      async getPostDetail(post = {}, body, htmlText, pageNo = 1) {
-        post = await this.parsePostContent(post, body, htmlText)
-        return await this.getPostAllReplies(post, body, htmlText, pageNo)
-      },
-      getAllReply(repliesMap = []) {
-        return repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
-          pre = pre.concat(i.replyList)
-          return pre
-        }, [])
-      },
-      //生成嵌套回复
-      createNestedList(allList = []) {
-        if (!allList.length) return []
-        if ((Date.now() - window.win().lastCallDate) < 1000) {
-          // console.log('短时间内，重复调用,因为监听了replies,所以打开时会触发两次。第二次不管他')
-          return false
-        }
-        // console.log('cal-createNestedList', Date.now())
-
-        let list = JSON.parse(JSON.stringify(allList))
-        let nestedList = []
-        list.map((item, index) => {
-          let startList = list.slice(0, index)
-          //用于918489这种情况，@不存在的人
-          let startReplyUsers = Array.from(new Set(startList.map(v => v.username)))
-
-          let endList = list.slice(index + 1)
-
-          item.level = 0
-          if (index === 0) {
-            nestedList.push(this.findChildren(item, endList, list))
-          } else {
-            if (!item.isUse) {
-              //是否是一级回复
-              let isOneLevelReply = false
-              if (item.replyUsers.length) {
-                if (item.replyUsers.length > 1) {
-                  isOneLevelReply = true
-                } else {
-                  isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
-                }
-              } else {
-                isOneLevelReply = true
-              }
-              if (isOneLevelReply) {
-                item.level === 0
-                nestedList.push(this.findChildren(item, endList, list))
-              }
-            }
-          }
-        })
-        // console.log('replies长度', allList)
-        // console.log('nestedList长度', nestedList)
-        window.win().lastCallDate = Date.now()
-        return nestedList
-      },
-      //查找子回复
-      findChildren(item, endList, all) {
-        const fn = (child, endList2, parent,) => {
-          child.level = parent.level + 1
-          let rIndex = all.findIndex(v => v.floor === child.floor)
-          if (rIndex > -1) {
-            all[rIndex].isUse = true
-          }
-          parent.children.push(this.findChildren(child, endList2, all,))
-        }
-        // console.log('endList', endList)
-        item.children = []
-        // if (item.floor === 46) debugger
-        let floorReplyList = []
-
-        //先找到指定楼层的回复，再去循环查找子回复
-        //原因：问题930155，有图
-        for (let i = 0; i < endList.length; i++) {
-          let currentItem = endList[i]
-          //如果已被使用，直接跳过
-          if (currentItem.isUse) continue
-          if (currentItem.replyFloor === item.floor) {
-            //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
-            if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
-              //先标记为使用，不然遇到“问题930155”，会出现重复回复
-              currentItem.isUse = true
-              floorReplyList.push({endList: endList.slice(i + 1), currentItem})
-              //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
-              //截图：930155.png
-              // fn(currentItem, endList.slice(i + 1), item)
-            } else {
-              currentItem.isWrong = true
-            }
-          }
-        }
-        //从后往前找
-        //原因：问题933080，有图
-        floorReplyList.reverse().map(({currentItem, endList}) => {
-          fn(currentItem, endList, item)
-        })
-
-        //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
-        let nextMeIndex = endList.findIndex(v => {
-          //必须是下一个不是”自己回复自己“的自己
-          //原因：问题887644（1-2），有图
-          return (v.username === item.username) && (v.replyUsers?.[0] !== item.username)
-        })
-        let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
-
-        for (let i = 0; i < findList.length; i++) {
-          let currentItem = findList[i]
-          //如果已被使用，直接跳过
-          if (currentItem.isUse) continue
-          if (currentItem.replyUsers.length === 1) {
-            //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
-            //原因：问题887644-3，有图
-            if (currentItem.replyFloor !== -1) {
-              if (all[currentItem.replyFloor].username === currentItem.username) {
-                continue
-              }
-            }
-            let endList2 = endList.slice(i + 1)
-            //如果是下一条是同一人的回复，那么跳出循环
-            if (currentItem.username === item.username) {
-              //自己回复自己的特殊情况
-              if (currentItem.replyUsers[0] === item.username) {
-                fn(currentItem, endList2, item)
-              }
-              break
-            } else {
-              if (currentItem.replyUsers[0] === item.username) {
-                fn(currentItem, endList2, item)
-              }
-            }
-          } else {
-            //下一条是同一人的回复，并且均未@人。直接跳过
-            if (currentItem.username === item.username) break
-          }
-        }
-
-        //排序，因为指定楼层时，是从后往前找的
-        item.children = item.children.sort((a, b) => a.floor - b.floor)
-        return item
-      },
-      //解析页面帖子列表
-      parsePagePostList(list, box) {
-        list.forEach(itemDom => {
-          let item = window.clone(window.initPost)
-          let item_title = itemDom.querySelector('.item_title a')
-          let {href, id} = window.parse.parseA(item_title)
-          item.id = id
-          item.href = href
-          item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
-          itemDom.classList.add('post-item')
-          itemDom.classList.add(`id_${id}`)
-          itemDom.dataset['href'] = href
-          itemDom.dataset['id'] = id
-          window.postList.push(item)
-        })
-
-        Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
-          let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
-          // let fail = res.filter((r) => r.status === "rejected")
-          box.style.boxShadow = 'unset'
-          box.style.background = 'unset'
-          if (window.config.viewType === 'card') {
-            list.forEach(itemDom => {
-              itemDom.classList.add('preview')
-            })
-          }
-          ok.map(postItem => {
-            if (postItem?.id) {
-              let itemDom = box.querySelector(`.id_${postItem.id}`)
-
-              if (window.config.showPreviewBtn) {
-                //添加切换按钮
-                let td = itemDom.querySelector('td:nth-child(4)')
-                td.style.position = 'relative'
-                let toggle = document.createElement('div')
-                toggle.dataset['id'] = postItem.id
-                toggle.classList.add('toggle')
-                toggle.innerText = '点击展开/收起'
-                td.append(toggle)
-              }
-
-              let index = window.postList.findIndex(v => v.id == postItem.id)
-              if (index > -1) {
-                let obj = window.postList[index]
-                window.postList[index] = Object.assign({}, obj, postItem)
-
-                if (postItem.content_rendered) {
-                  let a = document.createElement('a')
-                  a.href = obj.href
-                  a.classList.add('post-content')
-                  let div = document.createElement('div')
-                  div.innerHTML = postItem.content_rendered
-                  a.append(div)
-                  // console.log(div.clientHeight)
-                  itemDom.append(a)
-                }
-              }
-            }
-          })
-          cbChecker({type: 'syncData'})
-        })
-      },
-      parseA(a) {
-        let href = a.href
-        let id
-        if (href.includes('/t/')) {
-          if (href.includes('#')) {
-            id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
-          } else {
-            id = href.substring(href.indexOf('/t/') + 3,)
-          }
-        }
-        return {href, id, title: a.innerText}
-      },
-      //创建记事本里面的tag标签
-      async createTagNote() {
-        let data = new FormData()
-        data.append('content', '--用户标签--')
-        data.append('parent_id', 0)
-        data.append('syntax', 0)
-        let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
-        console.log(apiRes)
-        if (apiRes.redirected && apiRes.status === 200) {
-          //成功
-          return apiRes.url.substr(-5)
-        }
-        return null
-      },
-      //标签操作
-      async saveTags(val) {
-        let data = new FormData()
-        data.append('content', window.user.tagPrefix + JSON.stringify(val))
-        data.append('syntax', 0)
-        let apiRes = await window.win().fetch(`${window.baseUrl}/notes/edit/${window.user.tagsId}`, {
-          method: 'post', body: data
-        })
-        return apiRes.redirected && apiRes.status === 200;
-      },
-      //图片链接转Img标签
-      checkPhotoLink2Img(str) {
-        if (!str) return
-        try {
-          let imgWebs = [
-            /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
-            /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)((?!<a).)*>(((?!<a).)*)<\/a>/g,
-          ]
-          imgWebs.map((v, i) => {
-            let has = str.matchAll(v)
-            let res2 = [...has]
-            // console.log('总匹配', res2)
-            res2.map(r => {
-              let p = i === 0 ? r[4] : r[5]
-              if (p) {
-                let link = p.toLowerCase()
-                let src = p
-                if (
-                  link.includes('.png') ||
-                  link.includes('.jpg') ||
-                  link.includes('.jpeg') ||
-                  link.includes('.gif')
-                ) {
-                } else {
-                  src = p + '.png'
-                }
-                str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
-              }
-            })
-          })
-        } catch (e) {
-          console.log('正则解析html里面的a标签的图片链接出错了')
-        }
-        return str
       }
-    }
 
-    async function sleep(time) {
-      return new Promise(resolve => {
-        // console.log('等待vue加载完成,第' + count + '次', Date.now())
-        setTimeout(resolve, time)
-      })
-    }
+      let box = body.find('#Main > .box')[1]
+      let cells = box.querySelectorAll('.cell')
+      post.fr = cells[0].querySelector('.cell .fr').innerHTML
+      cells = Array.from(cells)
 
-    async function cbChecker(val, count = 0) {
-      if (window.cb) {
-        window.cb(val)
+      //获取创建时间
+      let snow = cells[0].querySelector('.snow')
+      post.createDate = snow?.nextSibling.nodeValue.trim() || ''
+
+      let repliesMap = []
+      if (cells[1].id) {
+        repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
+        let replies = this.getAllReply(repliesMap)
+        post.replies = replies
+        post.replyCount = replies.length
+        post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+        let nestedList = this.createNestedList(replies, post.allReplyUsers)
+        if (nestedList) post.nestedReplies = nestedList
+        return post
       } else {
-        while ((!window.cb) && count < 20) {
-          await sleep(500)
-          count++
+        let promiseList = []
+        // console.log(this.current.repliesMap)
+        return new Promise((resolve, reject) => {
+          repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
+
+          let pages = cells[1].querySelectorAll('a')
+          pages = Array.from(pages)
+          // console.log(pages)
+          let url = window.baseUrl + '/t/' + post.id
+          for (let i = 0; i < pages.length; i++) {
+            let currentPageNo = Number(pages[i].innerText)
+            if (currentPageNo == pageNo) continue
+            promiseList.push(this.fetchPostOtherPageReplies(url + '?p=' + currentPageNo, currentPageNo))
+          }
+          Promise.allSettled(promiseList).then(
+            (results) => {
+              results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
+              let replies = this.getAllReply(repliesMap)
+              post.replies = replies
+              post.replyCount = replies.length
+              post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
+              let nestedList = this.createNestedList(replies, post.allReplyUsers)
+              if (nestedList) post.nestedReplies = nestedList
+              resolve(post)
+            }
+          );
+        })
+      }
+    },
+    //请求帖子其他页的回复
+    fetchPostOtherPageReplies(url, pageNo) {
+      return new Promise(resolve => {
+        $.get(url).then(res => {
+          let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+          let box = $(s[0]).find('#Main .box')[1]
+          let cells = box.querySelectorAll('.cell')
+          cells = Array.from(cells)
+          resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
+        })
+      })
+    },
+    //解析页面的回复
+    parsePageReplies(nodes) {
+      let replyList = []
+      nodes.forEach((node, index) => {
+        if (!node.id) return
+        let item = {
+          thankCount: 0,
+          isThanked: false,
+          isOp: false,
+          id: node.id.replace('r_', '')
         }
-        window.cb && window.cb(val)
+        let reply_content = node.querySelector('.reply_content')
+        // console.log('reply_content',reply_content)
+        item.reply_content = this.checkPhotoLink2Img(reply_content.innerHTML)
+        item.reply_text = reply_content.innerText
+
+        let {users, floor} = this.parseReplyContent(item.reply_content)
+        item.replyUsers = users
+        item.replyFloor = floor
+        if (index === 5) {
+          // console.log(item)
+          // console.log(reply_content.innerText)
+          // console.log(reply_content.innerHTML)
+        }
+        let ago = node.querySelector('.ago')
+        item.date = ago.innerText
+
+        let userNode = node.querySelector('strong a')
+        item.username = userNode.innerText
+        let avatar = node.querySelector('td img')
+        item.avatar = avatar.src
+        let no = node.querySelector('.no')
+        item.floor = Number(no.innerText)
+
+        let thank_area = node.querySelector('.thank_area')
+        if (thank_area) {
+          item.isThanked = thank_area.classList.contains('thanked')
+        }
+        let small = node.querySelector('.small')
+        if (small) {
+          item.thankCount = Number(small.innerText)
+        }
+        let op = node.querySelector('.op')
+        if (op) {
+          item.isOp = true
+        }
+        let mod = node.querySelector('.mod')
+        if (mod) {
+          item.isMod = true
+        }
+        // console.log('item', item)
+
+        replyList.push(item)
+      })
+      return replyList
+    },
+    //解析回复内容，解析出@用户，回复楼层。用于后续生成嵌套楼层
+    parseReplyContent(str) {
+      if (!str) return
+      let users = []
+      let getUsername = (userStr) => {
+        let endIndex = userStr.indexOf('">')
+        if (endIndex > -1) {
+          let user = userStr.substring(0, endIndex)
+          if (!users.find(i => i === user)) {
+            users.push(user)
+          }
+        }
       }
-    }
+      // str = `@<a hr a> #4 @<a1 href="/member/Eiden1">Eiden1</a1>   @<a href="/member/Eiden111">Eiden21</a> #11   这也是执行阶段，所谓的安装也是程序业务的 setup 。<br>windows 、Android 并没有系统级的 CD-KEY 。`
+      let userReg = /@<a href="\/member\/([\s\S]+?)<\/a>/g
+      let has = str.matchAll(userReg)
+      let res2 = [...has]
+      // console.log('总匹配', res2)
+      if (res2.length > 1) {
+        res2.map(item => {
+          getUsername(item[1])
+        })
+      }
+      if (res2.length === 1) {
+        getUsername(res2[0][1])
+      }
+      // console.log('用户', users)
+      // console.log('楼层', floor)
+      let floor = -1
+      //只有@一个人的时候才去查找是否指定楼层号。
+      if (users.length === 1) {
+        let floorReg = /@<a href="\/member\/[\s\S]+?<\/a>[\s]+#([\d]+)/g
+        let hasFloor = str.matchAll(floorReg)
+        let res = [...hasFloor]
+        // console.log('总匹配', res)
+        if (res.length) {
+          floor = Number(res[0][1])
+        }
+      }
+      return {users, floor}
+    },
+    //获取帖子详情
+    async getPostDetail(post = {}, body, htmlText, pageNo = 1) {
+      post = await this.parsePostContent(post, body, htmlText)
+      return await this.getPostAllReplies(post, body, htmlText, pageNo)
+    },
+    getAllReply(repliesMap = []) {
+      return repliesMap.sort((a, b) => a.i - b.i).reduce((pre, i) => {
+        pre = pre.concat(i.replyList)
+        return pre
+      }, [])
+    },
+    //生成嵌套回复
+    createNestedList(allList = []) {
+      if (!allList.length) return []
+      if ((Date.now() - window.win().lastCallDate) < 1000) {
+        // console.log('短时间内，重复调用,因为监听了replies,所以打开时会触发两次。第二次不管他')
+        return false
+      }
+      // console.log('cal-createNestedList', Date.now())
 
-    function feedback() {
-      window.GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/', {
-        active: true,
-        insert: true,
-        setParent: true
-      });
-    }
+      let list = JSON.parse(JSON.stringify(allList))
+      let nestedList = []
+      list.map((item, index) => {
+        let startList = list.slice(0, index)
+        //用于918489这种情况，@不存在的人
+        let startReplyUsers = Array.from(new Set(startList.map(v => v.username)))
 
-    //初始化脚本菜单
-    function initMonkeyMenu() {
+        let endList = list.slice(index + 1)
+
+        item.level = 0
+        if (index === 0) {
+          nestedList.push(this.findChildren(item, endList, list))
+        } else {
+          if (!item.isUse) {
+            //是否是一级回复
+            let isOneLevelReply = false
+            if (item.replyUsers.length) {
+              if (item.replyUsers.length > 1) {
+                isOneLevelReply = true
+              } else {
+                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              }
+            } else {
+              isOneLevelReply = true
+            }
+            if (isOneLevelReply) {
+              item.level === 0
+              nestedList.push(this.findChildren(item, endList, list))
+            }
+          }
+        }
+      })
+      // console.log('replies长度', allList)
+      // console.log('nestedList长度', nestedList)
+      window.win().lastCallDate = Date.now()
+      return nestedList
+    },
+    //查找子回复
+    findChildren(item, endList, all) {
+      const fn = (child, endList2, parent,) => {
+        child.level = parent.level + 1
+        let rIndex = all.findIndex(v => v.floor === child.floor)
+        if (rIndex > -1) {
+          all[rIndex].isUse = true
+        }
+        parent.children.push(this.findChildren(child, endList2, all,))
+      }
+      // console.log('endList', endList)
+      item.children = []
+      // if (item.floor === 46) debugger
+      let floorReplyList = []
+
+      //先找到指定楼层的回复，再去循环查找子回复
+      //原因：问题930155，有图
+      for (let i = 0; i < endList.length; i++) {
+        let currentItem = endList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+        if (currentItem.replyFloor === item.floor) {
+          //必须楼层对应的名字和@人的名字相同。因为经常出现不相同的情况
+          if (currentItem.replyUsers.length === 1 && currentItem.replyUsers[0] === item.username) {
+            //先标记为使用，不然遇到“问题930155”，会出现重复回复
+            currentItem.isUse = true
+            floorReplyList.push({endList: endList.slice(i + 1), currentItem})
+            //问题930155：这里不能直接找子级，如果item为A，currentItem为B，但随后A又回复了B，然后C回复A。这样直接找子级就会把C归类到B的子回复，而不是直接A的子回复
+            //截图：930155.png
+            // fn(currentItem, endList.slice(i + 1), item)
+          } else {
+            currentItem.isWrong = true
+          }
+        }
+      }
+      //从后往前找
+      //原因：问题933080，有图
+      floorReplyList.reverse().map(({currentItem, endList}) => {
+        fn(currentItem, endList, item)
+      })
+
+      //下一个我的下标，如果有下一个我，那么当前item的子回复应在当前和下个我的区间内查找
+      let nextMeIndex = endList.findIndex(v => {
+        //必须是下一个不是”自己回复自己“的自己
+        //原因：问题887644（1-2），有图
+        return (v.username === item.username) && (v.replyUsers?.[0] !== item.username)
+      })
+      let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
+
+      for (let i = 0; i < findList.length; i++) {
+        let currentItem = findList[i]
+        //如果已被使用，直接跳过
+        if (currentItem.isUse) continue
+        if (currentItem.replyUsers.length === 1) {
+          //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
+          //原因：问题887644-3，有图
+          if (currentItem.replyFloor !== -1) {
+            if (all[currentItem.replyFloor].username === currentItem.username) {
+              continue
+            }
+          }
+          let endList2 = endList.slice(i + 1)
+          //如果是下一条是同一人的回复，那么跳出循环
+          if (currentItem.username === item.username) {
+            //自己回复自己的特殊情况
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+            break
+          } else {
+            if (currentItem.replyUsers[0] === item.username) {
+              fn(currentItem, endList2, item)
+            }
+          }
+        } else {
+          //下一条是同一人的回复，并且均未@人。直接跳过
+          if (currentItem.username === item.username) break
+        }
+      }
+
+      //排序，因为指定楼层时，是从后往前找的
+      item.children = item.children.sort((a, b) => a.floor - b.floor)
+      return item
+    },
+    //解析页面帖子列表
+    parsePagePostList(list, box) {
+      list.forEach(itemDom => {
+        let item = window.clone(window.initPost)
+        let item_title = itemDom.querySelector('.item_title a')
+        let {href, id} = window.parse.parseA(item_title)
+        item.id = id
+        item.href = href
+        item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+        itemDom.classList.add('post-item')
+        itemDom.classList.add(`id_${id}`)
+        itemDom.dataset['href'] = href
+        itemDom.dataset['id'] = id
+        window.postList.push(item)
+      })
+
+      Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
+        let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
+        // let fail = res.filter((r) => r.status === "rejected")
+        box.style.boxShadow = 'unset'
+        box.style.background = 'unset'
+        if (window.config.viewType === 'card') {
+          list.forEach(itemDom => {
+            itemDom.classList.add('preview')
+          })
+        }
+        ok.map(postItem => {
+          if (postItem?.id) {
+            let itemDom = box.querySelector(`.id_${postItem.id}`)
+
+            if (window.config.showPreviewBtn) {
+              //添加切换按钮
+              let td = itemDom.querySelector('td:nth-child(4)')
+              td.style.position = 'relative'
+              let toggle = document.createElement('div')
+              toggle.dataset['id'] = postItem.id
+              toggle.classList.add('toggle')
+              toggle.innerText = '点击展开/收起'
+              td.append(toggle)
+            }
+
+            let index = window.postList.findIndex(v => v.id == postItem.id)
+            if (index > -1) {
+              let obj = window.postList[index]
+              window.postList[index] = Object.assign({}, obj, postItem)
+
+              if (postItem.content_rendered) {
+                let a = document.createElement('a')
+                a.href = obj.href
+                a.classList.add('post-content')
+                let div = document.createElement('div')
+                div.innerHTML = postItem.content_rendered
+                a.append(div)
+                // console.log(div.clientHeight)
+                itemDom.append(a)
+              }
+            }
+          }
+        })
+        cbChecker({type: 'syncData'})
+      })
+    },
+    parseA(a) {
+      let href = a.href
+      let id
+      if (href.includes('/t/')) {
+        if (href.includes('#')) {
+          id = href.substring(href.indexOf('/t/') + 3, href.indexOf('#'))
+        } else {
+          id = href.substring(href.indexOf('/t/') + 3,)
+        }
+      }
+      return {href, id, title: a.innerText}
+    },
+    //创建记事本里面的tag标签
+    async createTagNote() {
+      let data = new FormData()
+      data.append('content', '--用户标签--')
+      data.append('parent_id', 0)
+      data.append('syntax', 0)
+      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
+      console.log(apiRes)
+      if (apiRes.redirected && apiRes.status === 200) {
+        //成功
+        return apiRes.url.substr(-5)
+      }
+      return null
+    },
+    //标签操作
+    async saveTags(val) {
+      let data = new FormData()
+      data.append('content', window.user.tagPrefix + JSON.stringify(val))
+      data.append('syntax', 0)
+      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/edit/${window.user.tagsId}`, {
+        method: 'post', body: data
+      })
+      return apiRes.redirected && apiRes.status === 200;
+    },
+    //图片链接转Img标签
+    checkPhotoLink2Img(str) {
+      if (!str) return
       try {
-        window.GM_registerMenuCommand("脚本设置", function (event) {
-          cbChecker({type: 'openSetting'})
-        });
-        window.GM_registerMenuCommand('💬 反馈 & 建议', feedback);
+        let imgWebs = [
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*imgur.com((?!<a).)*>(((?!<a).)*)<\/a>/g,
+          /<a((?!<a).)*href="https?:\/\/((?!<a).)*\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)((?!<a).)*>(((?!<a).)*)<\/a>/g,
+        ]
+        imgWebs.map((v, i) => {
+          let has = str.matchAll(v)
+          let res2 = [...has]
+          // console.log('总匹配', res2)
+          res2.map(r => {
+            let p = i === 0 ? r[4] : r[5]
+            if (p) {
+              let link = p.toLowerCase()
+              let src = p
+              if (
+                link.includes('.png') ||
+                link.includes('.jpg') ||
+                link.includes('.jpeg') ||
+                link.includes('.gif')
+              ) {
+              } else {
+                src = p + '.png'
+              }
+              str = str.replace(r[0], `<img src="${src}" data-originUrl="${p}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`)
+            }
+          })
+        })
       } catch (e) {
-        console.error('无法使用Tampermonkey')
+        console.log('正则解析html里面的a标签的图片链接出错了')
       }
+      return str
     }
+  }
 
-    //初始化样式表
-    function initStyle() {
-      //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
-      let style2 = `
-         html, body {
-              font-size: 62.5%;
-          }
+  async function sleep(time) {
+    return new Promise(resolve => {
+      // console.log('等待vue加载完成,第' + count + '次', Date.now())
+      setTimeout(resolve, time)
+    })
+  }
 
-          #Wrapper {
-            height: unset !important;
-            width: unset !important;
-          }
+  async function cbChecker(val, count = 0) {
+    if (window.cb) {
+      window.cb(val)
+    } else {
+      while ((!window.cb) && count < 20) {
+        await sleep(500)
+        count++
+      }
+      window.cb && window.cb(val)
+    }
+  }
 
-         #Wrapper > .content {
+  function feedback() {
+    window.GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/', {
+      active: true,
+      insert: true,
+      setParent: true
+    });
+  }
+
+  //初始化脚本菜单
+  function initMonkeyMenu() {
+    try {
+      window.GM_registerMenuCommand("脚本设置", function (event) {
+        cbChecker({type: 'openSetting'})
+      });
+      window.GM_registerMenuCommand('💬 反馈 & 建议', feedback);
+    } catch (e) {
+      console.error('无法使用Tampermonkey')
+    }
+  }
+
+  //初始化样式表
+  function initStyle() {
+    //给Wrapper和content取消宽高，是因为好像是v2的屏蔽机制，时不时会v2会修改这两个div的宽高，让网页变形
+    let style2 = `
+       html, body {
+            font-size: 62.5%;
+        }
+
+        #Wrapper {
           height: unset !important;
           width: unset !important;
         }
 
-        .post-item {
-            background: white;
-        }
+       #Wrapper > .content {
+        height: unset !important;
+        width: unset !important;
+      }
 
-        .post-item > .post-content {
-            height: 0;
-            margin-top: 0;
-        }
+      .post-item {
+          background: white;
+      }
 
-        .post-item:hover .toggle {
-            display: flex;
-        }
+      .post-item > .post-content {
+          height: 0;
+          margin-top: 0;
+      }
 
-        .toggle {
-            position: absolute;
-            right: 0;
-            top: 0.5rem;
-            width: 9rem;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-end;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #ccc;
-            display: none;
-        }
+      .post-item:hover .toggle {
+          display: flex;
+      }
 
-        .preview {
-            margin: 1rem 0;
-            border: 1px solid #e2e2e2;
-            border-radius: 0.4rem;
-            cursor: pointer;
-        }
+      .toggle {
+          position: absolute;
+          right: 0;
+          top: 0.5rem;
+          width: 9rem;
+          height: 100%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-end;
+          cursor: pointer;
+          font-size: 1.2rem;
+          color: #ccc;
+          display: none;
+      }
 
-        .preview:hover {
-            border: 1px solid #968b8b;
-        }
+      .preview {
+          margin: 1rem 0;
+          border: 1px solid #e2e2e2;
+          border-radius: 0.4rem;
+          cursor: pointer;
+      }
 
-        .preview > .post-content {
-            height: unset !important;
-            margin-top: 0.5rem !important;
-        }
+      .preview:hover {
+          border: 1px solid #968b8b;
+      }
 
-        .preview  .topic-link:link {
-            color: black !important;
-        }
+      .preview > .post-content {
+          height: unset !important;
+          margin-top: 0.5rem !important;
+      }
 
-        .post-content {
-            margin-top: 0.5rem;
-            display: block;
-            max-height: 20rem;
-            overflow: hidden;
-            text-decoration: unset !important;
-            line-break: anywhere;
-        }
+      .preview  .topic-link:link {
+          color: black !important;
+      }
 
-        .post-content:link {
-            color: #494949;
-        }
+      .post-content {
+          margin-top: 0.5rem;
+          display: block;
+          max-height: 20rem;
+          overflow: hidden;
+          text-decoration: unset !important;
+          line-break: anywhere;
+      }
+
+      .post-content:link {
+          color: #494949;
+      }
 
 
-        .post-content:visited {
-            color: #afb9c1 !important;
-        }
+      .post-content:visited {
+          color: #afb9c1 !important;
+      }
 
-        .Night .post-item {
-            background: #18222d !important;
-        }
+      .Night .post-item {
+          background: #18222d !important;
+      }
 
-        .Night .preview {
-            border: 1px solid #3b536e;
-        }
+      .Night .preview {
+          border: 1px solid #3b536e;
+      }
 
-        .Night .preview > .post-content:link {
-            color: #d1d5d9;
-        }
+      .Night .preview > .post-content:link {
+          color: #d1d5d9;
+      }
 
-        .Night .preview > .post-content:visited {
-            color: #393f4e !important;
-        }
+      .Night .preview > .post-content:visited {
+          color: #393f4e !important;
+      }
 
-        .Night .preview  .topic-link:link {
-            color: #c0dbff !important;
-        }
+      .Night .preview  .topic-link:link {
+          color: #c0dbff !important;
+      }
 
-      `
-      let addStyle2 = document.createElement("style");
-      addStyle2.rel = "stylesheet";
-      addStyle2.type = "text/css";
-      addStyle2.innerHTML = style2
-      $(window.win().doc.head).append(addStyle2)
-    }
+    `
+    let addStyle2 = document.createElement("style");
+    addStyle2.rel = "stylesheet";
+    addStyle2.type = "text/css";
+    addStyle2.innerHTML = style2
+    $(window.win().doc.head).append(addStyle2)
+  }
 
-    // 自动签到（后台）
-    function qianDao() {
-      let timeNow = new Date().getUTCFullYear() + '/' + (new Date().getUTCMonth() + 1) + '/' + new Date().getUTCDate() // 当前 UTC-0 时间（V2EX 按这个时间的）
-      // return qianDao_(null, timeNow); //                           后台签到
-      if (window.pageType === 'home') { //                               在首页
-        let qiandao = window.query('.box .inner a[href="/mission/daily"]');
-        if (qiandao) { //                                            如果找到了签到提示
-          qianDao_(qiandao, timeNow); //                           后台签到
-        } else if (window.win().doc.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
-          window.win().doc.getElementById('gift_v2excellent').click();
-          localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
-          console.info('[V2EX - 超级增强] 自动签到完成！')
-        } else { //                                                  都没有找到，说明已经签过到了
-          console.info('[V2EX - 超级增强] 自动签到完成！')
-        }
-      } else { //                                                      不在首页
-        let timeOld = localStorage.getItem('menu_clockInTime')
-        if (!timeOld || timeOld != timeNow) {
-          qianDaoStatus_(timeNow) //                               后台获取签到状态（并判断是否需要签到）
-        } else { //                                                新旧签到时间一致
-          console.info('[V2EX - 超级增强] 自动签到完成！')
-        }
+  // 自动签到（后台）
+  function qianDao() {
+    let timeNow = new Date().getUTCFullYear() + '/' + (new Date().getUTCMonth() + 1) + '/' + new Date().getUTCDate() // 当前 UTC-0 时间（V2EX 按这个时间的）
+    // return qianDao_(null, timeNow); //                           后台签到
+    if (window.pageType === 'home') { //                               在首页
+      let qiandao = window.query('.box .inner a[href="/mission/daily"]');
+      if (qiandao) { //                                            如果找到了签到提示
+        qianDao_(qiandao, timeNow); //                           后台签到
+      } else if (window.win().doc.getElementById('gift_v2excellent')) { // 兼容 [V2ex Plus] 扩展
+        window.win().doc.getElementById('gift_v2excellent').click();
+        localStorage.setItem('menu_clockInTime', timeNow); //             写入签到时间以供后续比较
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+      } else { //                                                  都没有找到，说明已经签过到了
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+      }
+    } else { //                                                      不在首页
+      let timeOld = localStorage.getItem('menu_clockInTime')
+      if (!timeOld || timeOld != timeNow) {
+        qianDaoStatus_(timeNow) //                               后台获取签到状态（并判断是否需要签到）
+      } else { //                                                新旧签到时间一致
+        console.info('[V2EX - 超级增强] 自动签到完成！')
       }
     }
+  }
 
-    // 后台签到
-    function qianDao_(qiandao, timeNow) {
-      // let url = window.baseUrl + "/mission/daily"
-      let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
-      console.log('url', url)
-      $.get(url).then(r => {
-        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        let html = $(bodyText[0])
-        if (html.find('li.fa.fa-ok-sign').length) {
-          html = html.find('#Main').text().match(/已连续登录 (\d+?) 天/)[0];
-          localStorage.setItem('menu_clockInTime', timeNow); // 写入签到时间以供后续比较
-          console.info('[V2EX - 超级增强] 自动签到完成！')
-          if (qiandao) {
-            qiandao.textContent = `自动签到完成！${html}`;
-            qiandao.href = 'javascript:void(0);';
-          }
-        } else {
-          window.GM_notification({
-            text: '自动签到失败！请访问 V2EX 首页试试。\n如果连续几天都签到失败，请联系作者解决！',
-            timeout: 4000,
-            onclick() {
-              feedback()
-            }
-          });
-          console.warn('[V2EX 增强] 自动签到失败！请访问 V2EX 首页试试。如果连续几天都签到失败，请联系作者解决！')
-          if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
+  // 后台签到
+  function qianDao_(qiandao, timeNow) {
+    // let url = window.baseUrl + "/mission/daily"
+    let url = (window.baseUrl + "/mission/daily/redeem?" + RegExp("once\\=(\\d+)").exec(document.querySelector('div#Top .tools, #menu-body').innerHTML)[0]);
+    console.log('url', url)
+    $.get(url).then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let html = $(bodyText[0])
+      if (html.find('li.fa.fa-ok-sign').length) {
+        html = html.find('#Main').text().match(/已连续登录 (\d+?) 天/)[0];
+        localStorage.setItem('menu_clockInTime', timeNow); // 写入签到时间以供后续比较
+        console.info('[V2EX - 超级增强] 自动签到完成！')
+        if (qiandao) {
+          qiandao.textContent = `自动签到完成！${html}`;
+          qiandao.href = 'javascript:void(0);';
         }
-      })
-    }
-
-    // 后台获取签到状态（并判断是否需要签到）
-    function qianDaoStatus_(timeNow) {
-      $.get(window.baseUrl + '/mission/daily').then(r => {
-        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        let html = $(bodyText[0])
-        if (html.find('input[value^="领取"]').length) { //     还没有签到...
-          qianDao_(null, timeNow); //                          后台签到
-        } else { //                                              已经签到了...
-          console.info('[V2EX 增强] 已经签过到了。')
-          localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
-        }
-      })
-    }
-
-    function checkPageType() {
-      let location2 = window.win().location
-      if (location2.pathname === '/') {
-        window.pageType = 'home'
-      } else if (location2.href.match(/.com\/?tab=/)) {
-        window.pageType = 'home'
-      } else if (location2.href.match(/.com\/go\//)) {
-        if (!location2.href.includes('/links')) {
-          window.pageType = 'nodePage'
-        }
-      } else if (location2.href.match(/.com\/recent/)) {
-        window.pageType = 'recent'
       } else {
-        let r = location2.href.match(/.com\/t\/([\d]+)/)
-        if (r) {
-          window.pageType = 'post'
-          window.pageData.id = r[1]
-          if (location2.search) {
-            let pr = location2.href.match(/\?p=([\d]+)/)
-            if (pr) window.pageData.pageNo = Number(pr[1])
+        window.GM_notification({
+          text: '自动签到失败！请访问 V2EX 首页试试。\n如果连续几天都签到失败，请联系作者解决！',
+          timeout: 4000,
+          onclick() {
+            feedback()
           }
+        });
+        console.warn('[V2EX 增强] 自动签到失败！请访问 V2EX 首页试试。如果连续几天都签到失败，请联系作者解决！')
+        if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
+      }
+    })
+  }
+
+  // 后台获取签到状态（并判断是否需要签到）
+  function qianDaoStatus_(timeNow) {
+    $.get(window.baseUrl + '/mission/daily').then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let html = $(bodyText[0])
+      if (html.find('input[value^="领取"]').length) { //     还没有签到...
+        qianDao_(null, timeNow); //                          后台签到
+      } else { //                                              已经签到了...
+        console.info('[V2EX 增强] 已经签过到了。')
+        localStorage.setItem('menu_clockInTime', timeNow); //         写入签到时间以供后续比较
+      }
+    })
+  }
+
+  function checkPageType() {
+    let location2 = window.win().location
+    if (location2.pathname === '/') {
+      window.pageType = 'home'
+    } else if (location2.href.match(/.com\/?tab=/)) {
+      window.pageType = 'home'
+    } else if (location2.href.match(/.com\/go\//)) {
+      if (!location2.href.includes('/links')) {
+        window.pageType = 'nodePage'
+      }
+    } else if (location2.href.match(/.com\/recent/)) {
+      window.pageType = 'recent'
+    } else {
+      let r = location2.href.match(/.com\/t\/([\d]+)/)
+      if (r) {
+        window.pageType = 'post'
+        window.pageData.id = r[1]
+        if (location2.search) {
+          let pr = location2.href.match(/\?p=([\d]+)/)
+          if (pr) window.pageData.pageNo = Number(pr[1])
         }
       }
     }
+  }
 
-    //初始化标签的记事本数据
-    function initTagNoteData() {
-      //获取或创建记事本的标签
-      $.get(window.baseUrl + '/notes').then(r => {
-        let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-        let body = $(bodyText[0])
-        let items = body.find('#Main .box .note_item_title a')
-        let needCreateNoteTags = true
-        if (items.length) {
-          let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-          if (tags) {
-            needCreateNoteTags = false
-            window.user.tagsId = tags.href.substr(-5)
-            cbChecker({type: 'syncData'})
-            $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
-              bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-              body = $(bodyText[0])
-              let text = body.find('.note_editor').text()
-              if (text === window.user.tagPrefix) {
-                window.user.tags = {}
-              } else {
-                let tagJson = text.substring(window.user.tagPrefix.length)
-                try {
-                  window.user.tags = JSON.parse(tagJson)
-                } catch (e) {
-                  console.log('tage', tagJson)
-                  window.user.tags = {}
-                }
-              }
-              cbChecker({type: 'syncData'})
-            })
-          }
-        }
-        if (needCreateNoteTags) {
-          window.parse.createTagNote().then(r => {
-            if (r) {
-              window.user.tagsId = r
+  //初始化标签的记事本数据
+  function initTagNoteData() {
+    //获取或创建记事本的标签
+    $.get(window.baseUrl + '/notes').then(r => {
+      let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+      let body = $(bodyText[0])
+      let items = body.find('#Main .box .note_item_title a')
+      let needCreateNoteTags = true
+      if (items.length) {
+        let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+        if (tags) {
+          needCreateNoteTags = false
+          window.user.tagsId = tags.href.substr(-5)
+          cbChecker({type: 'syncData'})
+          $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
+            bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+            body = $(bodyText[0])
+            let text = body.find('.note_editor').text()
+            if (text === window.user.tagPrefix) {
               window.user.tags = {}
-              cbChecker({type: 'syncData'})
+            } else {
+              let tagJson = text.substring(window.user.tagPrefix.length)
+              try {
+                window.user.tags = JSON.parse(tagJson)
+              } catch (e) {
+                console.log('tage', tagJson)
+                window.user.tags = {}
+              }
             }
+            cbChecker({type: 'syncData'})
           })
-        }
-      })
-    }
-
-    function initConfig() {
-      return new Promise(resolve => {
-        //获取默认配置
-        let configStr = window.win().localStorage.getItem('v2ex-config')
-        if (configStr) {
-          let configObj = JSON.parse(configStr)
-          configObj = configObj[window.user.username ?? 'default']
-          if (configObj) {
-            window.config = Object.assign(window.config, configObj)
-          }
-        }
-        resolve(window.config)
-      })
-    }
-
-    // 替换为 sov2ex 搜索，代码来自 v2ex-plus 扩展：https://github.com/sciooga/v2ex-plus （懒得重复造轮子了~）
-    function initSoV2ex() {
-      var $search = $('#search')
-      var searchEvents = $._data($search[0], "events")
-      console.log($search, searchEvents)
-      var oKeydownEvent = searchEvents['keydown'][0]['handler']
-      var oInputEvent = searchEvents['input'][0]['handler']
-      $search.attr("placeholder", "sov2ex")
-      $search.unbind('keydown', oKeydownEvent)
-      $search.unbind('input', oInputEvent)
-      $search.on('input', function (e) {
-        oInputEvent(e)
-        $('.search-item:last').attr('href', 'https://www.sov2ex.com/?q=' + $search.val()).text('sov2ex ' + $search.val());
-      })
-      $search.keydown(function (e) {
-        if (e.code == 'Enter' || e.code == 'NumpadEnter' || e.keyCode === 13) {
-          if ($('.search-item:last').is('.active')) {
-            $(this).val($(this).val().replace(/[#%&]/g, ""));//用户输入不能包含特殊字符#%&
-            window.open("https://www.sov2ex.com/?q=" + $(this).val());
-            return 0
-          }
-        }
-        oKeydownEvent(e)
-      })
-    }
-
-    window.win().canParseV2exPage = true
-    if (window.win().canParseV2exPage) {
-      checkPageType()
-      initMonkeyMenu()
-      initStyle()
-
-      let top2 = window.win().query('.tools .top:nth-child(2)').text
-      if (top2 !== '注册') {
-        window.user.username = top2
-        window.user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
-        cbChecker({type: 'syncData'})
-
-        initTagNoteData()
-        try {
-          qianDao()
-        } catch (e) {
         }
       }
-
-      initConfig().then(r => {
-        if (window.config.sov2ex) {
-          setTimeout(initSoV2ex, 1000)
-        }
-      })
-
-      let $section = document.createElement('section')
-      $section.id = 'app'
-
-      let box
-      let list
-      switch (window.pageType) {
-        case 'nodePage':
-          box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
-
-          let topics = box[1].querySelector('#TopicsNode')
-          list = topics.querySelectorAll('.cell')
-          list[0].before($section)
-          window.parse.parsePagePostList(list, box[1])
-          break
-        case 'recent':
-        case 'home':
-          box = window.win().query('#Wrapper #Main .box')
-          list = box.querySelectorAll('.item')
-          list[0].before($section)
-          window.parse.parsePagePostList(list, box)
-          break
-        case 'post':
-          //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面抖动和一闪而过
-          if (config.postWidth) {
-            //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
-            //Rightbar的float就失效了，所以把他移动右边
-            let Main = $('#Main')
-            Main.css({
-              'width': config.postWidth,
-              margin: 'unset',
-            })
-            $('#Wrapper > .content').css({
-              'max-width': 'unset',
-              display: 'flex',
-              'justify-content': 'center',
-              gap: '20px'
-            })
-            Main.after($('#Rightbar'))
+      if (needCreateNoteTags) {
+        window.parse.createTagNote().then(r => {
+          if (r) {
+            window.user.tagsId = r
+            window.user.tags = {}
+            cbChecker({type: 'syncData'})
           }
+        })
+      }
+    })
+  }
 
-          box = window.win().query('#Wrapper #Main .box')
-          box.after($section)
-          window.parse.parsePostContent(
-            {id: window.pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML
-          ).then(async res => {
-            // console.log('详情页-基本信息解析完成', new Date())
-            window.pageData.post = res
-            await cbChecker({type: 'postContent', value: res}, 0)
-          })
+  function initConfig() {
+    return new Promise(resolve => {
+      //获取默认配置
+      let configStr = window.win().localStorage.getItem('v2ex-config')
+      if (configStr) {
+        let configObj = JSON.parse(configStr)
+        configObj = configObj[window.user.username ?? 'default']
+        if (configObj) {
+          window.config = Object.assign(window.config, configObj)
+        }
+      }
+      resolve(window.config)
+    })
+  }
 
-          window.parse.getPostAllReplies(
-            {id: window.pageData.id},
-            $(window.win().doc.body),
-            window.win().doc.documentElement.outerHTML,
-            window.pageData.pageNo
-          ).then(async res => {
-            // console.log('详情页-回复解析完成', new Date())
-            window.pageData.post = Object.assign(window.pageData.post, res)
-            await cbChecker({type: 'postReplies', value: res}, 0)
-          })
-          break
-        default:
-          console.error('未知页面')
-          break
+  // 替换为 sov2ex 搜索，代码来自 v2ex-plus 扩展：https://github.com/sciooga/v2ex-plus （懒得重复造轮子了~）
+  function initSoV2ex() {
+    var $search = $('#search')
+    var searchEvents = $._data($search[0], "events")
+    console.log($search, searchEvents)
+    var oKeydownEvent = searchEvents['keydown'][0]['handler']
+    var oInputEvent = searchEvents['input'][0]['handler']
+    $search.attr("placeholder", "sov2ex")
+    $search.unbind('keydown', oKeydownEvent)
+    $search.unbind('input', oInputEvent)
+    $search.on('input', function (e) {
+      oInputEvent(e)
+      $('.search-item:last').attr('href', 'https://www.sov2ex.com/?q=' + $search.val()).text('sov2ex ' + $search.val());
+    })
+    $search.keydown(function (e) {
+      if (e.code == 'Enter' || e.code == 'NumpadEnter' || e.keyCode === 13) {
+        if ($('.search-item:last').is('.active')) {
+          $(this).val($(this).val().replace(/[#%&]/g, ""));//用户输入不能包含特殊字符#%&
+          window.open("https://www.sov2ex.com/?q=" + $(this).val());
+          return 0
+        }
+      }
+      oKeydownEvent(e)
+    })
+  }
+
+  window.win().canParseV2exPage = true
+  if (window.win().canParseV2exPage) {
+    checkPageType()
+    initMonkeyMenu()
+    initStyle()
+
+    let top2 = window.win().query('.tools .top:nth-child(2)').text
+    if (top2 !== '注册') {
+      window.user.username = top2
+      window.user.avatar = $('#Rightbar .box .avatar', window.win().doc).attr('src')
+      cbChecker({type: 'syncData'})
+
+      initTagNoteData()
+      try {
+        qianDao()
+      } catch (e) {
       }
     }
+
+    initConfig().then(r => {
+      if (window.config.sov2ex) {
+        setTimeout(initSoV2ex, 1000)
+      }
+    })
+
+    let $section = document.createElement('section')
+    $section.id = 'app'
+
+    let box
+    let list
+    switch (window.pageType) {
+      case 'nodePage':
+        box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
+
+        let topics = box[1].querySelector('#TopicsNode')
+        list = topics.querySelectorAll('.cell')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box[1])
+        break
+      case 'recent':
+      case 'home':
+        box = window.win().query('#Wrapper #Main .box')
+        list = box.querySelectorAll('.item')
+        list[0].before($section)
+        window.parse.parsePagePostList(list, box)
+        break
+      case 'post':
+        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面抖动和一闪而过
+        if (config.postWidth) {
+          //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
+          //Rightbar的float就失效了，所以把他移动右边
+          let Main = $('#Main')
+          Main.css({
+            'width': config.postWidth,
+            margin: 'unset',
+          })
+          $('#Wrapper > .content').css({
+            'max-width': 'unset',
+            display: 'flex',
+            'justify-content': 'center',
+            gap: '20px'
+          })
+          Main.after($('#Rightbar'))
+        }
+
+        box = window.win().query('#Wrapper #Main .box')
+        box.after($section)
+        window.parse.parsePostContent(
+          {id: window.pageData.id},
+          $(window.win().doc.body),
+          window.win().doc.documentElement.outerHTML
+        ).then(async res => {
+          // console.log('详情页-基本信息解析完成', new Date())
+          window.pageData.post = res
+          await cbChecker({type: 'postContent', value: res}, 0)
+        })
+
+        window.parse.getPostAllReplies(
+          {id: window.pageData.id},
+          $(window.win().doc.body),
+          window.win().doc.documentElement.outerHTML,
+          window.pageData.pageNo
+        ).then(async res => {
+          // console.log('详情页-回复解析完成', new Date())
+          window.pageData.post = Object.assign(window.pageData.post, res)
+          await cbChecker({type: 'postReplies', value: res}, 0)
+        })
+        break
+      default:
+        console.error('未知页面')
+        break
+    }
+  }
+  //这里放index.html里面<script>标签的第18行以后的js内容，复制粘贴到这里
 })();
