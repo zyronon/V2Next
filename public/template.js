@@ -10,7 +10,7 @@
 // @match        https://*.v2ex.com/recent*
 // @match        https://*.v2ex.com/go/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
-// @require      https://cdn.bootcdn.net/ajax/libs/vue/3.2.47/vue.runtime.global.prod.min.js
+// @require      https://unpkg.com/vue@3.3.2/dist/vue.runtime.global.prod.js
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
 // @grant        GM_openInTab
@@ -36,15 +36,30 @@
   addStyle.innerHTML = style
   document.head.append(addStyle)
 
-  setTimeout(function () {
+
+  function runVueCode() {
+    setTimeout(function () {
 
 
-    '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
-    '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
-    '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
+      '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
+      '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
+      '这里放Vue 打包后的js，位置在dist/assets/index-hash值.js，全部复制粘贴到这里。对就是全部！全部复制粘贴到这里！'
 
 
-  })
+    })
+  }
+
+  try {
+    if (Vue) runVueCode()
+  } catch (e) {
+    console.log('Vue报错不存在', e)
+    let $vue = document.createElement("script");
+    $vue.src = 'https://cdn.jsdelivr.net/npm/vue@3.3.2/dist/vue.runtime.global.prod.js'
+    $vue.addEventListener('load', runVueCode)
+    document.body.appendChild($vue);
+  }
+
+
   const isDev = false
 
   //这里放index.html里面<script>标签的第18行以后的js内容，复制粘贴到这里

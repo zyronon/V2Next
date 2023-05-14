@@ -1,7 +1,7 @@
 # 关于本项目
 1. 代码完全开源，欢迎大家审计。也可自行构建出js文件复制到Tampermonkey里面个人使用，构建方法在本文最下面
-2. 脚本油猴安装地址：https://greasyfork.org/zh-CN/scripts/458024
-3. git仓库地址：https://github.com/zyronon/v2ex-script
+2. 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
+3. git仓库地址：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
 ### 脚本做了什么？
 因v2ex-plus的[爬虫事件](https://www.v2ex.com/t/939486#reply172)，在此做个解释

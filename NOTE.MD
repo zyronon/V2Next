@@ -15,10 +15,10 @@ https://www.v2ex.com/poll_once 好像是换once的
 - 930155
 - 724408
 - 889129 有附言的
--
 
 # 回复问题
 
+- [] bug：回复经常失败，需要多对v站的处理做兼容
 - [x]  bug：https://greasyfork.org/zh-CN/scripts/397787-v2ex-pro/discussions/51302
 
 # 其他问题
