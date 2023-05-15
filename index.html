@@ -438,6 +438,7 @@
           }
         }
       }
+
       //从后往前找
       //原因：问题933080，有图
       floorReplyList.reverse().map(({currentItem, endList}) => {
@@ -452,15 +453,18 @@
       })
       let findList = nextMeIndex > -1 ? endList.slice(0, nextMeIndex) : endList
 
+      if (item.floor === 12) debugger
+
       for (let i = 0; i < findList.length; i++) {
         let currentItem = findList[i]
         //如果已被使用，直接跳过
         if (currentItem.isUse) continue
+
         if (currentItem.replyUsers.length === 1) {
           //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
           //原因：问题887644-3，有图
           if (currentItem.replyFloor !== -1) {
-            if (all[currentItem.replyFloor].username === currentItem.username) {
+            if (all[currentItem.replyFloor - 1].username === currentItem.replyUsers[0]) {
               continue
             }
           }
