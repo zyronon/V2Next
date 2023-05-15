@@ -58,7 +58,7 @@
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <div class="floor" :class="{isDev}">{{ (isDev ? 'a' : '') + comment.floor }}</div>
+      <div class="floor" :class="{isDev}">{{ (isDev ? `a${comment.floor}-` : comment.floor) }}</div>
     </div>
   </div>
 </template>
