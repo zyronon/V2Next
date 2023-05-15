@@ -21,8 +21,8 @@
               <span>
                 <a :href="'/member/'+modelValue.replyUsers[0]">@{{ modelValue.replyUsers[0] }}&nbsp;&nbsp;</a>
               <span>#{{ modelValue.replyFloor }} </span>
-              </span>
               <i class="fa fa-question-circle-o wrong-icon" aria-hidden="true"></i>
+              </span>
               <div class="warning">
                 这条回复似乎有点问题，指定的楼层号与@的人对应不上
                 <br>
@@ -195,10 +195,10 @@ export default {
 
 .wrong-wrapper {
   font-size: 1.4rem;
-  cursor: pointer;
   margin-bottom: 1rem;
 
   span {
+    cursor: pointer;
     text-decoration: line-through;
   }
 

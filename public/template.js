@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX - 超级增强
 // @namespace    http://tampermonkey.net/
-// @version      3.3.8
+// @version      4.4
 // @description  楼中楼回复(支持感谢数排序)、自动签到、使用 SOV2EX 搜索、列表预览内容、点击帖子弹框展示详情、对用户打标签、正文超长自动折叠、划词 base64 解码、一键@所有人,@管理员、操作按钮(感谢、收藏、回复、隐藏)异步请求、支持黑暗模式
 // @author       Zyronon
 // @match        https://*.v2ex.com/
