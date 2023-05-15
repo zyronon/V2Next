@@ -17,20 +17,29 @@
         <div class="left expand-line" @click="toggle"></div>
         <div class="right">
           <div class="w">
-            <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
-            <div v-if="modelValue.isWrong" class="warning">
-              这条回复似乎有点问题，指定的楼层号与@的人对应不上
-              <br>
-              原因可能有下面几种：
-              <br>
-              一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
-              <br>
-              二、忽略回复导致楼层塌陷：原理同上
-              <br>
-              三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
-              <br>
-              四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7" target="_blank">这里</a>反馈给
+            <div class="wrong-wrapper" v-if="modelValue.isWrong">
+              <span>
+                <a :href="'/member/'+modelValue.replyUsers[0]">@{{ modelValue.replyUsers[0] }}&nbsp;&nbsp;</a>
+              <span>#{{ modelValue.replyFloor }} </span>
+              </span>
+              <i class="fa fa-question-circle-o wrong-icon" aria-hidden="true"></i>
+              <div class="warning">
+                这条回复似乎有点问题，指定的楼层号与@的人对应不上
+                <br>
+                原因可能有下面几种：
+                <br>
+                一、屏蔽用户导致楼层塌陷：你屏蔽了A，自A以后的回复的楼层号都会减1
+                <br>
+                二、忽略回复导致楼层塌陷：原理同上
+                <br>
+                三、层主回复时指定错了楼层号（同一，层主屏蔽了别人，导致楼层塌陷）
+                <br>
+                四、脚本解析错误，请在<a href="https://github.com/zyronon/v2ex-script/discussions/7"
+                                       target="_blank">这里</a>反馈
+              </div>
             </div>
+
+            <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
             <PostEditor v-if="edit"
                         @close="edit = false"
                         :replyInfo="replyInfo"
@@ -176,23 +185,44 @@ export default {
       .w {
         padding-left: 1.7rem;
 
-        .warning {
-          @border: #e1e1e1;
-          border-top: 1px solid @border;
-          border-bottom: 1px solid @border;
-          padding: 1rem 0;
-          margin-top: 1rem;
-          font-size: 1.2rem;
-          color: red;
-        }
-
         .post-editor-wrapper {
           margin-top: 1rem;
         }
-
       }
     }
   }
 }
+
+.wrong-wrapper {
+  font-size: 1.4rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+  span {
+    text-decoration: line-through;
+  }
+
+  .wrong-icon {
+    margin-left: .5rem;
+  }
+
+  &:hover {
+    .warning {
+      display: block;
+    }
+  }
+
+  .warning {
+    @border: #e1e1e1;
+    border-top: 1px solid @border;
+    border-bottom: 1px solid @border;
+    padding: 1rem 0;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: red;
+    display: none;
+  }
+}
+
 
 </style>
