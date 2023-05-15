@@ -1,9 +1,8 @@
 https://www.v2ex.com/poll_once 好像是换once的
 
 # 待修复的bug
-
+- 感谢，recall失效了
 - 启用脚本后无法显示代码高亮 https://v2ex.com/t/937951
-- [] bug：回复经常失败，需要多对v站的处理做兼容
 
 # 测试数据
 

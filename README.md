@@ -154,6 +154,7 @@ Safari：安装 <a href="https://apps.apple.com/us/app/userscripts/id1463298887"
 
 # 待实现
  
+- 单独显示高赞
 - 高亮楼主回复
 - 如果回复中，指定了楼层，用hover的形式显示
 - 打标签功能（公共）
