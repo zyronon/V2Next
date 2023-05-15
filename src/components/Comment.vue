@@ -17,7 +17,7 @@
         <div class="left expand-line" @click="toggle"></div>
         <div class="right">
           <div class="w">
-            <BaseHtmlRender class="text" :html="modelValue.reply_content"/>
+            <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
             <div v-if="modelValue.isWrong" class="warning">
               这条回复似乎有点问题，指定的楼层号与@的人对应不上
               <br>
@@ -175,11 +175,6 @@ export default {
 
       .w {
         padding-left: 1.7rem;
-
-        .text {
-          color: black;
-          word-break: break-word;
-        }
 
         .warning {
           @border: #e1e1e1;

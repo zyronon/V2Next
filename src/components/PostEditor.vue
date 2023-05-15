@@ -114,7 +114,7 @@ async function submit() {
   let url = `${window.baseUrl}/t/${post.value.id}`
   $.post(url, {content: content.value, once: post.value.once}).then(
       res => {
-        // console.log('回复', res)
+        console.log('回复', res)
         loading.value = false
         let r = res.search('你上一条回复的内容和这条相同')
         if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '你上一条回复的内容和这条相同'})
@@ -124,29 +124,32 @@ async function submit() {
           type: 'error',
           text: '请不要在每一个回复中都包括外链，这看起来像是在 spamming'
         })
-        r = res.search('你上一条回复的内容和这条相同')
-        if (r > -1) return eventBus.emit(CMD.SHOW_MSG, {
-          type: 'error',
-          text: '你上一条回复的内容和这条相同'
-        })
 
         let r2 = res.search('创建新回复')
         if (r2 > -1) {
           eventBus.emit(CMD.REFRESH_ONCE, res)
-          return eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
+          eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
+          let clientWidth = window.win().document.body.clientWidth
+          let windowWidth = 1200
+          let left = clientWidth / 2 - windowWidth / 2
+          let newWin = window.win().open("about:blank", "hello", `width=${windowWidth},height=600,left=${left},top=100`);
+          newWin.document.write(res);
+          return
         }
         content.value = replyInfo
         emits('close')
         eventBus.emit(CMD.REFRESH_ONCE, res)
         eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '回复成功'})
-        console.log('item', item)
         eventBus.emit(CMD.ADD_REPLY, item)
       },
       err => {
+        console.log('err', err)
         loading.value = false
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '回复失败'})
       }
-  )
+  ).catch(r => {
+    console.log('cathc', r)
+  })
 }
 
 function off() {
