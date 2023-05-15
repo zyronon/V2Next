@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" href="/favicon.ico"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
-  <title>Vite App</title>
-  <style>
-  </style>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.40/vue.global.js"></script>
+    <title>Vite App</title>
+    <style>
+    </style>
 </head>
 <body>
 <div id="app"></div>
@@ -28,7 +28,6 @@
       return true;
     });
   }
-
 
 
   if (!window.GM_openInTab) window.GM_openInTab = () => void 0
@@ -235,14 +234,18 @@
       }
     },
     //请求帖子其他页的回复
-    fetchPostOtherPageReplies(url, pageNo) {
+    fetchPostOtherPageReplies(href, pageNo) {
       return new Promise(resolve => {
-        $.get(url).then(res => {
+        $.get(href).then(res => {
           let s = res.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
           let box = $(s[0]).find('#Main .box')[1]
           let cells = box.querySelectorAll('.cell')
           cells = Array.from(cells)
           resolve({i: pageNo, replyList: this.parsePageReplies(cells.slice(2, cells.length - 1))})
+        }).catch(r => {
+          if (r.status === 403) {
+            cbChecker({type: 'restorePost', value: null})
+          }
         })
       })
     },
@@ -993,7 +996,7 @@
         window.parse.parsePagePostList(list, box)
         break
       case 'post':
-        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面抖动和一闪而过
+        //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
         if (config.postWidth) {
           //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
           //Rightbar的float就失效了，所以把他移动右边
