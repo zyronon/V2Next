@@ -63,7 +63,7 @@
   }, true)
 
   window.initPost = {
-    replies: [],
+    replyList: [],
     nestedReplies: [],
     username: '',
     member: {},
@@ -195,11 +195,11 @@
       let repliesMap = []
       if (cells[1].id) {
         repliesMap.push({i: pageNo, replyList: this.parsePageReplies(cells.slice(1))})
-        let replies = this.getAllReply(repliesMap)
-        post.replies = replies
-        post.replyCount = replies.length
-        post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-        let nestedList = this.createNestedList(replies, post.allReplyUsers)
+        let replyList = this.getAllReply(repliesMap)
+        post.replyList = replyList
+        post.replyCount = replyList.length
+        post.allReplyUsers = Array.from(new Set(replyList.map(v => v.username)))
+        let nestedList = this.createNestedList(replyList, post.allReplyUsers)
         if (nestedList) post.nestedReplies = nestedList
         return post
       } else {
@@ -220,11 +220,11 @@
           Promise.allSettled(promiseList).then(
             (results) => {
               results.filter((result) => result.status === "fulfilled").map(v => repliesMap.push(v.value))
-              let replies = this.getAllReply(repliesMap)
-              post.replies = replies
-              post.replyCount = replies.length
-              post.allReplyUsers = Array.from(new Set(replies.map(v => v.username)))
-              let nestedList = this.createNestedList(replies, post.allReplyUsers)
+              let replyList = this.getAllReply(repliesMap)
+              post.replyList = replyList
+              post.replyCount = replyList.length
+              post.allReplyUsers = Array.from(new Set(replyList.map(v => v.username)))
+              let nestedList = this.createNestedList(replyList, post.allReplyUsers)
               if (nestedList) post.nestedReplies = nestedList
               resolve(post)
             }
@@ -503,7 +503,6 @@
         itemDom.dataset['id'] = id
         window.postList.push(item)
       })
-
       Promise.allSettled(window.postList.map(item => $.get(item.url))).then(res => {
         let ok = res.filter((r) => r.status === "fulfilled").map(v => v.value[0])
         // let fail = res.filter((r) => r.status === "rejected")
