@@ -18,12 +18,15 @@
         <div class="right">
           <div class="w">
             <div class="wrong-wrapper" v-if="modelValue.isWrong">
-              <span>
+              <span
+                  @click="expandWrong = !expandWrong"
+                  title="点击楼层号查看提示"
+              >
                 <a :href="'/member/'+modelValue.replyUsers[0]">@{{ modelValue.replyUsers[0] }}&nbsp;&nbsp;</a>
-              <span>#{{ modelValue.replyFloor }} </span>
+              <span class="del-line">#{{ modelValue.replyFloor }} </span>
               <i class="fa fa-question-circle-o wrong-icon" aria-hidden="true"></i>
               </span>
-              <div class="warning">
+              <div class="warning" v-if="expandWrong">
                 这条回复似乎有点问题，指定的楼层号与@的人对应不上
                 <br>
                 原因可能有下面几种：
@@ -77,6 +80,7 @@ export default {
     return {
       edit: false,
       expand: true,
+      expandWrong: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
       cssStyle: null
     }
@@ -199,17 +203,13 @@ export default {
 
   span {
     cursor: pointer;
+  }
+  .del-line{
     text-decoration: line-through;
   }
 
   .wrong-icon {
     margin-left: .5rem;
-  }
-
-  &:hover {
-    .warning {
-      display: block;
-    }
   }
 
   .warning {
@@ -220,7 +220,6 @@ export default {
     margin-top: 1rem;
     font-size: 1.2rem;
     color: red;
-    display: none;
   }
 }
 
