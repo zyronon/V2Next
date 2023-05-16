@@ -210,8 +210,8 @@ export default {
       post: computed(() => this.current),
       config: computed(() => this.config),
       allReplyUsers: computed(() => {
-        if (this.current?.replies) {
-          return Array.from(new Set(this.current?.replies?.map(v => v.username) ?? []))
+        if (this.current?.replyList) {
+          return Array.from(new Set(this.current?.replyList?.map(v => v.username) ?? []))
         }
         return []
       }),
@@ -258,7 +258,7 @@ export default {
     },
   },
   watch: {
-    'current.replies': {
+    'current.replyList': {
       handler(newVal, oldVal) {
         // console.log('watch', newVal.length, oldVal.length)
         if (newVal.length) {
@@ -560,13 +560,13 @@ export default {
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
         const {id, type} = val
-        let currentI = this.current.replies.findIndex(i => i.id === id)
+        let currentI = this.current.replyList.findIndex(i => i.id === id)
         if (currentI > -1) {
-          this.current.replies[currentI].isThanked = type === 'add'
+          this.current.replyList[currentI].isThanked = type === 'add'
           if (type === 'add') {
-            this.current.replies[currentI].thankCount++
+            this.current.replyList[currentI].thankCount++
           } else {
-            this.current.replies[currentI].thankCount--
+            this.current.replyList[currentI].thankCount--
           }
         }
       })
@@ -590,12 +590,12 @@ export default {
       })
       eventBus.on(CMD.REMOVE, (val) => {
         // console.log('remove', val)
-        let removeIndex = this.current.replies.findIndex(i => i.floor === val)
+        let removeIndex = this.current.replyList.findIndex(i => i.floor === val)
         // console.log('removeIndex',removeIndex)
         if (removeIndex > -1) {
-          this.current.replies.splice(removeIndex, 1)
+          this.current.replyList.splice(removeIndex, 1)
         }
-        // console.log('removeIndex',this.current.replies)
+        // console.log('removeIndex',this.current.replyList)
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
         if (rIndex > -1) {
           this.list[rIndex] = Object.assign(this.list[rIndex], val)
@@ -621,7 +621,7 @@ export default {
         }
       })
       eventBus.on(CMD.ADD_REPLY, (item) => {
-        this.current.replies.push(item)
+        this.current.replyList.push(item)
       })
       eventBus.on(CMD.REFRESH_ONCE, async (once) => {
         if (once) {
@@ -680,7 +680,7 @@ export default {
 
       this.current = Object.assign(this.clone(window.initPost), this.clone(post))
       //如果，有数据，不显示loading,默默更新即可
-      if (!this.current.replies.length) this.loading = true
+      if (!this.current.replyList.length) this.loading = true
 
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
@@ -710,10 +710,10 @@ export default {
       let body = $(bodyText[0])
 
       this.current = await window.parse.getPostDetail(this.current, body, htmlText)
-      if (this.current.replies.length) {
+      if (this.current.replyList.length) {
         let index = this.list.findIndex(v => v.id == post.id)
         if (index > -1) {
-          this.list[index].replies = this.current.replies
+          this.list[index].replyList = this.current.replyList
           this.list[index].nestedReplies = this.current.nestedReplies
           this.list[index].once = this.current.once
           this.list[index].createDate = this.current.createDate

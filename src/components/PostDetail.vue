@@ -23,7 +23,7 @@
             <Toolbar @reply="isSticky = !isSticky"/>
           </div>
         </div>
-        <div class="my-box comment-wrapper" v-if="replies.length || loading">
+        <div class="my-box comment-wrapper" v-if="replyList.length || loading">
           <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
             <div class="flex" v-if="pageType === 'post'">
               默认显示楼中楼：
@@ -38,6 +38,10 @@
               <div class="radio"
                    @click="changeOption(1)"
                    :class="displayType === 1?'active':''">感谢
+              </div>
+              <div class="radio"
+                   @click="changeOption(3)"
+                   :class="displayType === 3?'active':''">只看楼主
               </div>
               <div class="radio"
                    @click="changeOption(2)"
@@ -56,10 +60,10 @@
           </div>
           <div class="comments" ref="comments" v-else>
             <template v-if="modelValue">
-              <Comment v-for="(item,index) in replies"
+              <Comment v-for="(item,index) in replyList"
                        :key="item.floor"
                        :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
-                       v-model="replies[index]"/>
+                       v-model="replyList[index]"/>
             </template>
           </div>
         </div>
@@ -169,12 +173,13 @@ export default {
       }
       return []
     },
-    replies() {
+    replyList() {
       if (this.displayType === 0) return this.post.nestedReplies
       if (this.displayType === 1) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
-      if (this.displayType === 2) return this.post.replies
+      if (this.displayType === 2) return this.post.replyList
+      if (this.displayType === 3) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },
   },
