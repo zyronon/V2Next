@@ -3,7 +3,7 @@ import './style.css';
 import App from './App.vue';
 import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
-import {Post, Reply} from "./types"
+import {PageType, Post, Reply} from "./types"
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -48,7 +48,7 @@ function init() {
     avatar: '',
     tagsId: ''
   }
-  window.pageType = ''
+  window.pageType = undefined
   window.pageData = {pageNo: 1}
   window.config = {
     showToolbar: true,
@@ -236,11 +236,7 @@ function init() {
         let {users, floor} = this.parseReplyContent(item.reply_content)
         item.replyUsers = users
         item.replyFloor = floor
-        if (index === 5) {
-          // console.log(item)
-          // console.log(reply_content.innerText)
-          // console.log(reply_content.innerHTML)
-        }
+
         let ago = node.querySelector('.ago')
         item.date = ago!.textContent!
 
@@ -814,19 +810,19 @@ function init() {
   function checkPageType() {
     let location2 = window.win().location
     if (location2.pathname === '/') {
-      window.pageType = 'home'
+      window.pageType = PageType.Home
     } else if (location2.href.match(/.com\/?tab=/)) {
-      window.pageType = 'home'
+      window.pageType = PageType.Home
     } else if (location2.href.match(/.com\/go\//)) {
       if (!location2.href.includes('/links')) {
-        window.pageType = 'nodePage'
+        window.pageType = PageType.Node
       }
     } else if (location2.href.match(/.com\/recent/)) {
-      window.pageType = 'recent'
+      window.pageType = PageType.Home
     } else {
       let r = location2.href.match(/.com\/t\/([\d]+)/)
       if (r) {
-        window.pageType = 'post'
+        window.pageType = PageType.Post
         window.pageData.id = r[1]
         if (location2.search) {
           let pr = location2.href.match(/\?p=([\d]+)/)
@@ -950,13 +946,10 @@ function init() {
       }
     })
 
-    let $section = document.createElement('section')
-    $section.id = 'app'
-
     let box
     let list
-    switch (window.pageType) {
-      case 'nodePage':
+    switch (window.pageType!) {
+      case  PageType.Node:
         box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
 
         let topics = box[1].querySelector('#TopicsNode')
@@ -964,14 +957,13 @@ function init() {
         list[0].before($section)
         window.parse.parsePagePostList(list, box[1])
         break
-      case 'recent':
-      case 'home':
+      case  PageType.Home:
         box = document.querySelector('#Wrapper #Main .box')
         list = box!.querySelectorAll('.item')
         list[0].before($section)
         window.parse.parsePagePostList(list, box)
         break
-      case 'post':
+      case  PageType.Post:
         //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
         if (window.config.postWidth) {
           //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
@@ -1025,8 +1017,4 @@ function init() {
 }
 
 init()
-createApp(App).mount(
-  (() => {
-    return $section;
-  })(),
-);
+createApp(App).mount($section);

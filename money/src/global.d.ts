@@ -1,4 +1,4 @@
-import {Post} from "./types"
+import {Config, PageType, Post} from "./types"
 
 declare global {
   interface Window {
@@ -6,10 +6,10 @@ declare global {
     user: any,
     baseUrl: string,
     pageData: any,
-    config: any,
+    config: Config,
     isNight: boolean,
     canParseV2exPage: boolean,
-    pageType: string,
+    pageType?: PageType,
 
     clone(val: any): any
 
@@ -20,10 +20,6 @@ declare global {
 
     win: any
     query: any
-  }
-
-  interface String {
-    prependHello(): string;
   }
 }
 

@@ -27,6 +27,29 @@ export interface User {
 
 }
 
+export interface Config {
+  showToolbar: boolean,
+  showPreviewBtn: boolean,
+  autoOpenDetail: boolean,
+  openTag: boolean,//给用户打标签
+  clickPostItemOpenDetail: boolean,
+  closePostDetailBySpace: boolean,//点击空白处关闭详情
+  contentAutoCollapse: boolean,//正文超长自动折叠
+  viewType: string,
+  commentDisplayType: number,
+  newTabOpen: boolean,//新标签打开
+  base64: boolean,//base功能
+  sov2ex: boolean,
+  showTopReply: boolean,
+  postWidth?: string,
+}
+
+export enum PageType {
+  Home = "Home",
+  Node = "Node",
+  Post = "Post",
+}
+
 export interface Reply {
   thankCount: number,
   isThanked: boolean,
