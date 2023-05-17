@@ -23,51 +23,58 @@
             <Toolbar @reply="isSticky = !isSticky"/>
           </div>
         </div>
-        <div class="my-box comment-wrapper" v-if="replyList.length || loading">
-          <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
-            <div class="flex" v-if="pageType === 'post'">
-              默认显示楼中楼：
-              <div class="switch" :class="{active:config.autoOpenDetail}"
-                   @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+        <div class="my-box comment-wrapper">
+          <template v-if="post.replyList.length ||loading">
+            <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
+              <div class="flex" v-if="pageType === 'post'">
+                默认显示楼中楼：
+                <div class="switch" :class="{active:config.autoOpenDetail}"
+                     @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+              </div>
+              <div class="radio-group2">
+                <div class="radio"
+                     @click="changeOption(0)"
+                     :class="displayType === 0?'active':''">楼中楼
+                </div>
+                <div class="radio"
+                     @click="changeOption(1)"
+                     :class="displayType === 1?'active':''">感谢
+                </div>
+                <div class="radio"
+                     @click="changeOption(3)"
+                     :class="displayType === 3?'active':''">只看楼主
+                </div>
+                <div class="radio"
+                     @click="changeOption(2)"
+                     :class="displayType === 2?'active':''">V2原版
+                </div>
+              </div>
             </div>
-            <div class="radio-group2">
-              <div class="radio"
-                   @click="changeOption(0)"
-                   :class="displayType === 0?'active':''">楼中楼
-              </div>
-              <div class="radio"
-                   @click="changeOption(1)"
-                   :class="displayType === 1?'active':''">感谢
-              </div>
-              <div class="radio"
-                   @click="changeOption(3)"
-                   :class="displayType === 3?'active':''">只看楼主
-              </div>
-              <div class="radio"
-                   @click="changeOption(2)"
-                   :class="displayType === 2?'active':''">V2原版
-              </div>
-            </div>
-          </div>
-          <div class="my-cell flex">
+            <div class="my-cell flex">
                 <span class="gray">{{ post.replyCount }} 条回复
                  <span v-if="post.createDate"> &nbsp;<strong class="snow">•</strong> &nbsp;{{ post.createDate }}</span>
                 </span>
-            <div class="fr" v-html="post.fr"></div>
-          </div>
-          <div class="loading-wrapper" v-if="loading">
-            <div :class="[isNight?'loading-b':'loading-c']"></div>
-          </div>
-          <div class="comments" ref="comments" v-else>
-            <template v-if="modelValue">
-              <Comment v-for="(item,index) in replyList"
-                       :key="item.floor"
-                       :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
-                       v-model="replyList[index]"/>
-            </template>
-          </div>
+              <div class="fr" v-html="post.fr"></div>
+            </div>
+          </template>
+
+          <template v-if="replyList.length || loading">
+            <div class="loading-wrapper" v-if="loading">
+              <div :class="[isNight?'loading-b':'loading-c']"></div>
+            </div>
+            <div class="comments" ref="comments" v-else>
+              <template v-if="modelValue">
+                <Comment v-for="(item,index) in replyList"
+                         :key="item.floor"
+                         :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
+                         v-model="replyList[index]"/>
+              </template>
+            </div>
+          </template>
         </div>
-        <div v-else id="no-comments-yet">目前尚无回复</div>
+
+        <div v-if="!(replyList.length || loading)" id="no-comments-yet">目前尚无回复</div>
+
         <div v-if="isLogin" class="my-box editor-wrapper" ref="replyBox" :class="{'sticky':isSticky}">
           <div class="my-cell flex">
             <span>添加一条新回复</span>

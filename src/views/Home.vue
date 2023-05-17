@@ -20,7 +20,7 @@
           </div>
         </template>
         <template v-if="pageType === 'post' && !show">
-          <div class="my-box flex f14 open-post" style="margin: 1rem 0 0 0;padding: 1rem;">
+          <div class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
             <div class="flex">
               默认显示楼中楼 ：
               <div class="switch" :class="{active:config.autoOpenDetail}"

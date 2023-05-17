@@ -125,6 +125,15 @@
 
       post.isReport = htmlText.includes('你已对本主题进行了报告')
 
+      //如果没有正文（点的本站的a标签），才会解析正文
+      if (!post.title || !post.content_rendered) {
+        let main = body.find('#Main')
+        let aName = main.find('.header small.gray a:nth-child(1)')
+        if (aName) {
+          post.member.username = aName[0].innerText
+        }
+      }
+
       let topic_buttons = body.find('.topic_buttons')
       if (topic_buttons.length) {
         let favoriteNode = topic_buttons.find('.tb:first')
@@ -1016,24 +1025,25 @@
 
         box = window.win().query('#Wrapper #Main .box')
         box.after($section)
+        let post = Object.assign({}, window.clone(window.initPost), {id: window.pageData.id})
+        let body = $(window.win().doc.body)
+        let htmlText = window.win().doc.documentElement.outerHTML
         window.parse.parsePostContent(
-          {id: window.pageData.id},
-          $(window.win().doc.body),
-          window.win().doc.documentElement.outerHTML
+          post,
+          body,
+          htmlText
         ).then(async res => {
           // console.log('详情页-基本信息解析完成', new Date())
-          window.pageData.post = res
           await cbChecker({type: 'postContent', value: res}, 0)
         })
 
         window.parse.getPostAllReplies(
-          {id: window.pageData.id},
-          $(window.win().doc.body),
-          window.win().doc.documentElement.outerHTML,
+          post,
+          body,
+          htmlText,
           window.pageData.pageNo
         ).then(async res => {
           // console.log('详情页-回复解析完成', new Date())
-          window.pageData.post = Object.assign(window.pageData.post, res)
           await cbChecker({type: 'postReplies', value: res}, 0)
         })
         break
