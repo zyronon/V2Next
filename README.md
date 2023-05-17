@@ -12,7 +12,7 @@
 - 秒杀其他脚本或插件的楼中楼功能：
     - 其他脚本：只解析当前页，如果有很多页回复，楼中楼就会前言不搭后语莫名其妙的
     - 本脚本：加载所有回复然后再解析楼中楼，保证回复解析正确
-- One For All，集成了市面上常见的增强（辅助）功能
+- 集成了市面上常见的增强（辅助）功能
   - 坏消息：是个缝合怪
   - 好消息：都缝了
   
@@ -70,7 +70,7 @@
 - 点个 Star ⭐️ 或分享给他人，让更多的人知道我的存在。
 - 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/discussions/7)提出。
 - 请我喝一杯咖啡
-- ![要饭地址](https://i.imgur.com/Eq6uROF.jpg)
+- ![要饭地址](https://i.imgur.com/ow8fsFW.png)
 
 #### 源代码：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
