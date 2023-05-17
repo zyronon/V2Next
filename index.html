@@ -961,6 +961,12 @@
 
   window.win().canParseV2exPage = !window.win().location.href.includes('script=0')
   if (window.win().canParseV2exPage) {
+    let setting = $('<a href="#" class="top">脚本设置</a>')
+    setting.on('click', () => {
+      cbChecker({type: 'openSetting'})
+    })
+    $('.tools').prepend(setting)
+
     checkPageType()
     initMonkeyMenu()
     initStyle()

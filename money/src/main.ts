@@ -8,7 +8,7 @@ import {PageType, Post, Reply} from "./types"
 let $section = document.createElement('section')
 $section.id = 'app'
 
-function init() {
+function run() {
   window.baseUrl = location.origin
   window.initPost = {
     allReplyUsers: [],
@@ -58,7 +58,7 @@ function init() {
     clickPostItemOpenDetail: true,
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//正文超长自动折叠
-    viewType: 'card',
+    viewType: 'table',
     commentDisplayType: 0,
     newTabOpen: false,//新标签打开
     base64: true,//base功能
@@ -740,7 +740,7 @@ function init() {
   function qianDao() {
     let timeNow = new Date().getUTCFullYear() + '/' + (new Date().getUTCMonth() + 1) + '/' + new Date().getUTCDate() // 当前 UTC-0 时间（V2EX 按这个时间的）
     // return qianDao_(null, timeNow); //                           后台签到
-    if (window.pageType === 'home') { //                               在首页
+    if (window.pageType === PageType.Home) { //                               在首页
       let qiandao = window.query('.box .inner a[href="/mission/daily"]');
       if (qiandao) { //                                            如果找到了签到提示
         qianDao_(qiandao, timeNow); //                           后台签到
@@ -921,8 +921,13 @@ function init() {
     })
   }
 
-  window.canParseV2exPage = !window.location.href.includes('script=0')
-  if (window.canParseV2exPage) {
+  function init() {
+    let setting = $('<a href="#" class="top">脚本设置</a>')
+    setting.on('click', () => {
+      cbChecker({type: 'openSetting'})
+    })
+    $('.tools').prepend(setting)
+
     checkPageType()
     initMonkeyMenu()
     initStyle()
@@ -937,6 +942,7 @@ function init() {
       try {
         qianDao()
       } catch (e) {
+        console.log('签到失败')
       }
     }
 
@@ -945,7 +951,6 @@ function init() {
         setTimeout(initSoV2ex, 1000)
       }
     })
-
     let box
     let list
     switch (window.pageType!) {
@@ -1011,10 +1016,15 @@ function init() {
         console.error('未知页面')
         break
     }
+  }
+
+  window.canParseV2exPage = !window.location.href.includes('script=0')
+  if (window.canParseV2exPage) {
+    init()
   } else {
     alert('脚本无法查看此主题，已为您单独打开此主题')
   }
 }
 
-init()
+run()
 createApp(App).mount($section);
