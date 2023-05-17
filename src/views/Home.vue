@@ -159,6 +159,12 @@
           <div class="notice">
             提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
           </div>
+          <div class="option">
+            <span>显示高赞回复：</span>
+            <div class="switch" :class="{active:config.showTopReply}"
+                 @click="config.showTopReply = !config.showTopReply"/>
+          </div>
+
           <div class="jieshao">
           </div>
         </div>

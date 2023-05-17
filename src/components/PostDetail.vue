@@ -23,6 +23,21 @@
             <Toolbar @reply="isSticky = !isSticky"/>
           </div>
         </div>
+
+        <div class="my-box" v-if="topReplyList.length && config.showTopReply">
+          <div class="my-cell flex">
+            <span class="gray">高赞回复</span>
+            <i class="fa fa-times close-top"
+               @click="config.showTopReply = false"
+               aria-hidden="true"></i>
+          </div>
+          <div class="comments" ref="comments">
+            <Comment v-for="(item,index) in topReplyList"
+                     :key="item.floor"
+                     :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
+                     v-model="topReplyList[index]"/>
+          </div>
+        </div>
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
@@ -179,6 +194,12 @@ export default {
         return ['管理员', '所有人'].concat(this.allReplyUsers)
       }
       return []
+    },
+    topReplyList() {
+      return this.post.replyList
+          .filter(v => v.thankCount > 0)
+          .slice(0, 3)
+          .sort((a, b) => b.thankCount - a.thankCount)
     },
     replyList() {
       if (this.displayType === 0) return this.post.nestedReplies
@@ -651,6 +672,12 @@ export default {
     position: fixed;
     top: 3rem;
     transform: translateX(4rem);
+    font-size: 2rem;
+  }
+
+  .close-top {
+    color: @main-color;
+    cursor: pointer;
     font-size: 2rem;
   }
 }
