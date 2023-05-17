@@ -1,6 +1,7 @@
 https://www.v2ex.com/poll_once 好像是换once的
 
 # 待修复的bug
+
 - 感谢，recall失效了
 - 启用脚本后无法显示代码高亮 https://v2ex.com/t/937951
 
@@ -36,8 +37,18 @@ https://www.v2ex.com/poll_once 好像是换once的
 
 # TODO
 
+- 单独显示高赞
+- 高亮楼主回复
+- 如果回复中，指定了楼层，用hover的形式显示
+- 打标签功能（公共）
+  https://gist.github.com/y4code/241e8a7d05286211ccf9ee05b996a02e
+- 回复太多，考虑放后台，如924034
+- 链接自动转图片
+- 自动加载下一页
+- 增加自动解析显示 base64 (https://github.com/bjzhou/v2ex-base64-decoder)
+- 表情功能
+    - https://greasyfork.org/zh-CN/scripts/435299-v2ex-emoticon/code
 - [ ]未登录情况下的收藏、忽略等按钮
-
 - [x] todo 等页面分类出来了，记得把单独打开帖子时，点击忽略后要跳转到首页
 - [x] 条目点击后变灰，已读功能
 - [x] 回复时，如果是@人，那么即使显示的时候，要加上a标签
