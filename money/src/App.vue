@@ -540,7 +540,7 @@ export default {
   .open-post, .nav {
     color: white;
     background: #18222d;
-    border: none;
+    border-bottom: 1px solid  #22303f;
   }
 }
 
@@ -552,7 +552,6 @@ export default {
 .nav {
   font-size: 1.4rem;
   background: white;
-  text-align: start;
   padding: 1rem;
   border-bottom: 1px solid @border;
 }
