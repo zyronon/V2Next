@@ -19,7 +19,6 @@
   </div>
 </template>
 <script>
-
 import {nextTick} from "vue";
 
 export default {
@@ -30,6 +29,12 @@ export default {
       default() {
         return ''
       }
+    },
+    disabled: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data() {
@@ -39,8 +44,8 @@ export default {
   },
   methods: {
     showPop(e) {
+      if (this.disabled) return
       let rect = e.target.getBoundingClientRect()
-      console.log(rect)
       this.show = true
       nextTick(() => {
         this.$refs.tip.style.top = rect.top + 'px'
@@ -63,7 +68,6 @@ export default {
   padding: 1.5rem;
   box-shadow: 0px 0px 12px rgba(0, 0, 0, .2);
   border-radius: .4rem;
-  min-width: 13rem;
   transform: translate(-50%, calc(-100% - 1rem));
   z-index: 999;
 
@@ -71,7 +75,8 @@ export default {
     color: black;
     text-align: start;
     font-size: 1.4rem;
-    max-width: 13rem;
+    width: 15rem;
+    min-width: 15rem;
   }
 
   .options {

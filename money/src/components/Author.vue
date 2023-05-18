@@ -30,9 +30,11 @@
     </div>
     <div class="Author-right">
       <div class="toolbar" v-if="isLogin">
-        <div class="tool" @click="hide">
-          <span>隐藏</span>
-        </div>
+        <PopConfirm title="确认隐藏这条回复?" @confirm="$emit('hide')">
+          <div class="tool">
+            <span>隐藏</span>
+          </div>
+        </PopConfirm>
         <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
@@ -64,12 +66,13 @@
 </template>
 <script>
 import Point from "./Point";
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../utils/type";
+import PopConfirm from "@/components/PopConfirm.vue";
 
 export default {
   name: "Author",
-  components: {Point},
+  components: {PopConfirm, Point},
   inject: ['isDev', 'isLogin', 'tags', 'config'],
   props: {
     modelValue: false,
@@ -98,11 +101,6 @@ export default {
     },
     removeTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.comment.username, tag})
-    },
-    hide() {
-      if (confirm('确认隐藏这条回复？')) {
-        this.$emit('hide')
-      }
     },
     checkIsLogin(emitName = '') {
       if (!this.isLogin) {

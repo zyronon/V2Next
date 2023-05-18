@@ -64,8 +64,9 @@ function run() {
     newTabOpen: false,//新标签打开
     base64: true,//base功能
     sov2ex: false,
-    showTopReply: true,
     postWidth: '',
+    showTopReply: true,
+    topReplyLoveCount: 2
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -922,20 +923,22 @@ function run() {
     })
   }
 
-  function init() {
+  function addSettingText() {
     let setting = $('<a href="javascript:void 0;" class="top">脚本设置</a>')
     setting.on('click', () => {
       cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
+  }
 
+  function init() {
     checkPageType()
     initMonkeyMenu()
     initStyle()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')
     if (top2 && top2.textContent !== '注册') {
-      window.user.username = top2
+      window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
       cbChecker({type: 'syncData'})
 
@@ -946,6 +949,8 @@ function run() {
         console.log('签到失败')
       }
     }
+    addSettingText()
+
 
     initConfig().then(r => {
       if (window.config.sov2ex) {

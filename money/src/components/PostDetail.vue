@@ -141,7 +141,7 @@ import PostEditor from './PostEditor'
 import Point from "./Point";
 import Toolbar from "./Toolbar";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
-import eventBus from "@/eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
 import {computed} from "vue";
 import {PageType} from "@/types";
@@ -159,7 +159,7 @@ export default {
     BaseHtmlRender,
     Tooltip
   },
-  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType'],
+  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType', 'isNight'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -173,12 +173,6 @@ export default {
       }
     },
     loading: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    },
-    isNight: {
       type: Boolean,
       default() {
         return false
@@ -211,7 +205,7 @@ export default {
     },
     topReplyList() {
       return this.post.replyList
-          .filter(v => v.thankCount > 0)
+          .filter(v => v.thankCount > this.config.topReplyLoveCount)
           .slice(0, 3)
           .sort((a, b) => b.thankCount - a.thankCount)
     },

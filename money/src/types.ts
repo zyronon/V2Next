@@ -41,6 +41,7 @@ export interface Config {
   base64: boolean,//base功能
   sov2ex: boolean,
   showTopReply: boolean,
+  topReplyLoveCount: number,
   postWidth?: string,
 }
 
