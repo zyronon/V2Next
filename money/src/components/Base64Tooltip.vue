@@ -26,7 +26,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import eventBus from "@/eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
 
 const tooltip = ref(null)

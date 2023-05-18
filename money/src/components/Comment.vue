@@ -64,7 +64,7 @@
 import Author from "./Author";
 import PostEditor from "./PostEditor";
 import Point from "./Point";
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
 import {CMD} from "@/utils/type";
 

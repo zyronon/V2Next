@@ -1,6 +1,6 @@
 <template>
-  <div class="setting-modal modal" :class="{isNight}">
-    <div class="mask" @click="$emit('hide')"></div>
+  <div v-if="show" class="setting-modal modal" :class="{isNight}">
+    <div class="mask" @click="$emit('update:show',false)"></div>
     <div class="wrapper">
       <div class="title">
         脚本设置
@@ -131,6 +131,10 @@
             <div class="switch" :class="{active:config.showTopReply}"
                  @click="config.showTopReply = !config.showTopReply"/>
           </div>
+          <div class="option">
+            <span>高赞回复最少赞：</span>
+            <input type="number" min="1" v-model="config.topReplyLoveCount">
+          </div>
         </div>
       </div>
       <div class="jieshao">
@@ -149,6 +153,12 @@ export default {
       default() {
         return {}
       }
+    },
+    show: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data() {
@@ -159,6 +169,10 @@ export default {
   watch: {
     config: {
       handler(n) {
+        n.topReplyLoveCount = Math.trunc(n.topReplyLoveCount)
+        if (n.topReplyLoveCount < 0) {
+          n.topReplyLoveCount = 1
+        }
         this.$emit('update:modelValue', n)
       },
       deep: true

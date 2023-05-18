@@ -1,16 +1,17 @@
 <script>
 import {PageType} from "./types"
 import {computed} from "vue";
-import Setting from "./components/Setting.vue";
-import eventBus from "../../src/eventBus.js";
+import Setting from "./components/Modal/SettingModal.vue";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../../src/utils/type.js";
 import PostDetail from "./components/PostDetail.vue";
 import Base64Tooltip from "./components/Base64Tooltip.vue";
 import Msg from "../../src/components/Msg.vue";
 import Tooltip from "@/components/Tooltip.vue";
+import TagModal from "@/components/Modal/TagModal.vue";
 
 export default {
-  components: {Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
+  components: {TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
@@ -300,27 +301,6 @@ export default {
         $(this).hide()
       })
     },
-    async addTag() {
-      let oldTag = this.clone(this.tags)
-      let tags = this.tags[this.tagModal.currentUsername] ?? []
-      let rIndex = tags.findIndex(v => v === this.tagModal.tag)
-      if (rIndex > -1) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '标签已存在！'})
-        return
-      } else {
-        tags.push(this.tagModal.tag)
-      }
-      this.tags[this.tagModal.currentUsername] = tags
-      this.tagModal.tag = ''
-      this.tagModal.show = false
-      let res = await window.parse.saveTags(this.tags)
-      if (!res) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '标签添加失败！'})
-        this.tags = oldTag
-      }
-      console.log('res', res)
-      return console.log(this.tags)
-    },
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
       if (type === 'openSetting') {
@@ -447,11 +427,6 @@ export default {
           this.current.once = r
         })
       })
-      eventBus.on(CMD.ADD_TAG, (username) => {
-        console.log('use', username)
-        this.tagModal.currentUsername = username
-        this.tagModal.show = true
-      })
       eventBus.on(CMD.REMOVE_TAG, async ({username, tag}) => {
         let oldTag = this.clone(this.tags)
         let tags = this.tags[username] ?? []
@@ -535,9 +510,10 @@ export default {
   <Transition>
     <Setting
         v-model="config"
-        v-if="showConfig"
-        @hide="showConfig = !showConfig"/>
+        v-model:show="showConfig"/>
   </Transition>
+  <TagModal v-model:tags="tags"/>
+
   <div class="app-home" :class="[pageType,isNight?'isNight':'']">
     <template v-if="!stopMe">
       <template v-if="config.showToolbar">
@@ -572,36 +548,15 @@ export default {
         </template>
       </template>
       <PostDetail v-model="show"
-                  :isNight="isNight"
                   v-model:displayType="config.commentDisplayType"
                   :loading="loading"/>
       <Base64Tooltip/>
-      <div class="tag-modal modal" v-if="tagModal.show">
-        <div class="mask" @click.stop="tagModal.show = false"></div>
-        <div class="wrapper">
-          <div class="title">
-            添加标签
-          </div>
-          <div class="option">
-            <span>用户：</span>
-            <div>
-              {{ tagModal.currentUsername }}
-            </div>
-          </div>
-          <input type="text" autofocus v-model="tagModal.tag" @keydown.enter="addTag">
-          <div class="btns">
-            <div class="button info" @click="tagModal.show = false">取消</div>
-            <div class="button" @click="addTag">确定</div>
-          </div>
-        </div>
-      </div>
     </template>
     <div class="msgs">
       <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
     </div>
   </div>
 </template>
-
 
 <style scoped lang="less">
 @import "./assets/less/variable";
@@ -655,34 +610,6 @@ export default {
   }
 }
 
-.tag-modal {
-  .wrapper {
-    z-index: 9;
-    background: #f1f1f1;
-    border-radius: .8rem;
-    font-size: 1.4rem;
-    //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem 6rem 4rem 6rem;
-    width: 25rem;
-
-    input {
-      margin-bottom: 3rem;
-      width: 100%;
-      height: 3rem;
-      outline: unset;
-      border: 1px solid #e1e1e1;
-      padding: 0 .5rem;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    .btns {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-    }
-  }
-}
 
 </style>
 
