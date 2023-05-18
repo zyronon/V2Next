@@ -11,11 +11,26 @@ declare global {
     canParseV2exPage: boolean,
     pageType?: PageType,
 
-    clone(val: any): any
+    clone: (val: any) => any
 
     postList: any[]
 
-    parse: any
+    parse: {
+      parsePostContent: Function,
+      getPostAllReplies: Function,
+      fetchPostOtherPageReplies: Function,
+      parsePageReplies: Function,
+      parseReplyContent: Function,
+      getPostDetail: Function,
+      getAllReply: Function,
+      createNestedList: Function,
+      findChildren: Function,
+      parsePagePostList: Function,
+      parseA: Function,
+      createTagNote: Function,
+      saveTags: Function,
+      checkPhotoLink2Img: Function,
+    }
     cb: any
 
     win: any

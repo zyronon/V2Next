@@ -1,5 +1,6 @@
 import {createApp} from 'vue';
-import './style.css';
+import './assets/less/index.less'
+
 import App from './App.vue';
 import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
@@ -922,7 +923,7 @@ function run() {
   }
 
   function init() {
-    let setting = $('<a href="#" class="top">脚本设置</a>')
+    let setting = $('<a href="javascript:void 0;" class="top">脚本设置</a>')
     setting.on('click', () => {
       cbChecker({type: 'openSetting'})
     })
@@ -1027,4 +1028,6 @@ function run() {
 }
 
 run()
-createApp(App).mount($section);
+let vueApp = createApp(App)
+vueApp.config.unwrapInjectedRef = true
+vueApp.mount($section);
