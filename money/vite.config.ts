@@ -1,8 +1,12 @@
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 import monkey, {cdn} from 'vite-plugin-monkey';
+import {resolve} from 'path'
 
-// https://vitejs.dev/config/
+function pathResolve(dir) {
+  return resolve(__dirname, ".", dir)
+}
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -11,7 +15,13 @@ export default defineConfig({
       userscript: {
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'v2ex-max-plus',
-        match: ['http*://*.v2ex.com/'],
+        match: [
+          'https://*.v2ex.com/',
+          'https://*.v2ex.com/?tab=*',
+          'https://*.v2ex.com/t/*',
+          'https://*.v2ex.com/recent*',
+          'https://*.v2ex.com/go/*'
+        ],
       },
       build: {
         externalGlobals: {
@@ -20,4 +30,10 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@": pathResolve("src"),
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+  },
 });
