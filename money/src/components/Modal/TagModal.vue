@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="tag-modal modal" v-if="tagModal.show">
+    <div class="tag-modal modal" v-if="tagModal.show" :class="{isNight}">
       <div class="mask" @click.stop="tagModal.show = false"></div>
       <div class="wrapper">
         <div class="title">
@@ -18,7 +18,7 @@
                autofocus
                v-model="tagModal.tag" @keydown.enter="addTag">
         <div class="btns">
-          <div class="" @click="tagModal.show = false">取消</div>
+          <div class="white" @click="tagModal.show = false">取消</div>
           <div class="main" @click="addTag">确定</div>
         </div>
       </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted, reactive, ref} from "vue"
+import {inject, nextTick, onMounted, reactive, ref} from "vue"
 import {CMD} from "../../../../src/utils/type"
 import eventBus from "@/utils/eventBus.js";
 
@@ -36,6 +36,7 @@ const tagModal = reactive({
   currentUsername: '',
   tag: '',
 })
+const isNight = inject('isNight')
 const {tags} = defineProps(['tags'])
 const emit = defineEmits(['update:tags'])
 const input = ref<HTMLInputElement>(null as any)
@@ -77,6 +78,27 @@ async function addTag() {
 
 <style scoped lang="less">
 @import "src/assets/less/variable";
+
+.isNight {
+  .wrapper {
+    background: #22303f!important;
+
+    .title{
+      color: gray;
+    }
+
+    .option {
+      color: white!important;
+
+      span {
+        color: gray !important;
+      }
+    }
+    .white{
+      color: white!important;
+    }
+  }
+}
 
 .tag-modal {
   .wrapper {

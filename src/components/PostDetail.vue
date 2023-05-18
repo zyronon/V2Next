@@ -198,8 +198,8 @@ export default {
     topReplyList() {
       return this.post.replyList
           .filter(v => v.thankCount > 0)
-          .slice(0, 3)
           .sort((a, b) => b.thankCount - a.thankCount)
+          .slice(0, 3)
     },
     replyList() {
       if (this.displayType === 0) return this.post.nestedReplies

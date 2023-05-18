@@ -91,6 +91,11 @@ function decode() {
 <style scoped lang="less">
 @import "src/assets/less/variable";
 
+.isNight {
+  background: #22303f !important;
+  color: #ccc !important;
+}
+
 .base64_tooltip {
   //box-shadow: 0 0 0 3px gray;
   box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014, 0 9px 28px 8px #0000000d;
