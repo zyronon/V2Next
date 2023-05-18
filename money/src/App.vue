@@ -9,9 +9,10 @@ import Base64Tooltip from "./components/Base64Tooltip.vue";
 import Msg from "../../src/components/Msg.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import TagModal from "@/components/Modal/TagModal.vue";
+import MsgModal from "@/components/Modal/MsgModal.vue";
 
 export default {
-  components: {TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
+  components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
       isDev: computed(() => import.meta.env.DEV),
@@ -37,9 +38,6 @@ export default {
       isLogin: !!window.user.username,
       pageType: window.pageType,
       isNight: window.isNight,
-      msgList: [
-        // {type: 'success', text: '123', id: Date.now()}
-      ],
       stopMe: false,//停止使用脚本
       show: false,
       showConfig: false,
@@ -385,9 +383,7 @@ export default {
         }
         // this.msgList.push({...val, id: Date.now()})
       })
-      eventBus.on(CMD.SHOW_MSG, (val) => {
-        this.msgList.push({...val, id: Date.now()})
-      })
+
       eventBus.on(CMD.IGNORE, () => {
         this.show = false
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
@@ -443,15 +439,8 @@ export default {
         }
       })
     },
-    removeMsg(id) {
-      let rIndex = this.msgList.findIndex(item => item.id === id)
-      if (rIndex > -1) {
-        this.msgList.splice(rIndex, 1)
-      }
-    },
     async getPostDetail(post, event) {
       this.show = true
-
       let url = window.baseUrl + '/t/' + post.id
       document.body.style.overflow = 'hidden'
       window.history.pushState({}, 0, post.href ?? url);
@@ -513,6 +502,11 @@ export default {
         v-model:show="showConfig"/>
   </Transition>
   <TagModal v-model:tags="tags"/>
+  <PostDetail v-model="show"
+              v-model:displayType="config.commentDisplayType"
+              :loading="loading"/>
+  <Base64Tooltip/>
+  <MsgModal/>
 
   <div class="app-home" :class="[pageType,isNight?'isNight':'']">
     <template v-if="!stopMe">
@@ -547,14 +541,7 @@ export default {
           </div>
         </template>
       </template>
-      <PostDetail v-model="show"
-                  v-model:displayType="config.commentDisplayType"
-                  :loading="loading"/>
-      <Base64Tooltip/>
     </template>
-    <div class="msgs">
-      <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
-    </div>
   </div>
 </template>
 
@@ -609,7 +596,5 @@ export default {
     }
   }
 }
-
-
 </style>
 

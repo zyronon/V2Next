@@ -205,7 +205,7 @@ export default {
     },
     topReplyList() {
       return this.post.replyList
-          .filter(v => v.thankCount > this.config.topReplyLoveCount)
+          .filter(v => v.thankCount >= this.config.topReplyLoveCount)
           .slice(0, 3)
           .sort((a, b) => b.thankCount - a.thankCount)
     },
