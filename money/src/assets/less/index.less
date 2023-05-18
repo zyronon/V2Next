@@ -112,9 +112,9 @@ a {
   }
 
   &.gray {
-    color: white;
-    border: 1px solid @main-color;
-    background: @main-color;
+    color: gray;
+    border: 1px solid @bg-color;
+    background: @bg-color;
   }
 
   &:hover {
@@ -146,6 +146,12 @@ a {
     cursor: not-allowed;
     color: rgb(198, 198, 198);
     background: rgb(141, 141, 141);
+    border: 1px solid transparent;
+  }
+
+  &.isNight {
+    color: rgb(198, 198, 198);
+    background: rgb(43, 64, 84);
     border: 1px solid transparent;
   }
 }
@@ -369,7 +375,7 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .8rem 0;
+    padding: .6rem 0;
   }
 
   .mask {
@@ -406,8 +412,21 @@ a {
     background: @border;
     color: gray;
   }
-}
 
+  &.isNight {
+    @border: rgb(69, 72, 71);
+    border: 1px solid @border;
+
+    .radio {
+      border-left: 1px solid @border;
+      color: white;
+    }
+
+    .active {
+      background: #165c94;
+    }
+  }
+}
 
 .pop-confirm {
   position: relative;

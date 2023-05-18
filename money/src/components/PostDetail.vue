@@ -206,8 +206,8 @@ export default {
     topReplyList() {
       return this.post.replyList
           .filter(v => v.thankCount >= this.config.topReplyLoveCount)
-          .slice(0, 3)
           .sort((a, b) => b.thankCount - a.thankCount)
+          .slice(0, 3)
     },
     replyList() {
       if (this.displayType === 0) return this.post.nestedReplies
@@ -227,7 +227,6 @@ export default {
     },
     modelValue: {
       handler(newVal) {
-        console.log('modelValue', newVal)
         if (this.pageType === PageType.Post) return
         if (newVal) {
           document.body.style.overflow = 'hidden'
@@ -688,11 +687,14 @@ export default {
   }
 
   .top-reply {
-    color: @main-color;
+    color: @bg-color;
     cursor: pointer;
     font-size: 2rem;
     display: flex;
-    gap: 2rem;
+
+    i {
+      padding: 0 1rem;
+    }
   }
 }
 </style>

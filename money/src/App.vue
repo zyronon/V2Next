@@ -496,11 +496,7 @@ export default {
 </script>
 
 <template>
-  <Transition>
-    <Setting
-        v-model="config"
-        v-model:show="showConfig"/>
-  </Transition>
+  <Setting v-model="config" v-model:show="showConfig"/>
   <TagModal v-model:tags="tags"/>
   <PostDetail v-model="show"
               v-model:displayType="config.commentDisplayType"
@@ -508,58 +504,49 @@ export default {
   <Base64Tooltip/>
   <MsgModal/>
 
-  <div class="app-home" :class="[pageType,isNight?'isNight':'']">
-    <template v-if="!stopMe">
-      <template v-if="config.showToolbar">
-        <template v-if="isList">
-          <div class="nav flex flex-end">
-            <div class="nav-item" @click="showConfig = true">
-              <span>设置</span>
-            </div>
-            <div class="radio-group2">
-              <div class="radio"
-                   @click="config.viewType = 'table'"
-                   :class="config.viewType === 'table'?'active':''">表格
-              </div>
-              <div class="radio"
-                   @click="config.viewType = 'card'"
-                   :class="config.viewType === 'card'?'active':''">卡片
-              </div>
-            </div>
-          </div>
-        </template>
-        <template v-if="!isList && !show">
-          <div class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
-            <div class="flex">
-              默认显示楼中楼 ：
-              <div class="switch" :class="{active:config.autoOpenDetail}"
-                   @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-            </div>
-            <div class="button gray" @click="showPost" :class="{loading}">
-              点击显示楼中楼
-            </div>
-          </div>
-        </template>
-      </template>
-    </template>
+  <div class="toolbar" v-if="!stopMe && config.showToolbar" :class="[isNight?'isNight':'',config['viewType']]">
+    <div class="nav flex flex-end" v-if="isList">
+      <div class="radio-group2" :class="{isNight}">
+        <div class="radio"
+             @click="config.viewType = 'table'"
+             :class="config.viewType === 'table'?'active':''">表格
+        </div>
+        <div class="radio"
+             @click="config.viewType = 'card'"
+             :class="config.viewType === 'card'?'active':''">卡片
+        </div>
+      </div>
+    </div>
+    <div v-if="!isList && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
+      <div class="flex">
+        默认显示楼中楼 ：
+        <div class="switch" :class="{active:config.autoOpenDetail}"
+             @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+      </div>
+      <div class="button gray" @click="showPost" :class="{loading,isNight}">
+        点击显示楼中楼
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped lang="less">
 @import "./assets/less/variable";
 
-.app-home {
-  position: relative;
+.isNight {
+  //background: #22303f;
+  @border: rgb(69, 72, 71);
 
-  &.home, &.recent, &.nodePage {
-    background: rgb(226, 226, 226);
+  .open-post, .nav {
+    color: white;
+    background: #18222d;
+    border: none;
   }
 }
 
-.page {
-  &.card {
-    margin-top: 1rem;
-  }
+.card {
+  border-radius: 0 0 0.4rem 0.4rem;
+  overflow: hidden;
 }
 
 .nav {
@@ -567,34 +554,7 @@ export default {
   background: white;
   text-align: start;
   padding: 1rem;
-  border: 1px solid @border;
-
-  .nav-item {
-    cursor: pointer;
-    display: flex;
-    margin-right: 2rem;
-    padding: .6rem;
-    border-radius: .4rem;
-    color: #778087;
-
-    &.active {
-      background: #40a9ff;
-      color: white;
-
-      &:hover {
-        background: #40a9ff;
-        opacity: .8;
-      }
-    }
-
-    &:hover {
-      background: #e2e2e2;
-    }
-
-    span {
-      margin-left: .4rem;
-    }
-  }
+  border-bottom: 1px solid @border;
 }
 </style>
 

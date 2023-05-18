@@ -66,7 +66,7 @@ function run() {
     sov2ex: false,
     postWidth: '',
     showTopReply: true,
-    topReplyLoveCount: 2
+    topReplyLoveCount: 3
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -924,7 +924,7 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $('<a href="javascript:void 0;" class="top">脚本设置</a>')
+    let setting = $(`<a href="javascript:void 0;" class="top">脚本设置</a>`)
     setting.on('click', () => {
       cbChecker({type: 'openSetting'})
     })
