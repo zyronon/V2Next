@@ -26,7 +26,7 @@
   </Transition>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {inject, nextTick, onMounted, reactive, ref} from "vue"
 import {CMD} from "../../../../src/utils/type"
 import eventBus from "@/utils/eventBus.js";
@@ -39,10 +39,10 @@ const tagModal = reactive({
 const isNight = inject('isNight')
 const {tags} = defineProps(['tags'])
 const emit = defineEmits(['update:tags'])
-const input = ref<HTMLInputElement>(null as any)
+const input = ref<HTMLInputElement>(null)
 
 onMounted(() => {
-  eventBus.on(CMD.ADD_TAG, (username: string) => {
+  eventBus.on(CMD.ADD_TAG, (username) => {
     tagModal.currentUsername = username
     tagModal.show = true
     nextTick(() => {
@@ -55,7 +55,7 @@ async function addTag() {
   let oldTag = window.clone(tags)
   let tempTag = window.clone(tags)
   let userTags = tempTag[tagModal.currentUsername] ?? []
-  let rIndex = userTags.findIndex((v: string) => v === tagModal.tag)
+  let rIndex = userTags.findIndex((v) => v === tagModal.tag)
   if (rIndex > -1) {
     eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '标签已存在！'})
     return
@@ -81,21 +81,22 @@ async function addTag() {
 
 .isNight {
   .wrapper {
-    background: #22303f!important;
+    background: #22303f !important;
 
-    .title{
+    .title {
       color: gray;
     }
 
     .option {
-      color: white!important;
+      color: white !important;
 
       span {
         color: gray !important;
       }
     }
-    .white{
-      color: white!important;
+
+    .white {
+      color: white !important;
     }
   }
 }
