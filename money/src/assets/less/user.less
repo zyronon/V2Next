@@ -1,0 +1,58 @@
+.username {
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin-right: 1rem;
+}
+
+@color: #1484cd;
+
+.op {
+  display: inline-block;
+  background-color: transparent;
+  color: @color;
+  border-radius: .3rem;
+  padding: 0 .3rem;
+  cursor: default;
+  border: 2px solid @color;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 1rem;
+  transform: scale(.8);
+}
+
+.mod {
+  .op;
+  background: @color;
+  color: white;
+  margin-right: 1rem;
+}
+
+.my-tag {
+  font-size: 1.4rem;
+  color: red;
+  margin-left: 1rem;
+
+  &:hover {
+    .remove {
+      display: inline;
+    }
+  }
+
+  .remove {
+    cursor: pointer;
+    margin-left: .5rem;
+    display: none;
+  }
+}
+
+.floor {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+  line-height: 1rem;
+  border-radius: 1rem;
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #ccc;
+  padding: .2rem .5rem;
+  cursor: default;
+}

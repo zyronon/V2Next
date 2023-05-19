@@ -40,6 +40,7 @@
           <div class="comments" ref="topReply">
             <Comment v-for="(item,index) in topReply"
                      :key="item.floor"
+                     type="top"
                      :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
                      v-model="topReply[index]"/>
           </div>
@@ -88,6 +89,7 @@
               <template v-if="modelValue">
                 <Comment v-for="(item,index) in replyList"
                          :key="item.floor"
+                         ref="comment"
                          :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
                          v-model="replyList[index]"/>
               </template>
@@ -113,15 +115,20 @@
                 @click="isSticky = true"/>
           </div>
         </div>
+      </div>
 
-        <div class="relationReply">
-          <div class="comment">
-            <SingleComment v-for="(item,index) in replyList"
-                           :is-right="item.username === targetUser.right"
-                           :key="item.floor"
-                           @jump="jump"
-                           :comment="item"/>
+      <div class="relationReply" v-if="showRelationReply">
+        <div class="my-cell flex">
+          <span class="gray">上下文</span>
+          <div class="top-reply">
+            <i class="fa fa-times" @click="showRelationReply = false"/>
           </div>
+        </div>
+        <div class="comments">
+          <SingleComment v-for="(item,index) in relationReply"
+                         :is-right="item.username === targetUser.right"
+                         :key="item.floor"
+                         :comment="item"/>
         </div>
       </div>
       <div class="call-list"
@@ -196,14 +203,16 @@ export default {
       selectCallIndex: 0,
       postDetailWidth: 0,
       showCallList: false,
+      showRelationReply: false,
       replyText: '',
       callStyle: {
         top: 0,
         left: 0
       },
       targetUser: {
-        left: '',
-        right: ''
+        left: [],
+        right: '',
+        rightFloor: -1
       }
     }
   },
@@ -236,11 +245,26 @@ export default {
     },
     //关联回复
     relationReply() {
-      if (this.targetUser.left && this.targetUser.left) {
+      if (this.targetUser.left.length && this.targetUser.right) {
         return this.post.replyList
             .filter(v => {
-              if (v.username === this.targetUser.left) return true
-              if (v.username === this.targetUser.right) return true
+              if (this.targetUser.left.includes(v.username)) {
+                //如果超过目标楼层，只找回复目标的
+                if (v.floor > this.targetUser.rightFloor) {
+                  if (v.replyUsers.includes(this.targetUser.right)) {
+                    return true
+                  }
+                } else {
+                  return true
+                }
+              }
+              if (v.username === this.targetUser.right) {
+                for (let i = 0; i < this.targetUser.left.length; i++) {
+                  if (v.replyUsers.includes(this.targetUser.left[i])) {
+                    return true
+                  }
+                }
+              }
             })
       }
       return []
@@ -264,6 +288,7 @@ export default {
         } else {
           document.body.style.overflow = 'unset'
           this.isSticky = false
+          this.showRelationReply = false
           if ((this.pageType === PageType.Home || this.pageType === PageType.Node) &&
               window.location.pathname !== '/'
           ) {
@@ -304,6 +329,11 @@ export default {
         this.selectCallIndex = 0
       }
     })
+    eventBus.on(CMD.RELATION_REPLY, (val) => {
+      this.targetUser = val
+      this.showRelationReply = true
+    })
+    eventBus.on(CMD.JUMP, this.jump)
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
@@ -311,7 +341,12 @@ export default {
   },
   methods: {
     jump(floor) {
-
+      this.$refs.comment.map(ins => {
+        if (ins.floor === floor) {
+          ins.showDing()
+          ins.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
+        }
+      })
     },
     collapseTopReplyList() {
       $(this.$refs.topReply).slideToggle('fast')
@@ -642,9 +677,30 @@ export default {
         margin-bottom: 2rem;
         box-sizing: border-box;
       }
+    }
 
-      .relationReply {
-        position: absolute;
+    .relationReply {
+      position: fixed;
+      width: 25vw;
+      top: 6.5rem;
+      bottom: 15rem;
+      z-index: 99;
+      transform: translateX(calc(100% + 2rem));
+      font-size: 2rem;
+      @r: 0.5rem;
+      overflow: hidden;
+
+      .my-cell {
+        background: white;
+        border-radius: @r @r 0 0;
+      }
+
+      .comments {
+        max-height: calc(100% - 4.2rem);
+        overflow: auto;
+        background: white;
+        border-radius: 0 0 @r @r;
+        //box-shadow: 0 0 10px 0 #c7c7c7;
       }
     }
 
