@@ -15,7 +15,6 @@ export default {
   components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
-      isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => this.isLogin),
       isNight: computed(() => this.isNight),
       pageType: computed(() => this.pageType),
@@ -53,9 +52,6 @@ export default {
     }
   },
   computed: {
-    isDev() {
-      return import.meta.env.DEV
-    },
     isList() {
       return this.pageType !== PageType.Post
     },
@@ -87,7 +83,7 @@ export default {
     config: {
       handler(newVal) {
         let config = {[window.user.username ?? 'default']: newVal}
-        window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
+        localStorage.setItem('v2ex-config', JSON.stringify(config))
         window.config = newVal
       },
       deep: true
@@ -498,9 +494,7 @@ export default {
 <template>
   <Setting v-model="config" v-model:show="showConfig"/>
   <TagModal v-model:tags="tags"/>
-  <PostDetail v-model="show"
-              v-model:displayType="config.commentDisplayType"
-              :loading="loading"/>
+  <PostDetail v-model="show" v-model:displayType="config.commentDisplayType" :loading="loading"/>
   <Base64Tooltip/>
   <MsgModal/>
 
@@ -523,7 +517,7 @@ export default {
         <div class="switch" :class="{active:config.autoOpenDetail}"
              @click="config.autoOpenDetail = !config.autoOpenDetail"/>
       </div>
-      <div class="button gray" @click="showPost" :class="{loading,isNight}">
+      <div class="button light" @click="showPost" :class="{loading,isNight}">
         点击显示楼中楼
       </div>
     </div>
@@ -540,7 +534,7 @@ export default {
   .open-post, .nav {
     color: white;
     background: #18222d;
-    border-bottom: 1px solid  #22303f;
+    border-bottom: 1px solid #22303f;
   }
 }
 
