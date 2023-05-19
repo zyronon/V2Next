@@ -1,8 +1,9 @@
 <template>
-  <div class="comment" :class="modelValue.isOp?'op':''" ref="comment">
+  <div class="comment" :class="[modelValue.isOp?'isOp':'',ding?'ding':'']" ref="comment">
     <Author v-model="expand"
             :comment="modelValue"
             @reply="edit = !edit"
+            :type="type"
             @hide="hide"
     />
     <!--    {{ modelValue.level }}-->
@@ -75,14 +76,22 @@ export default {
     modelValue: {
       reply_content: ''
     },
+    type: {
+      type: String,
+      default() {
+        return 'list'
+      }
+    },
   },
   data() {
     return {
       edit: false,
+      ding: false,
       expand: true,
       expandWrong: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
-      cssStyle: null
+      cssStyle: null,
+      floor: this.modelValue.floor
     }
   },
   inject: ['post', 'postDetailWidth', 'show'],
@@ -112,6 +121,13 @@ export default {
     }
   },
   methods: {
+    //高亮一下
+    showDing() {
+      this.ding = true
+      setTimeout(() => {
+        this.ding = false
+      }, 2000)
+    },
     hide() {
       let url = `${window.baseUrl}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       eventBus.emit(CMD.REMOVE, this.modelValue.floor)
@@ -138,13 +154,22 @@ export default {
   margin-top: 1rem;
   background: white;
 
-  //&.op {
-  //  background: rgb(yellow, .3);
-  //
-  //  & > .comment-content-w > .comment-content > .right > .w {
-  //    background: rgb(yellow, .3);
-  //  }
-  //}
+  &.ding {
+    @bg: rgb(yellow, .3);
+    background: @bg;
+
+    .avatar {
+      background: @bg !important;
+    }
+
+    & > .comment-content-w > .comment-content > .right > .w {
+      background: @bg;
+    }
+
+    & > .comment-content-w > .comment-content > .expand-line {
+      background: @bg;
+    }
+  }
 
   .comment-content-w {
     background: white;
@@ -204,7 +229,8 @@ export default {
   span {
     cursor: pointer;
   }
-  .del-line{
+
+  .del-line {
     text-decoration: line-through;
   }
 

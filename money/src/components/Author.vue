@@ -8,7 +8,7 @@
         <path d="M22 42H6V26" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M26 6H42V22" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <a class="icon" :href="`/member/${comment.username}`">
+      <a class="avatar" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <span class="texts">
@@ -35,6 +35,13 @@
             <span>隐藏</span>
           </div>
         </PopConfirm>
+        <div class="tool" v-if="[2,3].includes(config.commentDisplayType) && type !== 'top'"
+             @click="showRelationReply">
+          <span>上下文</span>
+        </div>
+        <div class="tool" v-if="type === 'top'" @click="jump">
+          <span>跳转</span>
+        </div>
         <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6H44V36H29L24 41L19 36H4V6Z" fill="none" stroke="#929596" stroke-width="2"
@@ -81,7 +88,13 @@ export default {
       default() {
         return {}
       }
-    }
+    },
+    type: {
+      type: String,
+      default() {
+        return 'list'
+      }
+    },
   },
   computed: {
     isDev() {
@@ -99,6 +112,20 @@ export default {
     }
   },
   methods: {
+    jump() {
+      eventBus.emit(CMD.JUMP, this.comment.floor)
+    },
+    showRelationReply() {
+      if (!this.comment.replyUsers.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '该回复无上下文'})
+        return
+      }
+      eventBus.emit(CMD.RELATION_REPLY, {
+        left: this.comment.replyUsers,
+        right: this.comment.username,
+        rightFloor: this.comment.floor
+      })
+    },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.comment.username)
     },
@@ -156,7 +183,7 @@ export default {
       transform: rotate(90deg);
     }
 
-    .icon {
+    .avatar {
       margin-right: 1rem;
       display: flex;
 
