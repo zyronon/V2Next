@@ -24,33 +24,31 @@
           </div>
         </div>
 
-        <div class="my-box" v-if="topReplyList.length && config.showTopReply">
+        <div class="my-box" v-if="topReply.length && config.showTopReply">
           <div class="my-cell flex">
             <span class="gray">高赞回复</span>
             <div class="top-reply">
               <PopConfirm title="关闭后不再默认显示，可在设置里重新打开，确认关闭？"
-                          @confirm="config.showTopReply = false"
-              >
-                <i class="fa fa-times"
-                   aria-hidden="true"></i>
+                          @confirm="config.showTopReply = false">
+                <i class="fa fa-times"/>
               </PopConfirm>
               <Tooltip title="收起高赞回复">
-                <i class="fa fa-compress" aria-hidden="true" @click="collapseTopReplyList"></i>
+                <i class="fa fa-compress" @click="collapseTopReplyList"/>
               </Tooltip>
             </div>
           </div>
           <div class="comments" ref="topReply">
-            <Comment v-for="(item,index) in topReplyList"
+            <Comment v-for="(item,index) in topReply"
                      :key="item.floor"
                      :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
-                     v-model="topReplyList[index]"/>
+                     v-model="topReply[index]"/>
           </div>
         </div>
 
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
-              <div class="flex" v-if="pageType === 'post'">
+            <div class="my-cell flex" :class="!isPost && 'flex-end'" v-if="config.showToolbar">
+              <div class="flex" v-if="isPost">
                 默认显示楼中楼：
                 <div class="switch" :class="{active:config.autoOpenDetail}"
                      @click="config.autoOpenDetail = !config.autoOpenDetail"/>
@@ -115,6 +113,16 @@
                 @click="isSticky = true"/>
           </div>
         </div>
+
+        <div class="relationReply">
+          <div class="comment">
+            <SingleComment v-for="(item,index) in replyList"
+                           :is-right="item.username === targetUser.right"
+                           :key="item.floor"
+                           @jump="jump"
+                           :comment="item"/>
+          </div>
+        </div>
       </div>
       <div class="call-list"
            :style="callStyle"
@@ -147,10 +155,12 @@ import {computed} from "vue";
 import {PageType} from "@/types";
 import Tooltip from "@/components/Tooltip.vue";
 import PopConfirm from "@/components/PopConfirm.vue";
+import SingleComment from "@/components/SingleComment.vue";
 
 export default {
   name: "detail",
   components: {
+    SingleComment,
     PopConfirm,
     Comment,
     PostEditor,
@@ -191,19 +201,25 @@ export default {
         top: 0,
         left: 0
       },
+      targetUser: {
+        left: '',
+        right: ''
+      }
     }
   },
   computed: {
+    isPost() {
+      return this.pageType === PageType.Post
+    },
     filterCallList() {
       if (this.showCallList) {
-        if (this.replyText) {
-          return ['管理员', '所有人'].concat(this.allReplyUsers).filter(i => i.search(this.replyText) > -1)
-        }
-        return ['管理员', '所有人'].concat(this.allReplyUsers)
+        let list = ['管理员', '所有人'].concat(this.allReplyUsers)
+        if (this.replyText) return list.filter(i => i.search(this.replyText) > -1)
+        return list
       }
       return []
     },
-    topReplyList() {
+    topReply() {
       return this.post.replyList
           .filter(v => v.thankCount >= this.config.topReplyLoveCount)
           .sort((a, b) => b.thankCount - a.thankCount)
@@ -218,6 +234,17 @@ export default {
       if (this.displayType === 3) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },
+    //关联回复
+    relationReply() {
+      if (this.targetUser.left && this.targetUser.left) {
+        return this.post.replyList
+            .filter(v => {
+              if (v.username === this.targetUser.left) return true
+              if (v.username === this.targetUser.right) return true
+            })
+      }
+      return []
+    }
   },
   watch: {
     'post.id'(n, o) {
@@ -227,7 +254,7 @@ export default {
     },
     modelValue: {
       handler(newVal) {
-        if (this.pageType === PageType.Post) return
+        if (this.isPost) return
         if (newVal) {
           document.body.style.overflow = 'hidden'
           this.$nextTick(() => {
@@ -253,7 +280,7 @@ export default {
           {threshold: [1]}
       );
       observer.observe(this.$refs.replyBox);
-      window.win().addEventListener('keydown', this.onKeyDown)
+      window.addEventListener('keydown', this.onKeyDown)
     }
     eventBus.on(CMD.SHOW_CALL, (val) => {
       if (val.show) {
@@ -262,7 +289,7 @@ export default {
         this.replyText = val.text
         //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
         //left要减去父级的left，原理同上
-        if (this.pageType === PageType.Post) {
+        if (this.isPost) {
           this.callStyle.top = val.top + $(window.win()).scrollTop() + -40 + 'px'
         } else {
           this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
@@ -279,17 +306,20 @@ export default {
     })
   },
   beforeUnmount() {
-    window.win().removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('keydown', this.onKeyDown)
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    jump(floor) {
+
+    },
     collapseTopReplyList() {
       $(this.$refs.topReply).slideToggle('fast')
     },
     goBottom() {
       this.isSticky = false
       setTimeout(() => {
-        if (this.pageType === PageType.Post) {
+        if (this.isPost) {
           let body = $('body , html')
           let scrollHeight = body.prop("scrollHeight");
           body.animate({scrollTop: scrollHeight - 850}, 300);
@@ -299,7 +329,7 @@ export default {
       })
     },
     close(from) {
-      if (this.pageType === PageType.Post) return
+      if (this.isPost) return
       if (from === 'space') {
         if (this.config.closePostDetailBySpace) {
           this.$emit('update:modelValue', false)
@@ -348,7 +378,7 @@ export default {
       eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
     },
     scrollTop() {
-      if (this.pageType === PageType.Post) {
+      if (this.isPost) {
         $("body , html").animate({scrollTop: 0}, 300);
       } else {
         this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
@@ -567,6 +597,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
 
       .post-wrapper {
         .toolbar-wrapper {
@@ -610,6 +641,10 @@ export default {
         width: 100%;
         margin-bottom: 2rem;
         box-sizing: border-box;
+      }
+
+      .relationReply {
+        position: absolute;
       }
     }
 

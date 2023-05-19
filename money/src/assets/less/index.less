@@ -105,6 +105,10 @@ a {
   border: 1px solid @blue-color;
   user-select: none;
 
+  &:hover {
+    opacity: .9;
+  }
+
   &.info {
     color: black;
     border: 1px solid @blue-color;
@@ -112,13 +116,15 @@ a {
   }
 
   &.gray {
+    color: whitesmoke;
+    border: 1px solid @main-color;
+    background: @main-color;
+  }
+
+  &.light {
     color: gray;
     border: 1px solid @bg-color;
     background: @bg-color;
-  }
-
-  &:hover {
-    opacity: .9;
   }
 
   &::before {

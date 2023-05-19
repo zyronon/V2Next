@@ -73,7 +73,7 @@ import PopConfirm from "@/components/PopConfirm.vue";
 export default {
   name: "Author",
   components: {PopConfirm, Point},
-  inject: ['isDev', 'isLogin', 'tags', 'config'],
+  inject: ['isLogin', 'tags', 'config'],
   props: {
     modelValue: false,
     comment: {
@@ -84,6 +84,9 @@ export default {
     }
   },
   computed: {
+    isDev() {
+      return import.meta.env.DEV
+    },
     pointInfo() {
       return {
         isThanked: this.comment.isThanked,

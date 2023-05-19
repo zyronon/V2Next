@@ -464,7 +464,7 @@ function run() {
         let {href, id} = window.parse.parseA(item_title)
         item.id = id
         item.href = href
-        item.url = window.win().location.origin + '/api/topics/show.json?id=' + item.id
+        item.url = location.origin + '/api/topics/show.json?id=' + item.id
         itemDom.classList.add('post-item')
         itemDom.classList.add(`id_${id}`)
         itemDom.dataset['href'] = href
@@ -477,9 +477,7 @@ function run() {
         box.style.boxShadow = 'unset'
         box.style.background = 'unset'
         if (window.config.viewType === 'card') {
-          list.forEach(itemDom => {
-            itemDom.classList.add('preview')
-          })
+          list.forEach(itemDom => itemDom.classList.add('preview'))
         }
         ok.map(postItem => {
           if (postItem?.id) {
