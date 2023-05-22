@@ -358,7 +358,9 @@ export default {
       if (!this.config.rememberLastReadFloor) return
       let height = window.innerHeight / 2
       let comments = $('.comments  .comment')
+      let forCount = 0
       for (let i = 0; i < comments.length; i++) {
+        forCount++
         let ins = comments[i]
         let rect = ins.getBoundingClientRect()
         if (rect.top > height) {
@@ -367,6 +369,10 @@ export default {
           eventBus.emit(CMD.ADD_READ, lastReadFloor > 3 ? lastReadFloor : 0)
           break
         }
+      }
+      if (forCount === comments.length) {
+        console.log('看到最后了')
+        eventBus.emit(CMD.ADD_READ, forCount)
       }
     },
     stop(e) {
