@@ -13,6 +13,7 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
+        name: 'v2ex-max-plus',
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'v2ex-max-plus',
         match: [

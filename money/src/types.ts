@@ -21,6 +21,7 @@ export interface Post {
   isIgnore: boolean,
   isThanked: boolean,
   isReport: boolean,
+  lastReadFloor: number
 }
 
 export interface User {
@@ -40,9 +41,12 @@ export interface Config {
   newTabOpen: boolean,//新标签打开
   base64: boolean,//base功能
   sov2ex: boolean,
-  showTopReply: boolean,
-  topReplyLoveCount: number,
+  showTopReply: boolean,//显示高赞
+  topReplyLoveMinCount: number,//高赞，统计最小限制
+  topReplyCount: number,//高赞数量
   postWidth?: string,
+  rememberLastReadFloor: boolean// 记录上次阅读楼层
+  autoJumpLastReadFloor: boolean//自动跳转到上次阅读楼层
 }
 
 export enum PageType {
@@ -52,6 +56,7 @@ export enum PageType {
 }
 
 export interface Reply {
+  level: number,
   thankCount: number,
   isThanked: boolean,
   isOp: boolean,

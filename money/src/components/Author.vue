@@ -35,7 +35,7 @@
             <span>隐藏</span>
           </div>
         </PopConfirm>
-        <div class="tool" v-if="[2,3].includes(config.commentDisplayType) && type !== 'top'"
+        <div class="tool" v-if="context"
              @click="showRelationReply">
           <span>上下文</span>
         </div>
@@ -109,6 +109,9 @@ export default {
     },
     myTags() {
       return this.tags[this.comment.username] ?? []
+    },
+    context() {
+      return [2, 3].includes(this.config.commentDisplayType) && this.type !== 'top' && this.comment.replyUsers.length
     }
   },
   methods: {

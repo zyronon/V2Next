@@ -36,7 +36,8 @@ export default {
       let rect = e.target.getBoundingClientRect()
       this.show = true
       nextTick(() => {
-        this.$refs.tip.style.top = rect.top - rect.height - 15 + 'px'
+        let tip = this.$refs.tip.getBoundingClientRect()
+        this.$refs.tip.style.top = rect.top - tip.height - 5 + 'px'
         this.$refs.tip.style.left = rect.left + rect.width / 2 + 'px'
       })
     }

@@ -568,7 +568,7 @@
       return {href, id, title: a.innerText}
     },
     //创建记事本里面的tag标签
-    async createTagNote() {
+    async createNoteItem() {
       let data = new FormData()
       data.append('content', '--用户标签--')
       data.append('parent_id', 0)
@@ -907,7 +907,7 @@
         }
       }
       if (needCreateNoteTags) {
-        window.parse.createTagNote().then(r => {
+        window.parse.createNoteItem().then(r => {
           if (r) {
             window.user.tagsId = r
             window.user.tags = {}

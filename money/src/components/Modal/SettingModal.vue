@@ -14,7 +14,7 @@
             <div class="option-title">列表:</div>
             <div class="option">
               <span>列表帖子展示方式：</span>
-              <div class="radio-group2">
+              <div class="radio-group2" :class="{isNight}">
                 <div class="radio"
                      @click="config.viewType = 'table'"
                      :class="config.viewType === 'table'?'active':''">表格
@@ -27,7 +27,7 @@
             </div>
             <div class="option">
               <span>列表hover时显示预览按钮：</span>
-              <div class="switch" :class="{active:config.showPreviewBtn}"
+              <div class="switch gray" :class="{active:config.showPreviewBtn,isNight}"
                    @click="config.showPreviewBtn = !config.showPreviewBtn"/>
             </div>
             <div class="notice">
@@ -35,7 +35,7 @@
             </div>
             <div class="option">
               <span>点击列表的帖子，打开详情弹框 ：</span>
-              <div class="switch" :class="{active:config.clickPostItemOpenDetail}"
+              <div class="switch gray" :class="{active:config.clickPostItemOpenDetail,isNight}"
                    @click="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail"/>
             </div>
             <div class="notice">
@@ -44,7 +44,7 @@
             <div class="option-title">帖子:</div>
             <div class="option">
               <span>回复展示方式：</span>
-              <div class="radio-group2">
+              <div class="radio-group2" :class="{isNight}">
                 <div class="radio"
                      @click="config.commentDisplayType = 0"
                      :class="config.commentDisplayType === 0?'active':''">楼中楼
@@ -65,7 +65,7 @@
             </div>
             <div class="option">
               <span>单独打开帖子时默认显示楼中楼 ：</span>
-              <div class="switch" :class="{active:config.autoOpenDetail}"
+              <div class="switch gray" :class="{active:config.autoOpenDetail,isNight}"
                    @click="config.autoOpenDetail = !config.autoOpenDetail"/>
             </div>
             <div class="notice">
@@ -73,21 +73,22 @@
             </div>
             <div class="option">
               <span>点击左右两侧透明处关闭帖子详情弹框：</span>
-              <div class="switch" :class="{active:config.closePostDetailBySpace}"
+              <div class="switch gray" :class="{active:config.closePostDetailBySpace,isNight}"
                    @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
             </div>
             <div class="option-title">点赞:</div>
             <div class="option">
               <span>显示高赞回复：</span>
-              <div class="switch" :class="{active:config.showTopReply}"
+              <div class="switch gray" :class="{active:config.showTopReply,isNight}"
                    @click="config.showTopReply = !config.showTopReply"/>
             </div>
             <div class="option">
-              <span>最少赞：</span>
-              <input type="number" min="1" v-model="config.topReplyLoveCount">
+              <span>最多显示多少个高赞回复：</span>
+              <input type="number" min="1" v-model="config.topReplyCount">
             </div>
-            <div class="notice">
-              高赞回复最少需要多少赞才会被统计，默认值为大于等于3
+            <div class="option">
+              <span>最少需要多少赞才能被判定为高赞：</span>
+              <input type="number" min="1" v-model="config.topReplyLoveCount">
             </div>
           </div>
 
@@ -95,7 +96,7 @@
             <div class="option-title">其他:</div>
             <div class="option">
               <span>显示工具栏：</span>
-              <div class="switch" :class="{active:config.showToolbar}"
+              <div class="switch gray" :class="{active:config.showToolbar,isNight}"
                    @click="config.showToolbar = !config.showToolbar"/>
             </div>
             <div class="notice">
@@ -112,27 +113,27 @@
             </div>
             <div class="option">
               <span>新标签页打开链接 ：</span>
-              <div class="switch" :class="{active:config.newTabOpen}"
+              <div class="switch gray" :class="{active:config.newTabOpen,isNight}"
                    @click="config.newTabOpen = !config.newTabOpen;config.clickPostItemOpenDetail = !config.newTabOpen"/>
             </div>
             <div class="option">
-              <span>用户打标签：</span>
-              <div class="switch" :class="{active:config.openTag}"
+              <span>用户打标签(跨平台，数据保存在自己的记事本)：</span>
+              <div class="switch gray" :class="{active:config.openTag,isNight}"
                    @click="config.openTag = !config.openTag"/>
             </div>
             <div class="option">
               <span>正文超长自动折叠：</span>
-              <div class="switch" :class="{active:config.contentAutoCollapse}"
+              <div class="switch gray" :class="{active:config.contentAutoCollapse,isNight}"
                    @click="config.contentAutoCollapse = !config.contentAutoCollapse"/>
             </div>
             <div class="option">
               <span>划词显示Base64解码框：</span>
-              <div class="switch" :class="{active:config.base64}"
+              <div class="switch gray" :class="{active:config.base64,isNight}"
                    @click="config.base64 = !config.base64"/>
             </div>
             <div class="option">
               <span>使用 SOV2EX 搜索：</span>
-              <div class="switch" :class="{active:config.sov2ex}"
+              <div class="switch gray" :class="{active:config.sov2ex,isNight}"
                    @click="config.sov2ex = !config.sov2ex"/>
             </div>
             <div class="notice">
@@ -152,6 +153,17 @@
               提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
             </div>
 
+            <div class="option-title">记忆阅读:</div>
+            <div class="option">
+              <span>记录上次阅读楼层（误差1层左右）：</span>
+              <div class="switch gray" :class="{active:config.rememberLastReadFloor,isNight}"
+                   @click="config.rememberLastReadFloor = !config.rememberLastReadFloor;config.autoJumpLastReadFloor = false"/>
+            </div>
+            <div class="option">
+              <span>打开帖子自动跳转到上次阅读楼层：</span>
+              <div class="switch gray" :class="{active:config.autoJumpLastReadFloor,isNight}"
+                   @click="config.autoJumpLastReadFloor = !config.autoJumpLastReadFloor"/>
+            </div>
           </div>
         </div>
         <div class="jieshao">
@@ -205,6 +217,7 @@ export default {
 .isNight {
   .wrapper {
     background: #22303f !important;
+    //background: rgb(24,34,45) !important;
 
     .title, .option-title, .option > span {
       color: darkgrey;

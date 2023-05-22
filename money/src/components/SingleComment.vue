@@ -92,7 +92,6 @@ function jump() {
 .comment {
   width: 100%;
   box-sizing: border-box;
-  background: white;
   display: flex;
   gap: 1rem;
   padding: 1rem;

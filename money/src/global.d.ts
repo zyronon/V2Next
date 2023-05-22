@@ -27,8 +27,10 @@ declare global {
       findChildren: Function,
       parsePagePostList: Function,
       parseA: Function,
-      createTagNote: Function,
+      createNoteItem: Function,
+      editNoteItem: Function,
       saveTags: Function,
+      saveReadFloor: Function,
       checkPhotoLink2Img: Function,
     }
     cb: any
