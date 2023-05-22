@@ -332,18 +332,57 @@ a {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid @date-color;
   transition: all .3s;
 
+  &.light {
+    border: 1px solid @bg-color;
 
-  &.active {
-    background: @date-color;
-    //background: @blue-color;
+    &.active {
+      background: @bg-color;
+
+      &::before {
+        right: .2rem;
+        background: white;
+      }
+    }
 
     &::before {
-      right: .2rem;
-      //left: unset;
-      background: white;
+      background: @bg-color;
+    }
+  }
+
+  &.gray {
+    border: 1px solid @date-color;
+
+    &.active {
+      background: @date-color;
+
+      &::before {
+        right: .2rem;
+        background: white;
+      }
+    }
+
+    &::before {
+      background: @date-color;
+    }
+  }
+
+  &.isNight {
+    @night-color: rgb(49, 71, 94);
+    border: 1px solid @night-color;
+
+    &.active {
+      background: @night-color;
+
+      &::before {
+        right: .2rem;
+        background: gray;
+      }
+    }
+
+    &::before {
+      background: @night-color;
     }
   }
 
@@ -357,7 +396,6 @@ a {
     width: @w;
     height: @w;
     border-radius: 50%;
-    background: @date-color;
   }
 }
 
@@ -430,7 +468,7 @@ a {
     }
 
     .active {
-      background: #165c94;
+      background: rgb(49, 71, 94);
     }
   }
 }
@@ -443,9 +481,10 @@ a {
 
 .tip {
   position: fixed;
-  word-break: keep-all;
+  //word-break: keep-all;
   background: black;
   color: white;
+  max-width: 10rem;
   padding: .7rem 1rem;
   border-radius: 0.5rem;
   transform: translateX(-50%);

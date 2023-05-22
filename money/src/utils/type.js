@@ -14,4 +14,5 @@ export const CMD = {
     REMOVE_TAG:'REMOVE_TAG',
     RELATION_REPLY:'RELATION_REPLY',
     JUMP:'JUMP',
+    ADD_READ:'ADD_READ',
 }

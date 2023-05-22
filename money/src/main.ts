@@ -30,6 +30,7 @@ function run() {
     clickCount: 0,
     thankCount: 0,
     collectCount: 0,
+    lastReadFloor: 0,
     isFavorite: false,
     isIgnore: false,
     isThanked: false,
@@ -45,9 +46,12 @@ function run() {
   window.user = {
     tagPrefix: '--用户标签--',
     tags: {},
+    tagsId: '',
     username: '',
     avatar: '',
-    tagsId: ''
+    readPrefix: '--已读楼层--',
+    readNoteItemId: '',
+    readList: {}
   }
   window.pageType = undefined
   window.pageData = {pageNo: 1}
@@ -66,7 +70,10 @@ function run() {
     sov2ex: false,
     postWidth: '',
     showTopReply: true,
-    topReplyLoveCount: 3
+    topReplyLoveMinCount: 3,
+    topReplyCount: 3,
+    autoJumpLastReadFloor: false,
+    rememberLastReadFloor: true
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -225,6 +232,7 @@ function run() {
       nodes.forEach((node, index) => {
         if (!node.id) return
         let item: Reply = {
+          level: 0,
           thankCount: 0,
           isThanked: false,
           isOp: false,
@@ -333,7 +341,7 @@ function run() {
       }
       // console.log('cal-createNestedList', Date.now())
 
-      let list = JSON.parse(JSON.stringify(allList))
+      let list = window.clone(allList)
       let nestedList: any[] = []
       list.map((item: any, index: number) => {
         let startList = list.slice(0, index)
@@ -342,7 +350,6 @@ function run() {
 
         let endList = list.slice(index + 1)
 
-        item.level = 0
         if (index === 0) {
           nestedList.push(this.findChildren(item, endList, list))
         } else {
@@ -523,29 +530,39 @@ function run() {
       }
       return {href, id, title: a.innerText}
     },
-    //创建记事本里面的tag标签
-    async createTagNote() {
-      let data: any = new FormData()
-      data.append('content', '--用户标签--')
-      data.append('parent_id', 0)
-      data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
-      console.log(apiRes)
-      if (apiRes.redirected && apiRes.status === 200) {
-        //成功
-        return apiRes.url.substr(-5)
-      }
-      return null
+    //创建记事本子条目
+    async createNoteItem(itemName: string) {
+      return new Promise(async resolve => {
+        let data: any = new FormData()
+        data.append('content', itemName)
+        data.append('parent_id', 0)
+        data.append('syntax', 0)
+        let apiRes = await window.win().fetch(`${window.baseUrl}/notes/new`, {method: 'post', body: data})
+        console.log(apiRes)
+        if (apiRes.redirected && apiRes.status === 200) {
+          resolve(apiRes.url.substr(-5))
+          return
+        }
+        resolve(null)
+      })
     },
-    //标签操作
-    async saveTags(val: string) {
+    //编辑记事本子条目
+    async editNoteItem(val: string, id: string) {
       let data: any = new FormData()
-      data.append('content', window.user.tagPrefix + JSON.stringify(val))
+      data.append('content', val)
       data.append('syntax', 0)
-      let apiRes = await window.win().fetch(`${window.baseUrl}/notes/edit/${window.user.tagsId}`, {
+      let apiRes = await window.fetch(`${window.baseUrl}/notes/edit/${id}`, {
         method: 'post', body: data
       })
       return apiRes.redirected && apiRes.status === 200;
+    },
+    //标签操作
+    async saveTags(val: string) {
+      return await this.editNoteItem(window.user.tagPrefix + JSON.stringify(val), window.user.tagsId)
+    },
+    //已读楼层操作
+    async saveReadFloor(val: string) {
+      return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //图片链接转Img标签
     checkPhotoLink2Img(str: string) {
@@ -832,48 +849,53 @@ function run() {
     }
   }
 
-  //初始化标签的记事本数据
-  function initTagNoteData() {
+  function getNoteItemContent(id: string, prefix: string) {
+    return new Promise((resolve, reject) => {
+      $.get(window.baseUrl + '/notes/edit/' + id).then(r2 => {
+        let bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
+        let body = $(bodyText[0])
+        let text = body.find('.note_editor').text()
+        if (text === prefix) {
+          resolve({})
+        } else {
+          let tagJson = text.substring(prefix.length)
+          try {
+            resolve(JSON.parse(tagJson))
+          } catch (e) {
+            console.log('tage', tagJson)
+            resolve({})
+          }
+        }
+      })
+    })
+  }
+
+  //初始化记事本数据
+  async function initNoteData() {
     //获取或创建记事本的标签
-    $.get(window.baseUrl + '/notes').then(r => {
+    $.get(window.baseUrl + '/notes').then(async r => {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
-      let items = body.find('#Main .box .note_item_title a')
-      let needCreateNoteTags = true
+      let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any
       if (items.length) {
-        let tags = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-        if (tags) {
-          needCreateNoteTags = false
-          // @ts-ignore
-          window.user.tagsId = tags.href.substr(-5)
-          cbChecker({type: 'syncData'})
-          $.get(window.baseUrl + '/notes/edit/' + window.user.tagsId).then(r2 => {
-            bodyText = r2.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
-            body = $(bodyText[0])
-            let text = body.find('.note_editor').text()
-            if (text === window.user.tagPrefix) {
-              window.user.tags = {}
-            } else {
-              let tagJson = text.substring(window.user.tagPrefix.length)
-              try {
-                window.user.tags = JSON.parse(tagJson)
-              } catch (e) {
-                console.log('tage', tagJson)
-                window.user.tags = {}
-              }
-            }
-            cbChecker({type: 'syncData'})
-          })
+        let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+        if (tagItem) {
+          window.user.tagsId = tagItem.href.substr(-5)
+          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.tagPrefix)
+          r && (window.user.tagsId = r);
         }
-      }
-      if (needCreateNoteTags) {
-        window.parse.createTagNote().then((r: any) => {
-          if (r) {
-            window.user.tagsId = r
-            window.user.tags = {}
-            cbChecker({type: 'syncData'})
-          }
-        })
+
+        let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
+        if (readItem) {
+          window.user.readNoteItemId = readItem.href.substr(-5)
+          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
+        } else {
+          let r = await window.parse.createNoteItem(window.user.readPrefix)
+          r && (window.user.readNoteItemId = r);
+        }
+        cbChecker({type: 'syncData'})
       }
     })
   }
@@ -940,15 +962,15 @@ function run() {
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
       cbChecker({type: 'syncData'})
 
-      initTagNoteData()
+      initNoteData()
       try {
         qianDao()
       } catch (e) {
         console.log('签到失败')
       }
     }
+    //这个要放后面，不然前面查找会出错
     addSettingText()
-
 
     initConfig().then(r => {
       if (window.config.sov2ex) {

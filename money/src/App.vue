@@ -1,9 +1,9 @@
 <script>
 import {PageType} from "./types"
-import {computed} from "vue";
+import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
 import eventBus from "@/utils/eventBus.js";
-import {CMD} from "../../src/utils/type.js";
+import {CMD} from "@/utils/type.js";
 import PostDetail from "./components/PostDetail.vue";
 import Base64Tooltip from "./components/Base64Tooltip.vue";
 import Msg from "../../src/components/Msg.vue";
@@ -28,6 +28,7 @@ export default {
         }
         return []
       }),
+      showConfig: this.showConfig
     }
   },
   data() {
@@ -39,11 +40,14 @@ export default {
       isNight: window.isNight,
       stopMe: false,//停止使用脚本
       show: false,
-      showConfig: false,
       current: window.clone(window.initPost),
       list: [],
       config: window.clone(window.config),
       tags: window.user.tags,
+      readList: window.user.readList,
+      configModal: {
+        show: false
+      },
       tagModal: {
         show: false,
         currentUsername: '',
@@ -54,6 +58,9 @@ export default {
   computed: {
     isList() {
       return this.pageType !== PageType.Post
+    },
+    isPost() {
+      return this.pageType === PageType.Post
     },
   },
   watch: {
@@ -214,6 +221,10 @@ export default {
         if (this.show) this.show = false
       }
     };
+
+    window.onbeforeunload = () => {
+      window.parse.saveReadFloor(this.readList)
+    }
     this.initEvent()
   },
   beforeUnmount() {
@@ -295,10 +306,13 @@ export default {
         $(this).hide()
       })
     },
+    showConfig() {
+      this.configModal.show = true
+    },
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
       if (type === 'openSetting') {
-        this.showConfig = true
+        this.configModal.show = true
       }
       if (type === 'restorePost') {
         if (this.stopMe) return
@@ -328,6 +342,15 @@ export default {
         this.list = window.postList
         this.config = window.config
         this.tags = window.user.tags
+        this.readList = window.user.readList ?? {}
+        if (this.show && this.isPost) {
+          nextTick(() => {
+            this.current.lastReadFloor = this.readList[this.current.id] ?? 0
+            this.$refs.postDetail.lastReadFloor = this.current.lastReadFloor
+            this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
+          })
+        }
+        console.log('this.readList',this.readList)
         // console.log(this.tags)
       }
     },
@@ -379,7 +402,6 @@ export default {
         }
         // this.msgList.push({...val, id: Date.now()})
       })
-
       eventBus.on(CMD.IGNORE, () => {
         this.show = false
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
@@ -394,6 +416,9 @@ export default {
         if (rIndex > -1) {
           this.list[rIndex] = Object.assign(this.list[rIndex], val)
         }
+      })
+      eventBus.on(CMD.ADD_READ, (val) => {
+        this.readList[this.current.id] = val
       })
       eventBus.on(CMD.ADD_REPLY, (item) => {
         this.current.replyList.push(item)
@@ -414,7 +439,7 @@ export default {
             return
           }
         }
-        window.win().fetchOnce().then(r => {
+        window.fetchOnce().then(r => {
           // console.log('通过fetchOnce接口拿once', r)
           this.current.once = r
         })
@@ -436,14 +461,20 @@ export default {
       })
     },
     async getPostDetail(post, event) {
+      this.current = Object.assign({}, window.initPost, post)
+      this.current.lastReadFloor = this.readList[this.current.id] ?? 0
       this.show = true
       let url = window.baseUrl + '/t/' + post.id
       document.body.style.overflow = 'hidden'
       window.history.pushState({}, 0, post.href ?? url);
 
-      this.current = Object.assign(this.clone(window.initPost), this.clone(post))
+      let alreadyHasReply = this.current.replyList.length
       //如果，有数据，不显示loading,默默更新即可
-      if (!this.current.replyList.length) this.loading = true
+      if (alreadyHasReply) {
+        this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
+      } else {
+        this.loading = true
+      }
 
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
@@ -485,6 +516,11 @@ export default {
         }
       }
       this.loading = false
+      if (!alreadyHasReply) {
+        nextTick(() => {
+          this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
+        })
+      }
       console.log('当前帖子', this.current)
     },
   },
@@ -492,9 +528,9 @@ export default {
 </script>
 
 <template>
-  <Setting v-model="config" v-model:show="showConfig"/>
+  <Setting v-model="config" v-model:show="configModal.show"/>
   <TagModal v-model:tags="tags"/>
-  <PostDetail v-model="show" v-model:displayType="config.commentDisplayType" :loading="loading"/>
+  <PostDetail v-model="show" ref="postDetail" v-model:displayType="config.commentDisplayType" :loading="loading"/>
   <Base64Tooltip/>
   <MsgModal/>
 
