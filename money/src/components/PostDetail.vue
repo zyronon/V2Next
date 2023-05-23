@@ -239,7 +239,7 @@ export default {
     },
     topReply() {
       return this.post.replyList
-          .filter(v => v.thankCount >= this.config.topReplyLoveCount)
+          .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
           .sort((a, b) => b.thankCount - a.thankCount)
           .slice(0, this.config.topReplyCount)
     },
@@ -367,6 +367,9 @@ export default {
           let lastReadFloor = Number(ins.dataset['floor']);
           console.log('当前阅读楼层', lastReadFloor)
           eventBus.emit(CMD.ADD_READ, lastReadFloor > 3 ? lastReadFloor : 0)
+          if (lastReadFloor > 3) {
+            this.lastReadFloor = 0
+          }
           break
         }
       }

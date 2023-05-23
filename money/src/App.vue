@@ -342,15 +342,15 @@ export default {
         this.list = window.postList
         this.config = window.config
         this.tags = window.user.tags
-        this.readList = window.user.readList ?? {}
-        if (this.show && this.isPost) {
+        this.readList = window.user.readList
+        this.current.lastReadFloor = this.readList[this.current.id] ?? 0
+        if (this.show && this.isPost && this.current.lastReadFloor) {
           nextTick(() => {
-            this.current.lastReadFloor = this.readList[this.current.id] ?? 0
             this.$refs.postDetail.lastReadFloor = this.current.lastReadFloor
             this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
           })
         }
-        console.log('this.readList',this.readList)
+        console.log('this.readList', this.readList)
         // console.log(this.tags)
       }
     },
@@ -359,6 +359,7 @@ export default {
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
+        console.log('CHANGE_COMMENT_THANK',val)
         const {id, type} = val
         let currentI = this.current.replyList.findIndex(i => i.id === id)
         if (currentI > -1) {
@@ -550,7 +551,7 @@ export default {
     <div v-if="!isList && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
       <div class="flex">
         默认显示楼中楼 ：
-        <div class="switch" :class="{active:config.autoOpenDetail}"
+        <div class="switch light" :class="{active:config.autoOpenDetail}"
              @click="config.autoOpenDetail = !config.autoOpenDetail"/>
       </div>
       <div class="button light" @click="showPost" :class="{loading,isNight}">
