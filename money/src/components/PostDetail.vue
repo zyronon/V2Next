@@ -8,6 +8,12 @@
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" :style="{width:config.postWidth}">
+
+        <div class="scroll-to button gray" v-if="lastReadFloor" @click="jump(lastReadFloor)">
+          <span>上次阅读到<b>{{ lastReadFloor }}</b>楼</span>
+          <i class="fa fa-long-arrow-down"/>
+        </div>
+
         <div class="my-box post-wrapper">
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
@@ -117,7 +123,6 @@
           </div>
         </div>
       </div>
-
       <div class="relationReply" v-if="showRelationReply" @click="close('space')">
         <div class="my-cell flex" @click.stop="stop">
           <span class="gray">上下文</span>
@@ -147,10 +152,6 @@
       </div>
       <div class="scroll-top button gray" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
-      </div>
-      <div class="scroll-to button gray" v-if="lastReadFloor" @click="jump(lastReadFloor)">
-        <span>上次阅读到<b>{{ lastReadFloor }}</b>楼</span>
-        <i class="fa fa-long-arrow-down"/>
       </div>
     </div>
   </div>
@@ -356,7 +357,7 @@ export default {
   methods: {
     scroll() {
       if (!this.config.rememberLastReadFloor) return
-      let height = window.innerHeight / 2
+      let height = window.innerHeight * 0.3
       let comments = $('.comments  .comment')
       let forCount = 0
       for (let i = 0; i < comments.length; i++) {
@@ -494,8 +495,8 @@ export default {
 .sticky[stuck] {
   box-shadow: 0 2px 20px rgb(0 0 0 / 35%) !important;
 }
-
 </style>
+
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
 
@@ -851,11 +852,12 @@ export default {
   }
 
   .scroll-to {
-    position: fixed;
-    top: 6rem;
+    position: absolute;
+    //top: 7rem;
+    //transform: translateX(5.5rem);
+    left: -5rem;
     z-index: 99;
     padding: 0.8rem 1rem;
-    transform: translateX(6rem);
     font-size: 2rem;
     display: flex;
     flex-direction: column;
