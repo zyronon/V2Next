@@ -53,7 +53,7 @@
           <span>回复</span>
         </div>
         <Point
-            v-if="!comment.thankCount"
+            v-show="!comment.thankCount"
             :item="pointInfo"
             @addThank="addThank"
             @recallThank="recallThank"
@@ -61,7 +61,7 @@
         />
       </div>
       <Point
-          v-if="comment.thankCount"
+          v-show="comment.thankCount"
           :item="pointInfo"
           @addThank="addThank"
           @recallThank="recallThank"
@@ -111,7 +111,7 @@ export default {
       return this.tags[this.comment.username] ?? []
     },
     context() {
-      return [2, 3].includes(this.config.commentDisplayType) && this.type !== 'top' && this.comment.replyUsers.length
+      return this.comment.replyUsers.length
     }
   },
   methods: {

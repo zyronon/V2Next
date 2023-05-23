@@ -37,7 +37,7 @@ const tagModal = reactive({
   tag: '',
 })
 const isNight = inject('isNight')
-const {tags} = defineProps(['tags'])
+const props = defineProps(['tags'])
 const emit = defineEmits(['update:tags'])
 const input = ref<HTMLInputElement>(null)
 
@@ -52,8 +52,8 @@ onMounted(() => {
 })
 
 async function addTag() {
-  let oldTag = window.clone(tags)
-  let tempTag = window.clone(tags)
+  let oldTag = window.clone(props.tags)
+  let tempTag = window.clone(props.tags)
   let userTags = tempTag[tagModal.currentUsername] ?? []
   let rIndex = userTags.findIndex((v) => v === tagModal.tag)
   if (rIndex > -1) {
@@ -71,8 +71,6 @@ async function addTag() {
     eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '标签添加失败！'})
     emit('update:tags', oldTag)
   }
-  console.log('res', res)
-  return console.log(tags)
 }
 </script>
 

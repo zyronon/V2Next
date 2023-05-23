@@ -72,7 +72,6 @@ export default {
       //https://www.v2ex.com/thank/topic/886147?once=38719
       let url = `${window.baseUrl}/thank/${this.apiUrl}?once=${this.post.once}`
       $.post(url).then(res => {
-        console.log('感谢', res)
         if (!res.success) {
           this.$emit('recallThank')
           eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: res.message})

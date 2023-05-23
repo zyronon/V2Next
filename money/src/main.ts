@@ -960,7 +960,6 @@ function run() {
     if (top2 && top2.textContent !== '注册') {
       window.user.username = top2.textContent
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
-      cbChecker({type: 'syncData'})
 
       initNoteData()
       try {
