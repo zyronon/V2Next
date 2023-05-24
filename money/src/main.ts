@@ -561,7 +561,7 @@ function run() {
       return await this.editNoteItem(window.user.tagPrefix + JSON.stringify(val), window.user.tagsId)
     },
     //已读楼层操作
-    async saveReadFloor(val: string) {
+    async saveReadList(val: string) {
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //图片链接转Img标签

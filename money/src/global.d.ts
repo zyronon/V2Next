@@ -30,7 +30,7 @@ declare global {
       createNoteItem: Function,
       editNoteItem: Function,
       saveTags: Function,
-      saveReadFloor: Function,
+      saveReadList: Function,
       checkPhotoLink2Img: Function,
     }
     cb: any

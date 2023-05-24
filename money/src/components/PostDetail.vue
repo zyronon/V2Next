@@ -9,11 +9,6 @@
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" :style="{width:config.postWidth}">
 
-        <div class="scroll-to button gray" v-if="lastReadFloor" @click="jump(lastReadFloor)">
-          <span>上次阅读到<b>{{ lastReadFloor }}</b>楼</span>
-          <i class="fa fa-long-arrow-down"/>
-        </div>
-
         <div class="my-box post-wrapper">
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
@@ -57,12 +52,7 @@
 
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" :class="!isPost && 'flex-end'" v-if="config.showToolbar">
-              <div class="flex" v-if="isPost">
-                <span class="gray">默认显示楼中楼：</span>
-                <div class="switch light" :class="{active:config.autoOpenDetail,isNight}"
-                     @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-              </div>
+            <div class="my-cell flex" v-if="config.showToolbar">
               <div class="radio-group2" :class="{isNight}">
                 <div class="radio"
                      @click="changeOption(0)"
@@ -79,6 +69,19 @@
                 <div class="radio"
                      @click="changeOption(2)"
                      :class="displayType === 2?'active':''">V2原版
+                </div>
+              </div>
+              <div class="read-notice" v-if="read.floor || read.total">
+                <span>上次打开：</span>
+                <template v-if="read.floor">
+                  <span>阅读到<b>{{ read.floor }}</b>楼</span>
+                  <div class="jump jump1" @click="jump(read.floor)">
+                    <i class="fa fa-long-arrow-down"/>
+                  </div>
+                </template>
+                <span>总楼层<b>{{ read.total }}</b></span>
+                <div class="jump" @click="jump(read.total)">
+                  <i class="fa fa-long-arrow-down"/>
                 </div>
               </div>
             </div>
@@ -150,8 +153,12 @@
       <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="scroll-top button gray" @click.stop="scrollTop">
+      <div class="scroll-top button" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+      </div>
+      <div class="scroll-to button" @click.stop="jump(currentFloor)">
+        <i class="fa fa-long-arrow-down"/>
+        <input type="text" v-model="currentFloor" @click.stop="stop">
       </div>
     </div>
   </div>
@@ -223,7 +230,11 @@ export default {
       },
       debounceScroll: () => {
       },
-      lastReadFloor: 0,
+      read: {
+        floor: 0,
+        total: 0
+      },
+      currentFloor: 1
     }
   },
   computed: {
@@ -291,12 +302,14 @@ export default {
         if (this.isPost) return
         if (newVal) {
           document.body.style.overflow = 'hidden'
-          this.lastReadFloor = this.post.lastReadFloor
+          this.read = this.post.read
+          this.currentFloor = 1
           nextTick(() => {
             this.$refs?.main?.focus()
             this.$refs?.detail?.scrollTo({top: 0})
           })
         } else {
+          this.$emit('saveReadList')
           document.body.style.overflow = 'unset'
           this.isSticky = false
           this.showRelationReply = false
@@ -367,35 +380,52 @@ export default {
         if (rect.top > height) {
           let lastReadFloor = Number(ins.dataset['floor']);
           console.log('当前阅读楼层', lastReadFloor)
-          eventBus.emit(CMD.ADD_READ, lastReadFloor > 3 ? lastReadFloor : 0)
+          eventBus.emit(CMD.ADD_READ, {
+            floor: lastReadFloor > 3 ? lastReadFloor : 0,
+            total: this.post.replyList.length
+          })
           if (lastReadFloor > 3) {
-            this.lastReadFloor = 0
+            this.read.floor = 0
           }
           break
         }
       }
       if (forCount === comments.length) {
         console.log('看到最后了')
-        eventBus.emit(CMD.ADD_READ, forCount)
+        eventBus.emit(CMD.ADD_READ, {
+          floor: forCount,
+          total: this.post.replyList.length
+        })
       }
     },
     stop(e) {
     },
     jump(floor) {
+      try {
+        floor = Number(floor)
+      } catch (e) {
+      }
+      if (!floor) return;
       if (!this.post.replyList.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '没有回复可跳转！'})
-        this.lastReadFloor = 0
+        this.read.floor = 0
         return
+      }
+      if (floor > this.post.replyList.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
+        this.read.floor = 0
+        return;
       }
       let comment = $(`.c_${floor}`)
       if (!comment.length) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
-        this.lastReadFloor = 0
+        this.read.floor = 0
         return
       }
       comment[0].scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
       comment.addClass('ding')
-      this.lastReadFloor = 0
+      this.read.floor = 0
+      this.currentFloor = floor + 1
       setTimeout(() => {
         comment.removeClass('ding')
       }, 2000)
@@ -404,6 +434,7 @@ export default {
       if (this.config.autoJumpLastReadFloor) {
         if (!floor) return
         setTimeout(() => {
+          console.log('上次跳转',floor)
           this.jump(floor)
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已跳转到上次阅读位置'})
         }, 300)
@@ -846,35 +877,43 @@ export default {
     position: fixed;
     bottom: 10rem;
     z-index: 99;
-    padding: 0.8rem 1.4rem;
+    padding: .6rem .2rem;
+    width: 3.5rem;
     transform: translateX(6rem);
     font-size: 2rem;
+    background: #f1f1f1;
+    border: none;
+    color: darkgrey;
   }
 
   .scroll-to {
-    position: absolute;
-    //top: 7rem;
-    //transform: translateX(5.5rem);
-    left: -5rem;
-    z-index: 99;
-    padding: 0.8rem 1rem;
-    font-size: 2rem;
+    .scroll-top;
+    bottom: 15rem;
     display: flex;
     flex-direction: column;
+
+    input {
+      margin-top: .5rem;
+      height: 2rem;
+      width: 3.3rem;
+      font-size: 1.4rem;
+      text-align: center;
+      color: gray;
+    }
+  }
+
+  .read-notice {
+    display: flex;
     align-items: center;
-    justify-content: center;
+    color: gray;
 
-    span {
-      font-size: 1.2rem;
-      letter-spacing: 2px;
-      writing-mode: vertical-lr;
-      margin-bottom: 1rem;
-
-      b {
-        font-size: 1.4rem;
-        margin-bottom: .5rem;
-        text-combine-upright: all;
-      }
+    .jump {
+      background: #f1f1f1;
+      color: gray;
+      padding: 0.3rem 1rem;
+      border-radius: .4rem;
+      margin: 0 1rem;
+      cursor: pointer;
     }
   }
 

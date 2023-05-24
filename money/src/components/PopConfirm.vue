@@ -49,7 +49,7 @@ export default {
       this.show = true
       nextTick(() => {
         this.$refs.tip.style.top = rect.top + 'px'
-        this.$refs.tip.style.left = rect.left + rect.width / 2 + 'px'
+        this.$refs.tip.style.left = rect.left + rect.width / 2 - 50 + 'px'
       })
     },
     confirm() {
