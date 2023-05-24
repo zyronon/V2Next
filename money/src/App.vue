@@ -223,7 +223,7 @@ export default {
     };
 
     window.onbeforeunload = () => {
-      window.parse.saveReadFloor(this.readList)
+      this.saveReadList()
     }
     this.initEvent()
   },
@@ -232,6 +232,9 @@ export default {
     eventBus.clear()
   },
   methods: {
+    saveReadList() {
+      window.parse.saveReadList(this.readList)
+    },
     clickPost(e, id, href, title = '') {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
@@ -343,12 +346,13 @@ export default {
         this.config = window.config
         this.tags = window.user.tags
         this.readList = window.user.readList
-        this.current.lastReadFloor = this.readList[this.current.id] ?? 0
-        if (this.show && this.isPost && this.current.lastReadFloor) {
-          nextTick(() => {
-            this.$refs.postDetail.lastReadFloor = this.current.lastReadFloor
-            this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
-          })
+        this.current.read = this.readList[this.current.id] ?? {}
+        if (this.show && this.isPost && this.current.read.floor) {
+          this.$refs.postDetail.read = this.current.read
+          //单独打开，如果不去点击到标签页，Chrome无法跳转。不知道是为什么
+          // nextTick(() => {
+          //   this.$refs.postDetail.jumpLastRead(this.current.read.floor)
+          // })
         }
         console.log('this.readList', this.readList)
         // console.log(this.tags)
@@ -359,7 +363,7 @@ export default {
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
-        console.log('CHANGE_COMMENT_THANK',val)
+        console.log('CHANGE_COMMENT_THANK', val)
         const {id, type} = val
         let currentI = this.current.replyList.findIndex(i => i.id === id)
         if (currentI > -1) {
@@ -463,7 +467,7 @@ export default {
     },
     async getPostDetail(post, event) {
       this.current = Object.assign({}, window.initPost, post)
-      this.current.lastReadFloor = this.readList[this.current.id] ?? 0
+      this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
       let url = window.baseUrl + '/t/' + post.id
       document.body.style.overflow = 'hidden'
@@ -472,7 +476,7 @@ export default {
       let alreadyHasReply = this.current.replyList.length
       //如果，有数据，不显示loading,默默更新即可
       if (alreadyHasReply) {
-        this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
+        this.$refs.postDetail.jumpLastRead(this.current.read.floor)
       } else {
         this.loading = true
       }
@@ -519,7 +523,7 @@ export default {
       this.loading = false
       if (!alreadyHasReply) {
         nextTick(() => {
-          this.$refs.postDetail.jumpLastRead(this.current.lastReadFloor)
+          this.$refs.postDetail.jumpLastRead(this.current.read.floor)
         })
       }
       console.log('当前帖子', this.current)
@@ -531,7 +535,11 @@ export default {
 <template>
   <Setting v-model="config" v-model:show="configModal.show"/>
   <TagModal v-model:tags="tags"/>
-  <PostDetail v-model="show" ref="postDetail" v-model:displayType="config.commentDisplayType" :loading="loading"/>
+  <PostDetail v-model="show"
+              ref="postDetail"
+              v-model:displayType="config.commentDisplayType"
+              @saveReadList="saveReadList"
+              :loading="loading"/>
   <Base64Tooltip/>
   <MsgModal/>
 
