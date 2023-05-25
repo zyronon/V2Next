@@ -88,7 +88,7 @@
             </div>
             <div class="option">
               <span>最少需要多少赞才能被判定为高赞：</span>
-              <input type="number" min="1" v-model="config.topReplyLoveCount">
+              <input type="number" min="1" v-model="config.topReplyLoveMinCount">
             </div>
           </div>
 
@@ -199,9 +199,9 @@ export default {
   watch: {
     config: {
       handler(n) {
-        n.topReplyLoveCount = Math.trunc(n.topReplyLoveCount)
-        if (n.topReplyLoveCount < 0) {
-          n.topReplyLoveCount = 1
+        n.topReplyLoveMinCount = Math.trunc(n.topReplyLoveMinCount)
+        if (n.topReplyLoveMinCount < 0) {
+          n.topReplyLoveMinCount = 1
         }
         this.$emit('update:modelValue', n)
       },
