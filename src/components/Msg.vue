@@ -25,57 +25,6 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-@import "@/assets/less/variable.less";
-
-.msg {
-  cursor: default;
-  margin-bottom: 2rem;
-  background: white;
-  display: flex;
-  color: black;
-  font-size: 1.4rem;
-  box-sizing: border-box;
-  border-radius: @border-radius;
-  box-shadow: 0 0 1rem 1px silver;
-
-  &.success {
-    .left {
-      background: @blue-color;
-    }
-  }
-
-  &.warning {
-    .left {
-      background: #c8c002;
-    }
-  }
-
-  &.error {
-    .left {
-      background: red;
-    }
-  }
-
-  .left {
-    border-radius: @border-radius 0 0 @border-radius;
-    display: flex;
-    align-items: center;
-    background: @blue-color;
-
-    svg {
-      margin: 0 .3rem;
-      cursor: pointer;
-    }
-  }
-
-  .right {
-    flex: 1;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
+<style scoped>
 
 </style>

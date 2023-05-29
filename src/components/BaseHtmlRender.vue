@@ -1,5 +1,5 @@
 <script setup>
-import eventBus from "@/eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
 import {onMounted, ref, watch} from "vue";
 import {inject} from 'vue'

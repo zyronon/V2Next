@@ -688,7 +688,7 @@ function run() {
 
       .preview {
           margin: 1rem 0;
-          border: 1px solid #e2e2e2;
+          border: 1px solid #c8c8c8;
           border-radius: 0.4rem;
           cursor: pointer;
       }
@@ -713,6 +713,7 @@ function run() {
           overflow: hidden;
           text-decoration: unset !important;
           line-break: anywhere;
+          -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
       }
 
       .post-content:link {

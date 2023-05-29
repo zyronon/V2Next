@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
 
 export default {

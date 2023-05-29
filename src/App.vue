@@ -1,215 +1,22 @@
-<template>
-  <div class="app-home" :class="[pageType,isNight?'isNight':'']">
-    <template v-if="!stopMe">
-      <template v-if="config.showToolbar">
-        <template v-if="isList">
-          <div class="nav flex flex-end">
-            <div class="nav-item" @click="showConfig = true">
-              <span>设置</span>
-            </div>
-            <div class="radio-group2">
-              <div class="radio"
-                   @click="config.viewType = 'table'"
-                   :class="config.viewType === 'table'?'active':''">表格
-              </div>
-              <div class="radio"
-                   @click="config.viewType = 'card'"
-                   :class="config.viewType === 'card'?'active':''">卡片
-              </div>
-            </div>
-          </div>
-        </template>
-        <template v-if="pageType === 'post' && !show">
-          <div class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
-            <div class="flex">
-              默认显示楼中楼 ：
-              <div class="switch" :class="{active:config.autoOpenDetail}"
-                   @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-            </div>
-            <div class="button gray" @click="showPost" :class="{loading}">
-              点击显示楼中楼
-            </div>
-          </div>
-        </template>
-      </template>
-      <PostDetail v-model="show"
-                  :isNight="isNight"
-                  v-model:displayType="config.commentDisplayType"
-                  :loading="loading"/>
-      <Base64Tooltip/>
-      <div class="setting-modal modal" v-if="showConfig">
-        <div class="mask" @click="showConfig = !showConfig"></div>
-        <div class="wrapper">
-          <div class="title">
-            脚本设置
-          </div>
-          <div class="sub-title">
-            设置自动保存到本地，下次打开依然生效
-          </div>
-          <div class="option">
-            <span>显示工具栏：</span>
-            <div class="switch" :class="{active:config.showToolbar}"
-                 @click="config.showToolbar = !config.showToolbar"/>
-          </div>
-          <div class="notice">
-            <div>
-              关闭此选项后，页面上所有的脚本工具栏和按钮，均不显示。
-            </div>
-            <div>
-              点击右上角插件“Tampermonkey”，找到“V2EX - 超级增强”脚本，找到“脚本设置”选项，点击可再次打开本弹框修改设置
-            </div>
-          </div>
-          <div class="option">
-            <span>列表帖子展示方式：</span>
-            <div class="radio-group2">
-              <div class="radio"
-                   @click="config.viewType = 'table'"
-                   :class="config.viewType === 'table'?'active':''">表格
-              </div>
-              <div class="radio"
-                   @click="config.viewType = 'card'"
-                   :class="config.viewType === 'card'?'active':''">卡片
-              </div>
-            </div>
-          </div>
-          <div class="option">
-            <span>回复展示方式：</span>
-            <div class="radio-group2">
-              <div class="radio"
-                   @click="config.commentDisplayType = 0"
-                   :class="config.commentDisplayType === 0?'active':''">楼中楼
-              </div>
-              <div class="radio"
-                   @click="config.commentDisplayType = 1"
-                   :class="config.commentDisplayType === 1?'active':''">感谢最多
-              </div>
-              <div class="radio"
-                   @click="config.commentDisplayType = 2"
-                   :class="config.commentDisplayType === 2?'active':''">V2原版
-              </div>
-            </div>
-          </div>
-          <div class="option">
-            <span>用户打标签：</span>
-            <div class="switch" :class="{active:config.openTag}"
-                 @click="config.openTag = !config.openTag"/>
-          </div>
-          <div class="option">
-            <span>单独打开帖子时默认显示楼中楼 ：</span>
-            <div class="switch" :class="{active:config.autoOpenDetail}"
-                 @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-          </div>
-          <div class="notice">
-            单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼
-          </div>
-          <div class="option">
-            <span>点击列表的帖子，打开详情弹框 ：</span>
-            <div class="switch" :class="{active:config.clickPostItemOpenDetail}"
-                 @click="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail"/>
-          </div>
-          <div class="notice">
-            若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
-          </div>
-          <div class="option">
-            <span>新标签页打开链接 ：</span>
-            <div class="switch" :class="{active:config.newTabOpen}"
-                 @click="config.newTabOpen = !config.newTabOpen;config.clickPostItemOpenDetail = !config.newTabOpen"/>
-          </div>
-          <div class="option">
-            <span>点击左右两侧透明处关闭帖子详情弹框：</span>
-            <div class="switch" :class="{active:config.closePostDetailBySpace}"
-                 @click="config.closePostDetailBySpace = !config.closePostDetailBySpace"/>
-          </div>
-          <div class="option">
-            <span>正文超长自动折叠：</span>
-            <div class="switch" :class="{active:config.contentAutoCollapse}"
-                 @click="config.contentAutoCollapse = !config.contentAutoCollapse"/>
-          </div>
-          <div class="option">
-            <span>列表hover时显示预览按钮：</span>
-            <div class="switch" :class="{active:config.showPreviewBtn}"
-                 @click="config.showPreviewBtn = !config.showPreviewBtn"/>
-          </div>
-          <div class="notice">
-            此项需要刷新页面才能生效
-          </div>
-          <div class="option">
-            <span>划词显示Base64解码框：</span>
-            <div class="switch" :class="{active:config.base64}"
-                 @click="config.base64 = !config.base64"/>
-          </div>
-          <div class="option">
-            <span>使用 SOV2EX 搜索：</span>
-            <div class="switch" :class="{active:config.sov2ex}"
-                 @click="config.sov2ex = !config.sov2ex"/>
-          </div>
-          <div class="notice">
-            此项需要刷新页面才能生效
-          </div>
-          <div class="option">
-            <span>帖子宽度：</span>
-            <input type="text" v-model="config.postWidth">
-          </div>
-          <div class="notice">
-            默认为77rem。接受合法的width值：
-            <a href="https://vue3js.cn/interview/css/em_px_rem_vh_vw.html#%E4%BA%8C%E3%80%81%E5%8D%95%E4%BD%8D"
-               target="_blank">rem、px、vw、vh</a>。
-            vw代表屏幕百分比，如想要屏幕的66%，请填写66vw
-          </div>
-          <div class="notice">
-            提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
-          </div>
-          <div class="option">
-            <span>显示高赞回复：</span>
-            <div class="switch" :class="{active:config.showTopReply}"
-                 @click="config.showTopReply = !config.showTopReply"/>
-          </div>
-
-          <div class="jieshao">
-          </div>
-        </div>
-      </div>
-      <div class="tag-modal modal" v-if="tagModal.show">
-        <div class="mask" @click.stop="tagModal.show = false"></div>
-        <div class="wrapper">
-          <div class="title">
-            添加标签
-          </div>
-          <div class="option">
-            <span>用户：</span>
-            <div>
-              {{ tagModal.currentUsername }}
-            </div>
-          </div>
-          <input type="text" autofocus v-model="tagModal.tag" @keydown.enter="addTag">
-          <div class="btns">
-            <div class="button info" @click="tagModal.show = false">取消</div>
-            <div class="button" @click="addTag">确定</div>
-          </div>
-        </div>
-      </div>
-    </template>
-    <div class="msgs">
-      <Msg v-for="v in msgList" :key="v.id" :type="v.type" :text="v.text" @close="removeMsg(v.id)"/>
-    </div>
-  </div>
-</template>
-
 <script>
-import PostDetail from "../components/PostDetail.vue";
-import Post from "../components/Post";
-import Msg from "@/components/Msg";
-import eventBus from "@/eventBus";
-import Base64Tooltip from "@/components/Base64Tooltip";
-import {CMD} from "@/utils/type";
-import {computed} from "vue";
+import {PageType} from "./types"
+import {computed, nextTick} from "vue";
+import Setting from "./components/Modal/SettingModal.vue";
+import eventBus from "src/utils/eventBus.js";
+import {CMD} from "src/utils/type.js";
+import PostDetail from "./components/PostDetail.vue";
+import Base64Tooltip from "./components/Base64Tooltip.vue";
+import Msg from "../../src/components/Msg.vue";
+import Tooltip from "src/components/Tooltip.vue";
+import TagModal from "src/components/Modal/TagModal.vue";
+import MsgModal from "src/components/Modal/MsgModal.vue";
 
 export default {
-  name: 'home',
+  components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
   provide() {
     return {
-      isDev: computed(() => import.meta.env.DEV),
       isLogin: computed(() => this.isLogin),
+      isNight: computed(() => this.isNight),
       pageType: computed(() => this.pageType),
       tags: computed(() => this.tags),
       show: computed(() => this.show),
@@ -221,31 +28,26 @@ export default {
         }
         return []
       }),
+      showConfig: this.showConfig
     }
-  },
-  components: {
-    PostDetail,
-    Post,
-    Msg,
-    Base64Tooltip
   },
   data() {
     return {
-      loading: window.pageType === 'post',
+      loading: window.pageType === PageType.Post,
       loadMore: false,
       isLogin: !!window.user.username,
       pageType: window.pageType,
       isNight: window.isNight,
-      msgList: [
-        // {type: 'success', text: '123', id: Date.now()}
-      ],
       stopMe: false,//停止使用脚本
       show: false,
-      showConfig: false,
       current: window.clone(window.initPost),
       list: [],
-      config: window.config,
+      config: window.clone(window.config),
       tags: window.user.tags,
+      readList: window.user.readList,
+      configModal: {
+        show: false
+      },
       tagModal: {
         show: false,
         currentUsername: '',
@@ -254,13 +56,11 @@ export default {
     }
   },
   computed: {
-    isDev() {
-      return import.meta.env.DEV
-    },
     isList() {
-      return this.pageType === 'home' ||
-          this.pageType === 'recent' ||
-          this.pageType === 'nodePage'
+      return this.pageType !== PageType.Post
+    },
+    isPost() {
+      return this.pageType === PageType.Post
     },
   },
   watch: {
@@ -290,7 +90,7 @@ export default {
     config: {
       handler(newVal) {
         let config = {[window.user.username ?? 'default']: newVal}
-        window.win().localStorage.setItem('v2ex-config', JSON.stringify(config))
+        localStorage.setItem('v2ex-config', JSON.stringify(config))
         window.config = newVal
       },
       deep: true
@@ -310,7 +110,6 @@ export default {
         })
       }
     },
-
   },
   created() {
     // console.log('create', this.current)
@@ -372,7 +171,7 @@ export default {
       }
     }
     //A标签的
-    $(window.win().doc).on('click', 'a', (e) => {
+    $(document).on('click', 'a', (e) => {
       if (this.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
       if (this.clickPost(e, id, href, title)) {
@@ -381,7 +180,7 @@ export default {
     })
     let that = this
     //帖子的
-    $(window.win().doc).on('click', '.post-item', function (e) {
+    $(document).on('click', '.post-item', function (e) {
       //只有预览时，才响应点击
       if (this.classList.contains('preview')) {
         //A标签，要么上面的on事件已经处理了，要么就是不需要处理
@@ -399,13 +198,13 @@ export default {
           if (that.clickPost(e, id, href)) {
             return false
           } else {
-            window.win().location.href = href
+            location.href = href
           }
         }
       }
     })
     //展开或收起的点击事件
-    $(window.win().doc).on('click', '.toggle', (e) => {
+    $(document).on('click', '.toggle', (e) => {
       let id = e.currentTarget.dataset['id']
       let itemDom = window.win().query(`.id_${id}`)
       if (itemDom.classList.contains('preview')) {
@@ -415,13 +214,17 @@ export default {
       }
     })
 
-    window.win().onpopstate = (event) => {
+    window.onpopstate = (event) => {
       if (event.state) {
         if (!this.show) this.show = true
       } else {
         if (this.show) this.show = false
       }
     };
+
+    window.onbeforeunload = () => {
+      this.saveReadList()
+    }
     this.initEvent()
   },
   beforeUnmount() {
@@ -429,6 +232,9 @@ export default {
     eventBus.clear()
   },
   methods: {
+    saveReadList() {
+      window.parse.saveReadList(this.readList)
+    },
     clickPost(e, id, href, title = '') {
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
@@ -451,7 +257,7 @@ export default {
                        align="default" width="73" style="width: 73px; max-height: 73px;" alt="${postItem?.member?.username ?? ''}">
                 </a>
               </div>
-              <a href="/">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="${postItem?.node?.url ?? ''}">${postItem?.node?.title ?? ''}</a>
+              <a href="/public">V2EX</a> <span class="chevron">&nbsp;›&nbsp;</span> <a href="${postItem?.node?.url ?? ''}">${postItem?.node?.title ?? ''}</a>
               <div class="sep10"></div>
               <h1>${postItem?.title || '加载中...'}</h1>
               <div id="topic_930514_votes" class="votes">
@@ -503,31 +309,13 @@ export default {
         $(this).hide()
       })
     },
-    async addTag() {
-      let oldTag = this.clone(this.tags)
-      let tags = this.tags[this.tagModal.currentUsername] ?? []
-      let rIndex = tags.findIndex(v => v === this.tagModal.tag)
-      if (rIndex > -1) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '标签已存在！'})
-        return
-      } else {
-        tags.push(this.tagModal.tag)
-      }
-      this.tags[this.tagModal.currentUsername] = tags
-      this.tagModal.tag = ''
-      this.tagModal.show = false
-      let res = await window.parse.saveTags(this.tags)
-      if (!res) {
-        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '标签添加失败！'})
-        this.tags = oldTag
-      }
-      console.log('res', res)
-      return console.log(this.tags)
+    showConfig() {
+      this.configModal.show = true
     },
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
       if (type === 'openSetting') {
-        this.showConfig = true
+        this.configModal.show = true
       }
       if (type === 'restorePost') {
         if (this.stopMe) return
@@ -557,6 +345,16 @@ export default {
         this.list = window.postList
         this.config = window.config
         this.tags = window.user.tags
+        this.readList = window.user.readList
+        this.current.read = this.readList[this.current.id] ?? {}
+        if (this.show && this.isPost && this.current.read.floor) {
+          this.$refs.postDetail.read = this.current.read
+          //单独打开，如果不去点击到标签页，Chrome无法跳转。不知道是为什么
+          // nextTick(() => {
+          //   this.$refs.postDetail.jumpLastRead(this.current.read.floor)
+          // })
+        }
+        console.log('this.readList', this.readList)
         // console.log(this.tags)
       }
     },
@@ -565,6 +363,7 @@ export default {
     },
     initEvent() {
       eventBus.on(CMD.CHANGE_COMMENT_THANK, (val) => {
+        console.log('CHANGE_COMMENT_THANK', val)
         const {id, type} = val
         let currentI = this.current.replyList.findIndex(i => i.id === id)
         if (currentI > -1) {
@@ -608,9 +407,6 @@ export default {
         }
         // this.msgList.push({...val, id: Date.now()})
       })
-      eventBus.on(CMD.SHOW_MSG, (val) => {
-        this.msgList.push({...val, id: Date.now()})
-      })
       eventBus.on(CMD.IGNORE, () => {
         this.show = false
         let rIndex = this.list.findIndex(i => i.id === this.current.id)
@@ -625,6 +421,9 @@ export default {
         if (rIndex > -1) {
           this.list[rIndex] = Object.assign(this.list[rIndex], val)
         }
+      })
+      eventBus.on(CMD.ADD_READ, (val) => {
+        this.readList[this.current.id] = val
       })
       eventBus.on(CMD.ADD_REPLY, (item) => {
         this.current.replyList.push(item)
@@ -645,15 +444,10 @@ export default {
             return
           }
         }
-        window.win().fetchOnce().then(r => {
+        window.fetchOnce().then(r => {
           // console.log('通过fetchOnce接口拿once', r)
           this.current.once = r
         })
-      })
-      eventBus.on(CMD.ADD_TAG, (username) => {
-        console.log('use', username)
-        this.tagModal.currentUsername = username
-        this.tagModal.show = true
       })
       eventBus.on(CMD.REMOVE_TAG, async ({username, tag}) => {
         let oldTag = this.clone(this.tags)
@@ -671,26 +465,25 @@ export default {
         }
       })
     },
-    removeMsg(id) {
-      let rIndex = this.msgList.findIndex(item => item.id === id)
-      if (rIndex > -1) {
-        this.msgList.splice(rIndex, 1)
-      }
-    },
     async getPostDetail(post, event) {
+      this.current = Object.assign({}, window.initPost, post)
+      this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true
-
       let url = window.baseUrl + '/t/' + post.id
-      window.win().doc.body.style.overflow = 'hidden'
-      window.win().history.pushState({}, 0, post.href ?? url);
+      document.body.style.overflow = 'hidden'
+      window.history.pushState({}, 0, post.href ?? url);
 
-      this.current = Object.assign(this.clone(window.initPost), this.clone(post))
+      let alreadyHasReply = this.current.replyList.length
       //如果，有数据，不显示loading,默默更新即可
-      if (!this.current.replyList.length) this.loading = true
+      if (alreadyHasReply) {
+        this.$refs.postDetail.jumpLastRead(this.current.read.floor)
+      } else {
+        this.loading = true
+      }
 
       //ajax不能判断是否跳转
       // $.get(url + '?p=1').then((res, textStatus, xhr) => {
-      let apiRes = await window.win().fetch(url + '?p=1')
+      let apiRes = await window.fetch(url + '?p=1')
       if (apiRes.status === 404) {
         eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '主题未找到'})
         return this.loading = false
@@ -698,7 +491,7 @@ export default {
       if (apiRes.status === 403) {
         this.loading = false
         this.show = false
-        window.win().open(`https://www.v2ex.com/t/${post.id}?p=1&script=0`, '_black')
+        window.open(`https://www.v2ex.com/t/${post.id}?p=1&script=0`, '_black')
         return
       }
       //如果是重定向了，那么就是没权限
@@ -728,190 +521,78 @@ export default {
         }
       }
       this.loading = false
+      if (!alreadyHasReply) {
+        nextTick(() => {
+          this.$refs.postDetail.jumpLastRead(this.current.read.floor)
+        })
+      }
       console.log('当前帖子', this.current)
     },
   },
 }
 </script>
 
-<style lang="less">
-@import "../assets/less/variable";
+<template>
+  <Setting v-model="config" v-model:show="configModal.show"/>
+  <TagModal v-model:tags="tags"/>
+  <PostDetail v-model="show"
+              ref="postDetail"
+              v-model:displayType="config.commentDisplayType"
+              @saveReadList="saveReadList"
+              :loading="loading"/>
+  <Base64Tooltip/>
+  <MsgModal/>
+
+  <div class="toolbar" v-if="!stopMe && config.showToolbar" :class="[isNight?'isNight':'',config['viewType']]">
+    <div class="nav flex flex-end" v-if="isList">
+      <div class="radio-group2" :class="{isNight}">
+        <div class="radio"
+             @click="config.viewType = 'table'"
+             :class="config.viewType === 'table'?'active':''">表格
+        </div>
+        <div class="radio"
+             @click="config.viewType = 'card'"
+             :class="config.viewType === 'card'?'active':''">卡片
+        </div>
+      </div>
+    </div>
+    <div v-if="!isList && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
+      <div class="flex">
+        默认显示楼中楼 ：
+        <div class="switch light" :class="{active:config.autoOpenDetail}"
+             @click="config.autoOpenDetail = !config.autoOpenDetail"/>
+      </div>
+      <div class="button light" @click="showPost" :class="{loading,isNight}">
+        点击显示楼中楼
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="less">
+@import "./assets/less/variable";
 
 .isNight {
-  background: #22303f;
+  //background: #22303f;
   @border: rgb(69, 72, 71);
 
   .open-post, .nav {
     color: white;
     background: #18222d;
-    border: none;
-  }
-
-  .setting-modal {
-    .wrapper {
-      background: #22303f;
-
-      .option {
-        color: black;
-
-        span {
-          color: gray !important;
-        }
-      }
-    }
-  }
-
-  .tag-modal {
-    .wrapper {
-      background: #22303f;
-
-      .option {
-        color: white;
-
-        span {
-          color: gray !important;
-        }
-      }
-    }
-  }
-
-  .radio-group2 {
-    @border: rgb(69, 72, 71);
-    border: 1px solid @border;
-
-    .radio {
-      border-left: 1px solid @border;
-      color: white;
-
-    }
-
-    .active {
-      background: #165c94;
-    }
-  }
-
-  .base64_tooltip {
-    background: #22303f;
-    color: #ccc;
+    border-bottom: 1px solid #22303f;
   }
 }
 
-.app-home {
-  position: relative;
-
-  &.home, &.recent, &.nodePage {
-    background: rgb(226, 226, 226);
-  }
-}
-
-.page {
-  &.card {
-    margin-top: 1rem;
-  }
+.card {
+  border-radius: 0 0 0.4rem 0.4rem;
+  overflow: hidden;
 }
 
 .nav {
   font-size: 1.4rem;
   background: white;
-  text-align: start;
   padding: 1rem;
-  border: 1px solid @border;
-
-  .nav-item {
-    cursor: pointer;
-    display: flex;
-    margin-right: 2rem;
-    padding: .6rem;
-    border-radius: .4rem;
-    color: #778087;
-
-    &.active {
-      background: #40a9ff;
-      color: white;
-
-      &:hover {
-        background: #40a9ff;
-        opacity: .8;
-      }
-    }
-
-    &:hover {
-      background: #e2e2e2;
-    }
-
-    span {
-      margin-left: .4rem;
-    }
-  }
+  border-bottom: 1px solid @border;
 }
-
-.setting-modal {
-  .wrapper {
-    z-index: 9;
-    background: #f1f1f1;
-    border-radius: .8rem;
-    font-size: 1.4rem;
-    //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem 6rem 4rem 6rem;
-    width: 45rem;
-
-
-    .sub-title {
-      color: gray;
-      font-size: 1.4rem;
-      margin-bottom: 4rem;
-    }
-
-    .notice {
-      font-size: 12px;
-      padding-left: 3rem;
-      text-align: left;
-
-      a {
-        color: blue;
-      }
-    }
-
-    .jieshao {
-      margin-top: 2rem;
-      font-size: 15px;
-      font-weight: bold;
-      color: red;
-      display: flex;
-      justify-content: flex-start;
-      line-break: anywhere;
-      text-align: left;
-    }
-  }
-}
-
-.tag-modal {
-  .wrapper {
-    z-index: 9;
-    background: #f1f1f1;
-    border-radius: .8rem;
-    font-size: 1.4rem;
-    //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem 6rem 4rem 6rem;
-    width: 25rem;
-
-    input {
-      margin-bottom: 3rem;
-      width: 100%;
-      height: 3rem;
-      outline: unset;
-      border: 1px solid #e1e1e1;
-      padding: 0 .5rem;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    .btns {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-    }
-  }
-}
-
 </style>
+

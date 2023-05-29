@@ -8,7 +8,7 @@
         <path d="M22 42H6V26" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M26 6H42V22" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <a class="icon" :href="`/member/${comment.username}`">
+      <a class="avatar" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <span class="texts">
@@ -30,8 +30,17 @@
     </div>
     <div class="Author-right">
       <div class="toolbar" v-if="isLogin">
-        <div class="tool" @click="hide">
-          <span>隐藏</span>
+        <PopConfirm title="确认隐藏这条回复?" @confirm="$emit('hide')">
+          <div class="tool">
+            <span>隐藏</span>
+          </div>
+        </PopConfirm>
+        <div class="tool" v-if="context"
+             @click="showRelationReply">
+          <span>上下文</span>
+        </div>
+        <div class="tool" v-if="type === 'top'" @click="jump">
+          <span>跳转</span>
         </div>
         <div class="tool" @click="checkIsLogin('reply')">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +53,7 @@
           <span>回复</span>
         </div>
         <Point
-            v-if="!comment.thankCount"
+            v-show="!comment.thankCount"
             :item="pointInfo"
             @addThank="addThank"
             @recallThank="recallThank"
@@ -52,7 +61,7 @@
         />
       </div>
       <Point
-          v-if="comment.thankCount"
+          v-show="comment.thankCount"
           :item="pointInfo"
           @addThank="addThank"
           @recallThank="recallThank"
@@ -64,13 +73,14 @@
 </template>
 <script>
 import Point from "./Point";
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../utils/type";
+import PopConfirm from "@/components/PopConfirm.vue";
 
 export default {
   name: "Author",
-  components: {Point},
-  inject: ['isDev', 'isLogin', 'tags', 'config'],
+  components: {PopConfirm, Point},
+  inject: ['isLogin', 'tags', 'config'],
   props: {
     modelValue: false,
     comment: {
@@ -78,9 +88,18 @@ export default {
       default() {
         return {}
       }
-    }
+    },
+    type: {
+      type: String,
+      default() {
+        return 'list'
+      }
+    },
   },
   computed: {
+    isDev() {
+      return import.meta.env.DEV
+    },
     pointInfo() {
       return {
         isThanked: this.comment.isThanked,
@@ -90,19 +109,31 @@ export default {
     },
     myTags() {
       return this.tags[this.comment.username] ?? []
+    },
+    context() {
+      return this.comment.replyUsers.length
     }
   },
   methods: {
+    jump() {
+      eventBus.emit(CMD.JUMP, this.comment.floor)
+    },
+    showRelationReply() {
+      if (!this.comment.replyUsers.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '该回复无上下文'})
+        return
+      }
+      eventBus.emit(CMD.RELATION_REPLY, {
+        left: this.comment.replyUsers,
+        right: this.comment.username,
+        rightFloor: this.comment.floor
+      })
+    },
     addTag() {
       eventBus.emit(CMD.ADD_TAG, this.comment.username)
     },
     removeTag(tag) {
       eventBus.emit(CMD.REMOVE_TAG, {username: this.comment.username, tag})
-    },
-    hide() {
-      if (confirm('确认隐藏这条回复？')) {
-        this.$emit('hide')
-      }
     },
     checkIsLogin(emitName = '') {
       if (!this.isLogin) {
@@ -155,7 +186,7 @@ export default {
       transform: rotate(90deg);
     }
 
-    .icon {
+    .avatar {
       margin-right: 1rem;
       display: flex;
 
