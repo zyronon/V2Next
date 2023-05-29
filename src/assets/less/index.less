@@ -1,4 +1,6 @@
 @import "variable";
+@import "anim";
+@import "user";
 
 html, body {
   font-size: 62.5%;
@@ -104,6 +106,10 @@ a {
   border: 1px solid @blue-color;
   user-select: none;
 
+  &:hover {
+    opacity: .9;
+  }
+
   &.info {
     color: black;
     border: 1px solid @blue-color;
@@ -111,13 +117,15 @@ a {
   }
 
   &.gray {
-    color: white;
+    color: whitesmoke;
     border: 1px solid @main-color;
     background: @main-color;
   }
 
-  &:hover {
-    opacity: .9;
+  &.light {
+    color: gray;
+    border: 1px solid @bg-color;
+    background: @bg-color;
   }
 
   &::before {
@@ -145,6 +153,12 @@ a {
     cursor: not-allowed;
     color: rgb(198, 198, 198);
     background: rgb(141, 141, 141);
+    border: 1px solid transparent;
+  }
+
+  &.isNight {
+    color: rgb(198, 198, 198);
+    background: rgb(43, 64, 84);
     border: 1px solid transparent;
   }
 }
@@ -225,6 +239,66 @@ a {
   }
 }
 
+.msgs {
+  position: fixed;
+  margin-left: calc(50% - 25rem);
+  width: 50rem;
+  z-index: 9999;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.msg {
+  cursor: default;
+  margin-bottom: 2rem;
+  background: white;
+  display: flex;
+  color: black;
+  font-size: 1.4rem;
+  box-sizing: border-box;
+  border-radius: @border-radius;
+  box-shadow: 0 0 1rem 1px silver;
+
+  &.success {
+    .left {
+      background: @blue-color;
+    }
+  }
+
+  &.warning {
+    .left {
+      background: #c8c002;
+    }
+  }
+
+  &.error {
+    .left {
+      background: red;
+    }
+  }
+
+  .left {
+    border-radius: @border-radius 0 0 @border-radius;
+    display: flex;
+    align-items: center;
+    background: @blue-color;
+
+    svg {
+      margin: 0 .3rem;
+      cursor: pointer;
+    }
+  }
+
+  .right {
+    flex: 1;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .line {
   border-bottom: 1px solid @border;
 }
@@ -258,18 +332,57 @@ a {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid @date-color;
   transition: all .3s;
 
+  &.light {
+    border: 1px solid @bg-color;
 
-  &.active {
-    background: @date-color;
-    //background: @blue-color;
+    &.active {
+      background: @bg-color;
+
+      &::before {
+        right: .2rem;
+        background: white;
+      }
+    }
 
     &::before {
-      right: .2rem;
-      //left: unset;
-      background: white;
+      background: @bg-color;
+    }
+  }
+
+  &.gray {
+    border: 1px solid @date-color;
+
+    &.active {
+      background: @date-color;
+
+      &::before {
+        right: .2rem;
+        background: white;
+      }
+    }
+
+    &::before {
+      background: @date-color;
+    }
+  }
+
+  &.isNight {
+    @night-color: rgb(49, 71, 94);
+    border: 1px solid @night-color;
+
+    &.active {
+      background: @night-color;
+
+      &::before {
+        right: .2rem;
+        background: gray;
+      }
+    }
+
+    &::before {
+      background: @night-color;
     }
   }
 
@@ -283,7 +396,6 @@ a {
     width: @w;
     height: @w;
     border-radius: 50%;
-    background: @date-color;
   }
 }
 
@@ -308,7 +420,7 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .8rem 0;
+    padding: .6rem 0;
   }
 
   .mask {
@@ -345,4 +457,45 @@ a {
     background: @border;
     color: gray;
   }
+
+  &.isNight {
+    @border: rgb(69, 72, 71);
+    border: 1px solid @border;
+
+    .radio {
+      border-left: 1px solid @border;
+      color: white;
+    }
+
+    .active {
+      background: rgb(49, 71, 94);
+    }
+  }
+}
+
+.pop-confirm {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.tip {
+  position: fixed;
+  //word-break: keep-all;
+  background: black;
+  color: white;
+  max-width: 10rem;
+  padding: .7rem 1rem;
+  border-radius: 0.5rem;
+  transform: translateX(-50%);
+  z-index: 999;
+}
+
+input {
+  height: 3rem;
+  outline: unset;
+  border: 1px solid #e1e1e1;
+  padding: 0 .5rem;
+  border-radius: 5px;
+  box-sizing: border-box;
 }

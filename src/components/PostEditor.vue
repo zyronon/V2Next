@@ -24,7 +24,7 @@
 
 <script setup>
 import {computed, h, inject, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../utils/type";
 
 const props = defineProps({

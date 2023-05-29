@@ -4,9 +4,11 @@
        @keydown.esc="close()"
        v-show="modelValue"
        :class="[isNight?'isNight':'',pageType]"
+       @scroll="debounceScroll"
        @click="close('space')">
-    <div ref="main" class="main" tabindex="1" @click.stop="()=>void 0">
+    <div ref="main" class="main" tabindex="1" @click.stop="stop">
       <div class="main-wrapper" :style="{width:config.postWidth}">
+
         <div class="my-box post-wrapper">
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
@@ -24,29 +26,34 @@
           </div>
         </div>
 
-        <div class="my-box" v-if="topReplyList.length && config.showTopReply">
+        <div class="my-box" v-if="topReply.length && config.showTopReply">
           <div class="my-cell flex">
             <span class="gray">高赞回复</span>
-            <i class="fa fa-times close-top"
-               @click="config.showTopReply = false"
-               aria-hidden="true"></i>
+            <div class="top-reply">
+              <Tooltip :title="`统计点赞数大于等于${config.topReplyLoveMinCount}个的回复，可在设置中调整`">
+                <i class="fa fa-info" @click="showConfig()"/>
+              </Tooltip>
+              <PopConfirm title="关闭后不再默认显示，可在设置里重新打开，确认关闭？"
+                          @confirm="config.showTopReply = false">
+                <i class="fa fa-times"/>
+              </PopConfirm>
+              <Tooltip title="收起高赞回复">
+                <i class="fa fa-compress" @click="collapseTopReplyList"/>
+              </Tooltip>
+            </div>
           </div>
-          <div class="comments" ref="comments">
-            <Comment v-for="(item,index) in topReplyList"
+          <div ref="topReply">
+            <Comment v-for="(item,index) in topReply"
                      :key="item.floor"
-                     :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
-                     v-model="topReplyList[index]"/>
+                     type="top"
+                     v-model="topReply[index]"/>
           </div>
         </div>
+
         <div class="my-box comment-wrapper">
           <template v-if="post.replyList.length ||loading">
-            <div class="my-cell flex" :class="pageType !== 'post'&&'flex-end'" v-if="config.showToolbar">
-              <div class="flex" v-if="pageType === 'post'">
-                默认显示楼中楼：
-                <div class="switch" :class="{active:config.autoOpenDetail}"
-                     @click="config.autoOpenDetail = !config.autoOpenDetail"/>
-              </div>
-              <div class="radio-group2">
+            <div class="my-cell flex" v-if="config.showToolbar">
+              <div class="radio-group2" :class="{isNight}">
                 <div class="radio"
                      @click="changeOption(0)"
                      :class="displayType === 0?'active':''">楼中楼
@@ -62,6 +69,19 @@
                 <div class="radio"
                      @click="changeOption(2)"
                      :class="displayType === 2?'active':''">V2原版
+                </div>
+              </div>
+              <div class="read-notice" v-if="read.floor || read.total">
+                <span>上次打开：</span>
+                <template v-if="read.floor">
+                  <span>阅读到<b>{{ read.floor }}</b>楼</span>
+                  <div class="jump jump1" @click="jump(read.floor)">
+                    <i class="fa fa-long-arrow-down"/>
+                  </div>
+                </template>
+                <span>总楼层<b>{{ read.total }}</b></span>
+                <div class="jump" @click="jump(read.total)">
+                  <i class="fa fa-long-arrow-down"/>
                 </div>
               </div>
             </div>
@@ -81,7 +101,6 @@
               <template v-if="modelValue">
                 <Comment v-for="(item,index) in replyList"
                          :key="item.floor"
-                         :style="`border-bottom: 1px solid ${isNight?'#22303f':'#f2f2f2'};  padding: 1rem;margin-top: 0;`"
                          v-model="replyList[index]"/>
               </template>
             </div>
@@ -107,6 +126,20 @@
           </div>
         </div>
       </div>
+      <div class="relationReply" v-if="showRelationReply" @click="close('space')">
+        <div class="my-cell flex" @click.stop="stop">
+          <span class="gray">上下文</span>
+          <div class="top-reply">
+            <i class="fa fa-times" @click="showRelationReply = false"/>
+          </div>
+        </div>
+        <div class="comments" @click.stop="stop">
+          <SingleComment v-for="(item,index) in relationReply"
+                         :is-right="item.username === targetUser.right"
+                         :key="item.floor"
+                         :comment="item"/>
+        </div>
+      </div>
       <div class="call-list"
            :style="callStyle"
            v-if="showCallList && filterCallList.length">
@@ -120,8 +153,12 @@
       <div class="close-btn" v-if="config.closePostDetailBySpace" @click="close('btn')">
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="scroll-top button gray" @click.stop="scrollTop">
+      <div class="scroll-top button" @click.stop="scrollTop">
         <i class="fa fa-long-arrow-up" aria-hidden="true"></i>
+      </div>
+      <div class="scroll-to button" @click.stop="jump(currentFloor)">
+        <i class="fa fa-long-arrow-down"/>
+        <input type="text" v-model="currentFloor" @click.stop="stop">
       </div>
     </div>
   </div>
@@ -132,20 +169,28 @@ import PostEditor from './PostEditor'
 import Point from "./Point";
 import Toolbar from "./Toolbar";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
-import eventBus from "@/eventBus";
+import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
-import {computed} from "vue";
+import {computed, nextTick} from "vue";
+import {PageType} from "@/types";
+import Tooltip from "@/components/Tooltip.vue";
+import PopConfirm from "@/components/PopConfirm.vue";
+import SingleComment from "@/components/SingleComment.vue";
+import {debounce} from "@/utils/index.js";
 
 export default {
   name: "detail",
   components: {
+    SingleComment,
+    PopConfirm,
     Comment,
     PostEditor,
     Point,
     Toolbar,
-    BaseHtmlRender
+    BaseHtmlRender,
+    Tooltip
   },
-  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType'],
+  inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
     return {
       postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
@@ -164,12 +209,6 @@ export default {
         return false
       }
     },
-    isNight: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    },
     displayType: 0,
   },
   data() {
@@ -178,28 +217,43 @@ export default {
       selectCallIndex: 0,
       postDetailWidth: 0,
       showCallList: false,
+      showRelationReply: false,
       replyText: '',
       callStyle: {
         top: 0,
         left: 0
       },
+      targetUser: {
+        left: [],
+        right: '',
+        rightFloor: -1
+      },
+      debounceScroll: () => {
+      },
+      read: {
+        floor: 0,
+        total: 0
+      },
+      currentFloor: 1
     }
   },
   computed: {
+    isPost() {
+      return this.pageType === PageType.Post
+    },
     filterCallList() {
       if (this.showCallList) {
-        if (this.replyText) {
-          return ['管理员', '所有人'].concat(this.allReplyUsers).filter(i => i.search(this.replyText) > -1)
-        }
-        return ['管理员', '所有人'].concat(this.allReplyUsers)
+        let list = ['管理员', '所有人'].concat(this.allReplyUsers)
+        if (this.replyText) return list.filter(i => i.search(this.replyText) > -1)
+        return list
       }
       return []
     },
-    topReplyList() {
+    topReply() {
       return this.post.replyList
-          .filter(v => v.thankCount > 0)
+          .filter(v => v.thankCount >= this.config.topReplyLoveMinCount)
           .sort((a, b) => b.thankCount - a.thankCount)
-          .slice(0, 3)
+          .slice(0, this.config.topReplyCount)
     },
     replyList() {
       if (this.displayType === 0) return this.post.nestedReplies
@@ -210,6 +264,32 @@ export default {
       if (this.displayType === 3) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },
+    //关联回复
+    relationReply() {
+      if (this.targetUser.left.length && this.targetUser.right) {
+        return this.post.replyList
+            .filter(v => {
+              if (this.targetUser.left.includes(v.username)) {
+                //如果超过目标楼层，只找回复目标的
+                if (v.floor > this.targetUser.rightFloor) {
+                  if (v.replyUsers.includes(this.targetUser.right)) {
+                    return true
+                  }
+                } else {
+                  return true
+                }
+              }
+              if (v.username === this.targetUser.right) {
+                for (let i = 0; i < this.targetUser.left.length; i++) {
+                  if (v.replyUsers.includes(this.targetUser.left[i])) {
+                    return true
+                  }
+                }
+              }
+            })
+      }
+      return []
+    }
   },
   watch: {
     'post.id'(n, o) {
@@ -219,33 +299,38 @@ export default {
     },
     modelValue: {
       handler(newVal) {
-        if (this.pageType === 'post') return
-        if (!newVal) {
-          window.win().doc.body.style.overflow = 'unset'
-          this.isSticky = false
-          if ((this.pageType === 'home' || this.pageType === 'nodePage') &&
-              window.win().location.pathname !== '/'
-          ) {
-            window.win().history.back();
-          }
-        } else {
-          window.win().doc.body.style.overflow = 'hidden'
-          this.$nextTick(() => {
+        if (this.isPost) return
+        if (newVal) {
+          document.body.style.overflow = 'hidden'
+          this.read = this.post.read
+          this.currentFloor = 1
+          nextTick(() => {
             this.$refs?.main?.focus()
             this.$refs?.detail?.scrollTo({top: 0})
           })
+        } else {
+          this.$emit('saveReadList')
+          document.body.style.overflow = 'unset'
+          this.isSticky = false
+          this.showRelationReply = false
+          if ((this.pageType === PageType.Home || this.pageType === PageType.Node) &&
+              window.location.pathname !== '/'
+          ) {
+            window.history.back();
+          }
         }
       },
     }
   },
   mounted() {
+    this.debounceScroll = debounce(this.scroll, 300, false)
     if (this.isLogin) {
       const observer = new IntersectionObserver(
           ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
           {threshold: [1]}
       );
       observer.observe(this.$refs.replyBox);
-      window.win().addEventListener('keydown', this.onKeyDown)
+      window.addEventListener('keydown', this.onKeyDown)
     }
     eventBus.on(CMD.SHOW_CALL, (val) => {
       if (val.show) {
@@ -254,7 +339,7 @@ export default {
         this.replyText = val.text
         //top值要加上滚动的距离，因为val传的top是相对于视口，而不是父div
         //left要减去父级的left，原理同上
-        if (this.pageType === 'post') {
+        if (this.isPost) {
           this.callStyle.top = val.top + $(window.win()).scrollTop() + -40 + 'px'
         } else {
           this.callStyle.top = val.top + $('.post-detail').scrollTop() + 15 + 'px'
@@ -269,16 +354,99 @@ export default {
         this.selectCallIndex = 0
       }
     })
+    eventBus.on(CMD.RELATION_REPLY, (val) => {
+      this.targetUser = val
+      this.showRelationReply = true
+    })
+    eventBus.on(CMD.JUMP, this.jump)
+    if (this.isPost) {
+      window.addEventListener('scroll', this.debounceScroll)
+    }
   },
   beforeUnmount() {
-    window.win().removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('keydown', this.onKeyDown)
     eventBus.off(CMD.SHOW_CALL)
   },
   methods: {
+    scroll() {
+      if (!this.config.rememberLastReadFloor) return
+      let height = window.innerHeight * 0.3
+      let comments = $('.comments  .comment')
+      let forCount = 0
+      for (let i = 0; i < comments.length; i++) {
+        forCount++
+        let ins = comments[i]
+        let rect = ins.getBoundingClientRect()
+        if (rect.top > height) {
+          let lastReadFloor = Number(ins.dataset['floor']);
+          console.log('当前阅读楼层', lastReadFloor)
+          eventBus.emit(CMD.ADD_READ, {
+            floor: lastReadFloor > 3 ? lastReadFloor : 0,
+            total: this.post.replyList.length
+          })
+          if (lastReadFloor > 3) {
+            this.read.floor = 0
+          }
+          break
+        }
+      }
+      if (forCount === comments.length) {
+        console.log('看到最后了')
+        eventBus.emit(CMD.ADD_READ, {
+          floor: forCount,
+          total: this.post.replyList.length
+        })
+      }
+    },
+    stop(e) {
+    },
+    jump(floor) {
+      try {
+        floor = Number(floor)
+      } catch (e) {
+      }
+      if (!floor) return;
+      if (!this.post.replyList.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '没有回复可跳转！'})
+        this.read.floor = 0
+        return
+      }
+      if (floor > this.post.replyList.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
+        this.read.floor = 0
+        return;
+      }
+      let comment = $(`.c_${floor}`)
+      if (!comment.length) {
+        eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '没有找到对应回复！'})
+        this.read.floor = 0
+        return
+      }
+      comment[0].scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
+      comment.addClass('ding')
+      this.read.floor = 0
+      this.currentFloor = floor + 1
+      setTimeout(() => {
+        comment.removeClass('ding')
+      }, 2000)
+    },
+    jumpLastRead(floor) {
+      if (this.config.autoJumpLastReadFloor) {
+        if (!floor) return
+        setTimeout(() => {
+          console.log('上次跳转',floor)
+          this.jump(floor)
+          eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已跳转到上次阅读位置'})
+        }, 300)
+      }
+    },
+    collapseTopReplyList() {
+      $(this.$refs.topReply).slideToggle('fast')
+    },
     goBottom() {
       this.isSticky = false
       setTimeout(() => {
-        if (this.pageType === 'post') {
+        if (this.isPost) {
           let body = $('body , html')
           let scrollHeight = body.prop("scrollHeight");
           body.animate({scrollTop: scrollHeight - 850}, 300);
@@ -288,7 +456,7 @@ export default {
       })
     },
     close(from) {
-      if (this.pageType === 'post') return
+      if (this.isPost) return
       if (from === 'space') {
         if (this.config.closePostDetailBySpace) {
           this.$emit('update:modelValue', false)
@@ -337,7 +505,7 @@ export default {
       eventBus.emit(CMD.CHANGE_POST_THANK, {id: this.post.id, type: 'recall'})
     },
     scrollTop() {
-      if (this.pageType === 'post') {
+      if (this.isPost) {
         $("body , html").animate({scrollTop: 0}, 300);
       } else {
         this.$refs.detail.scrollTo({top: 0, behavior: 'smooth'})
@@ -358,12 +526,12 @@ export default {
 .sticky[stuck] {
   box-shadow: 0 2px 20px rgb(0 0 0 / 35%) !important;
 }
-
 </style>
+
 <style scoped lang="less">
 @import "src/assets/less/variable.less";
 
-.post {
+.Post {
   position: unset !important;
   background: transparent !important;
   overflow: unset !important;
@@ -415,6 +583,18 @@ export default {
         border: 1px solid @bg !important;
       }
 
+      .relationReply {
+        .comments, .my-cell {
+          background: @bg;
+        }
+
+        .comment {
+          border-bottom: 1px solid @line-color;
+        }
+
+        color: white;
+      }
+
       .my-box {
         color: white;
         background: @bg;
@@ -442,12 +622,17 @@ export default {
         border-bottom: 1px solid @line !important;
       }
 
+      @line-color: #22303f;
+
+      :deep(.isLevelOne) {
+        border-bottom: 1px solid @line-color;
+      }
+
       :deep(.comment) {
-        background: @bg;
 
         .expand-line {
           &:after {
-            border-right: 1px solid #202c39 !important;
+            border-right: 1px solid @line-color !important;
           }
 
           &:hover {
@@ -458,7 +643,6 @@ export default {
         }
 
         .comment-content {
-          background: @bg !important;
 
           .w > .text {
             color: #d1d5d9 !important;
@@ -535,6 +719,12 @@ export default {
 
         }
       }
+
+      .scroll-to, .close-btn, .scroll-top, .top-reply {
+        //color: rgb(72, 98, 126);
+        color: #9caec7;
+      }
+
     }
   }
 
@@ -556,6 +746,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
 
       .post-wrapper {
         .toolbar-wrapper {
@@ -599,6 +790,31 @@ export default {
         width: 100%;
         margin-bottom: 2rem;
         box-sizing: border-box;
+      }
+    }
+
+    .relationReply {
+      position: fixed;
+      width: 25vw;
+      top: 6.5rem;
+      bottom: 15rem;
+      z-index: 99;
+      transform: translateX(calc(100% + 2rem));
+      font-size: 2rem;
+      @r: 0.5rem;
+      overflow: hidden;
+
+      .my-cell {
+        background: white;
+        border-radius: @r @r 0 0;
+      }
+
+      .comments {
+        max-height: calc(100% - 4.2rem);
+        overflow: auto;
+        background: white;
+        border-radius: 0 0 @r @r;
+        //box-shadow: 0 0 10px 0 #c7c7c7;
       }
     }
 
@@ -661,9 +877,44 @@ export default {
     position: fixed;
     bottom: 10rem;
     z-index: 99;
-    padding: 0.8rem 1.4rem;
+    padding: .6rem .2rem;
+    width: 3.5rem;
     transform: translateX(6rem);
     font-size: 2rem;
+    background: #f1f1f1;
+    border: none;
+    color: darkgrey;
+  }
+
+  .scroll-to {
+    .scroll-top;
+    bottom: 15rem;
+    display: flex;
+    flex-direction: column;
+
+    input {
+      margin-top: .5rem;
+      height: 2rem;
+      width: 3.3rem;
+      font-size: 1.4rem;
+      text-align: center;
+      color: gray;
+    }
+  }
+
+  .read-notice {
+    display: flex;
+    align-items: center;
+    color: gray;
+
+    .jump {
+      background: #f1f1f1;
+      color: gray;
+      padding: 0.3rem 1rem;
+      border-radius: .4rem;
+      margin: 0 1rem;
+      cursor: pointer;
+    }
   }
 
   .close-btn {
@@ -675,10 +926,15 @@ export default {
     font-size: 2rem;
   }
 
-  .close-top {
-    color: @main-color;
+  .top-reply {
+    color: @bg-color;
     cursor: pointer;
     font-size: 2rem;
+    display: flex;
+
+    i {
+      padding: 0 1rem;
+    }
   }
 }
 </style>

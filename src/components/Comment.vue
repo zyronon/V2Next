@@ -1,11 +1,11 @@
 <template>
-  <div class="comment" :class="modelValue.isOp?'op':''" ref="comment">
+  <div class="comment" :class="myClass" ref="comment" :data-floor="floor">
     <Author v-model="expand"
             :comment="modelValue"
             @reply="edit = !edit"
+            :type="type"
             @hide="hide"
     />
-    <!--    {{ modelValue.level }}-->
     <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
       由于嵌套回复层级太深，自动将后续回复隐藏
     </div>
@@ -64,33 +64,52 @@
 import Author from "./Author";
 import PostEditor from "./PostEditor";
 import Point from "./Point";
-import eventBus from "../eventBus";
+import eventBus from "@/utils/eventBus.js";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
 import {CMD} from "@/utils/type";
 
 export default {
   name: "Comment",
   components: {BaseHtmlRender, Author, PostEditor, Point},
+  inject: ['post', 'postDetailWidth', 'show'],
   props: {
     modelValue: {
       reply_content: ''
+    },
+    type: {
+      type: String,
+      default() {
+        return 'list'
+      }
     },
   },
   data() {
     return {
       edit: false,
+      ding: false,
       expand: true,
       expandWrong: false,
       replyInfo: `@${this.modelValue.username} #${this.modelValue.floor} `,
-      cssStyle: null
+      cssStyle: null,
+      floor: this.modelValue.floor
     }
   },
-  inject: ['post', 'postDetailWidth', 'show'],
   watch: {
     show(e) {
       if (e) {
         this.edit = false
       }
+    }
+  },
+  computed: {
+    myClass() {
+      return {
+        isOp: this.modelValue.isOp,
+        ding: this.ding,
+        isLevelOne: this.modelValue.level === 0,
+        ['c_' + this.floor]: this.type !== 'top'
+      }
+      // return [modelValue.isOp ? 'isOp' : '', ding ? 'ding' : '']
     }
   },
   created() {
@@ -112,6 +131,13 @@ export default {
     }
   },
   methods: {
+    //高亮一下
+    showDing() {
+      this.ding = true
+      setTimeout(() => {
+        this.ding = false
+      }, 2000)
+    },
     hide() {
       let url = `${window.baseUrl}/ignore/reply/${this.modelValue.id}?once=${this.post.once}`
       eventBus.emit(CMD.REMOVE, this.modelValue.floor)
@@ -136,18 +162,21 @@ export default {
   width: 100%;
   box-sizing: border-box;
   margin-top: 1rem;
-  background: white;
 
-  //&.op {
-  //  background: rgb(yellow, .3);
-  //
-  //  & > .comment-content-w > .comment-content > .right > .w {
-  //    background: rgb(yellow, .3);
-  //  }
-  //}
+  @line-color: #ececec;
+
+  &.isLevelOne {
+    border-bottom: 1px solid @line-color;
+    padding: 1rem;
+    margin-top: 0;
+  }
+
+  &.ding {
+    @bg: rgb(yellow, .3);
+    background: @bg !important;
+  }
 
   .comment-content-w {
-    background: white;
 
     .more {
       text-align: center;
@@ -172,7 +201,7 @@ export default {
         content: " ";
         height: 100%;
         width: 0;
-        border-right: 1px solid #f1f1f1;
+        border-right: 1px solid @line-color;
       }
 
       &:hover {
@@ -204,7 +233,8 @@ export default {
   span {
     cursor: pointer;
   }
-  .del-line{
+
+  .del-line {
     text-decoration: line-through;
   }
 

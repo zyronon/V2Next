@@ -13,15 +13,14 @@
     - 其他脚本：只解析当前页，如果有很多页回复，楼中楼就会前言不搭后语莫名其妙的
     - 本脚本：加载所有回复然后再解析楼中楼，保证回复解析正确
 - 集成了市面上常见的增强（辅助）功能
-  - 坏消息：是个缝合怪
-  - 好消息：都缝了
-  
+    - 坏消息：是个缝合怪
+    - 好消息：都缝了
 
 # 功能列表
 
 - 楼中楼
-  - 可按高赞排序显示
-  - 可只看楼主
+    - 可按高赞排序显示
+    - 可只看楼主
 - 查看回复上下文
 - 记忆上次阅读位置
 - 高赞回复
@@ -81,50 +80,11 @@
 
 # 开发指南
 
-## 步骤有点麻烦。但是是一次性的
-
-1. 在硬盘新建一个空白目录。
-2. 复制Chrome的快捷方式。然后右键新的快捷方式，点击属性，在属性弹框里面，点击上面的第二个Tab（快捷方式）
-3. 找到目标，在输入框里面加上 --args --disable-web-security --disable-site-isolation-trials
-   --user-data-dir=第一步建的目录地址（不用加引用）
-   例："C:\Program Files\Google\Chrome\Application\chrome.exe" --args --disable-web-security
-   --disable-site-isolation-trials --user-data-dir=C:\Users\abc\Documents\chrome2
-4. 保存，然后双击打开这个快捷方式。这样子新打开的Chrome就允许跨域了
-5. 在新开的Chrome里面安装tampermonkey这个插件
-6. 在里面“添加新脚本”，复制以下内容
-
-```js
-// ==UserScript==
-// @name         开发：V2EX - 超级增强
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
-// @match        https://*.v2ex.com/
-// @match        https://*.v2ex.com/?tab=*
-// @match        https://*.v2ex.com/t/*
-// @match        https://*.v2ex.com/recent*
-// @match        https://*.v2ex.com/go/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=v2ex.com
-// @grant        none
-// ==/UserScript==
-
-(function () {
-  'use strict';
-  let $vue = document.createElement('iframe');
-  $vue.src = 'http://localhost:3000/';
-  document.body.appendChild($vue);
-})();
-```
-
-7. 克隆本项目，然后安装依赖，然后启动。
-8. 修改本项目的index.html文件里面第30行，将const isDev = false 改为const isDev = ture
-9. 用新的Chrome打开v2ex.com。本脚本会自动注入到v2的网页里面
-10. 像正常的vue项目一样开发即可
+1. npm run dev
 
 # 自行构建指南
 
 1. 运行npm run build
-2. 打开public/template.js，根据里面的注释提示，复制dist/assets目录下的css、js和根目录index.html的<script>标签的第18行以后的代码
-3. 在浏览器点击Tampermonkey，点击“添加新脚本”，把template.js文件里面的所有内容粘贴进去，按Ctrl + S保存
+2. 复制dist目录下的文件内容
+3. 在浏览器点击Tampermonkey，点击“添加新脚本”, 把复制的所有内容粘贴进去，按Ctrl + S保存
 4. 打开V2即可使用你自己的脚本
