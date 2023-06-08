@@ -152,7 +152,11 @@
             <div class="notice">
               提示：此项设置以后，单独打开详情页时会出现帖子突然变宽（窄）的问题，暂时无解
             </div>
-
+            <div class="option">
+              <span>自动签到：</span>
+              <div class="switch gray" :class="{active:config.autoSignin,isNight}"
+                   @click="config.autoSignin = !config.autoSignin"/>
+            </div>
             <div class="option-title">记忆阅读:</div>
             <div class="option">
               <span>记录上次阅读楼层（误差1层左右）：</span>

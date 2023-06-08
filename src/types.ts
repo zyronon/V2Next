@@ -47,6 +47,7 @@ export interface Config {
   postWidth?: string,
   rememberLastReadFloor: boolean// 记录上次阅读楼层
   autoJumpLastReadFloor: boolean//自动跳转到上次阅读楼层
+  autoSignin: boolean,
 }
 
 export enum PageType {

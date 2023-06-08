@@ -73,7 +73,8 @@ function run() {
     topReplyLoveMinCount: 3,
     topReplyCount: 3,
     autoJumpLastReadFloor: false,
-    rememberLastReadFloor: true
+    rememberLastReadFloor: true,
+    autoSignin: true,
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -963,11 +964,6 @@ function run() {
       window.user.avatar = $('#Rightbar .box .avatar').attr('src')
 
       initNoteData()
-      try {
-        qianDao()
-      } catch (e) {
-        console.log('签到失败')
-      }
     }
     //这个要放后面，不然前面查找会出错
     addSettingText()
@@ -975,6 +971,13 @@ function run() {
     initConfig().then(r => {
       if (window.config.sov2ex) {
         setTimeout(initSoV2ex, 1000)
+      }
+      try {
+        if (window.config.autoSignin && window.user.username) {
+          qianDao()
+        }
+      } catch (e) {
+        console.log('签到失败')
       }
     })
     let box
