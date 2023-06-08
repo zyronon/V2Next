@@ -2,14 +2,14 @@
 import {PageType} from "./types"
 import {computed, nextTick} from "vue";
 import Setting from "./components/Modal/SettingModal.vue";
-import eventBus from "src/utils/eventBus.js";
-import {CMD} from "src/utils/type.js";
+import eventBus from "@/utils/eventBus.js";
+import {CMD} from "@/utils/type.js";
 import PostDetail from "./components/PostDetail.vue";
 import Base64Tooltip from "./components/Base64Tooltip.vue";
-import Msg from "../../src/components/Msg.vue";
-import Tooltip from "src/components/Tooltip.vue";
-import TagModal from "src/components/Modal/TagModal.vue";
-import MsgModal from "src/components/Modal/MsgModal.vue";
+import Msg from '@/components/Msg.vue';
+import Tooltip from "@/components/Tooltip.vue";
+import TagModal from "@/components/Modal/TagModal.vue";
+import MsgModal from "@/components/Modal/MsgModal.vue";
 
 export default {
   components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},

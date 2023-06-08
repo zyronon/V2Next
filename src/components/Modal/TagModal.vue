@@ -28,7 +28,7 @@
 
 <script setup>
 import {inject, nextTick, onMounted, reactive, ref} from "vue"
-import {CMD} from "../../../../src/utils/type"
+import {CMD} from "@/utils/type"
 import eventBus from "@/utils/eventBus.js";
 
 const tagModal = reactive({
