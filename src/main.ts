@@ -437,7 +437,7 @@ function run() {
           //如果这条数据指定了楼层，并且名字也能匹配上，那么直接忽略
           //原因：问题887644-3，有图
           if (currentItem.replyFloor !== -1) {
-            if (all[currentItem.replyFloor - 1].username === currentItem.replyUsers[0]) {
+            if (all[currentItem.replyFloor - 1]?.username === currentItem.replyUsers[0]) {
               continue
             }
           }
