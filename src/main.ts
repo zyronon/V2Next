@@ -125,6 +125,11 @@ function run() {
           if (collectCountReg.length) {
             post.collectCount = Number(collectCountReg[0][1])
           }
+          reg1 = text.matchAll(/([\d]+)[\s]*likes/g)
+          collectCountReg = [...reg1]
+          if (collectCountReg.length) {
+            post.collectCount = Number(collectCountReg[0][1])
+          }
           // console.log([...collectCountReg])
           let reg2 = text.matchAll(/([\d]+)[\s]*人感谢/g)
           let thankCountReg = [...reg2]
@@ -133,6 +138,11 @@ function run() {
           }
           let reg3 = text.matchAll(/([\d]+)[\s]*次点击/g)
           let clickCountReg = [...reg3]
+          if (clickCountReg.length) {
+            post.clickCount = Number(clickCountReg[0][1])
+          }
+          reg3 = text.matchAll(/([\d]+)[\s]*views/g)
+          clickCountReg = [...reg3]
           if (clickCountReg.length) {
             post.clickCount = Number(clickCountReg[0][1])
           }
