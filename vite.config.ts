@@ -27,8 +27,8 @@ export default defineConfig({
         description: '楼中楼回复(支持感谢数排序)、自动签到、回复上下文、记录上次阅读位置、使用 SOV2EX 搜索、列表预览内容、点击帖子弹框展示详情、对用户打标签、正文超长自动折叠、划词 base64 解码、一键@所有人,@管理员、操作按钮(感谢、收藏、回复、隐藏)异步请求、支持黑暗模式',
         author: 'zyronon',
         license: 'GPL License',
-        updateURL: 'https://github.com/zyronon/v2ex-script/row/master/dist/vite-project.user.js',
-        downloadURL: 'https://github.com/zyronon/v2ex-script/row/master/dist/vite-project.user.js',
+        updateURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
+        downloadURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
       },
       build: {
         externalGlobals: {
