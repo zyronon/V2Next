@@ -37,6 +37,8 @@ https://www.v2ex.com/poll_once 好像是换once的
 
 # TODO
 
+- 表情包
+  - https://www.emojiall.com/zh-hans/platform-baidu
 - 去除背景
 - 高亮楼主回复
 - 如果回复中，指定了楼层，用hover的形式显示
