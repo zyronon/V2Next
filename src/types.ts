@@ -49,6 +49,7 @@ export interface Config {
   autoJumpLastReadFloor: boolean//自动跳转到上次阅读楼层
   autoSignin: boolean,
   customBgColor: string
+  version: number
 }
 
 export enum PageType {
