@@ -75,6 +75,7 @@ function run() {
     autoJumpLastReadFloor: false,
     rememberLastReadFloor: true,
     autoSignin: true,
+    customBgColor: '',
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -963,6 +964,19 @@ function run() {
     $('.tools').prepend(setting)
   }
 
+  function initCustomBgColor() {
+    let style2 = `#Wrapper {
+          background-color: ${window.config.customBgColor} !important;
+          background-image: unset !important;
+        }`
+    let addStyle2: HTMLStyleElement = document.createElement("style");
+    // @ts-ignore
+    addStyle2.rel = "stylesheet";
+    addStyle2.type = "text/css";
+    addStyle2.innerHTML = style2
+    $(window.win().doc.head).append(addStyle2)
+  }
+
   function init() {
     checkPageType()
     initMonkeyMenu()
@@ -982,6 +996,9 @@ function run() {
       if (window.config.sov2ex) {
         setTimeout(initSoV2ex, 1000)
       }
+      if (window.config.customBgColor) {
+        initCustomBgColor()
+      }
       try {
         if (window.config.autoSignin && window.user.username) {
           qianDao()
@@ -990,6 +1007,7 @@ function run() {
         console.log('签到失败')
       }
     })
+
     let box
     let list
     switch (window.pageType!) {

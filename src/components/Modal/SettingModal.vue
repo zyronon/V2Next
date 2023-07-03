@@ -90,6 +90,17 @@
               <span>最少需要多少赞才能被判定为高赞：</span>
               <input type="number" min="1" v-model="config.topReplyLoveMinCount">
             </div>
+            <div class="option-title">记忆阅读:</div>
+            <div class="option">
+              <span>记录上次阅读楼层（误差1层左右）：</span>
+              <div class="switch gray" :class="{active:config.rememberLastReadFloor,isNight}"
+                   @click="config.rememberLastReadFloor = !config.rememberLastReadFloor;config.autoJumpLastReadFloor = false"/>
+            </div>
+            <div class="option">
+              <span>打开帖子自动跳转到上次阅读楼层：</span>
+              <div class="switch gray" :class="{active:config.autoJumpLastReadFloor,isNight}"
+                   @click="config.autoJumpLastReadFloor = !config.autoJumpLastReadFloor"/>
+            </div>
           </div>
 
           <div class="option-list">
@@ -157,20 +168,20 @@
               <div class="switch gray" :class="{active:config.autoSignin,isNight}"
                    @click="config.autoSignin = !config.autoSignin"/>
             </div>
-            <div class="option-title">记忆阅读:</div>
+
             <div class="option">
-              <span>记录上次阅读楼层（误差1层左右）：</span>
-              <div class="switch gray" :class="{active:config.rememberLastReadFloor,isNight}"
-                   @click="config.rememberLastReadFloor = !config.rememberLastReadFloor;config.autoJumpLastReadFloor = false"/>
+              <span>自定义背景：</span>
+              <input type="text" v-model="config.customBgColor">
             </div>
-            <div class="option">
-              <span>打开帖子自动跳转到上次阅读楼层：</span>
-              <div class="switch gray" :class="{active:config.autoJumpLastReadFloor,isNight}"
-                   @click="config.autoJumpLastReadFloor = !config.autoJumpLastReadFloor"/>
+            <div class="notice">
+              接受一个合法的css color值：例如<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value"
+                                               target="_blank">red、#ffffff、rgb(222,222,22)</a>等等。
+              没图片时的背景默认为 #e2e2e2。
+            </div>
+            <div class="notice">
+              此项需要刷新页面才能生效
             </div>
           </div>
-        </div>
-        <div class="jieshao">
         </div>
       </div>
     </div>
@@ -240,12 +251,14 @@ export default {
     border-radius: .8rem;
     font-size: 1.4rem;
     //box-shadow: 0 0 6px 4px gainsboro;
-    padding: 2rem 6rem 4rem 6rem;
+    padding: 2rem;
+    max-height: 80vh;
+    max-width: 80vw;
+    overflow: auto;
 
     .sub-title {
       color: gray;
       font-size: 1.4rem;
-      margin-bottom: 4rem;
     }
 
     .option-title {
@@ -257,13 +270,12 @@ export default {
 
     .body {
       display: flex;
-      gap: 10rem;
+      gap: 3rem;
 
       .option-list {
-        width: 45rem;
+        width: 40rem;
       }
     }
-
 
     .notice {
       font-size: 12px;
@@ -273,17 +285,6 @@ export default {
       a {
         color: blue;
       }
-    }
-
-    .jieshao {
-      margin-top: 2rem;
-      font-size: 15px;
-      font-weight: bold;
-      color: red;
-      display: flex;
-      justify-content: flex-start;
-      line-break: anywhere;
-      text-align: left;
     }
   }
 }
