@@ -76,6 +76,7 @@ function run() {
     rememberLastReadFloor: true,
     autoSignin: true,
     customBgColor: '',
+    version: 1
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
