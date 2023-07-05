@@ -472,6 +472,7 @@ export default {
       let url = window.baseUrl + '/t/' + post.id
       document.body.style.overflow = 'hidden'
       window.history.pushState({}, 0, post.href ?? url);
+      window.document.title = post.title ?? 'V2EX'
 
       let alreadyHasReply = this.current.replyList.length
       //如果，有数据，不显示loading,默默更新即可

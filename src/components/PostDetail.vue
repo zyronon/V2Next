@@ -7,8 +7,7 @@
        @scroll="debounceScroll"
        @click="close('space')">
     <div ref="main" class="main" tabindex="1" @click.stop="stop">
-      <div class="main-wrapper" :style="{width:config.postWidth}">
-
+      <div class="main-wrapper" ref="mainWrapper" :style="{width:config.postWidth}">
         <div class="my-box post-wrapper">
           <BaseHtmlRender :html="post.headerTemplate"/>
           <div class="toolbar-wrapper">
@@ -97,7 +96,7 @@
             <div class="loading-wrapper" v-if="loading">
               <div :class="[isNight?'loading-b':'loading-c']"></div>
             </div>
-            <div class="comments" ref="comments" v-else>
+            <div class="comments" v-else>
               <template v-if="modelValue">
                 <Comment v-for="(item,index) in replyList"
                          :key="item.floor"
@@ -193,7 +192,7 @@ export default {
   inject: ['allReplyUsers', 'post', 'isLogin', 'config', 'pageType', 'isNight', 'showConfig'],
   provide() {
     return {
-      postDetailWidth: computed(() => this.$refs.comments?.getBoundingClientRect().width || 0)
+      postDetailWidth: computed(() => this.postDetailWidth)
     }
   },
   props: {
@@ -323,6 +322,9 @@ export default {
     }
   },
   mounted() {
+    setTimeout(() => {
+      this.postDetailWidth = this.$refs.mainWrapper?.getBoundingClientRect().width || 0
+    })
     this.debounceScroll = debounce(this.scroll, 300, false)
     if (this.isLogin) {
       const observer = new IntersectionObserver(
@@ -434,7 +436,7 @@ export default {
       if (this.config.autoJumpLastReadFloor) {
         if (!floor) return
         setTimeout(() => {
-          console.log('上次跳转',floor)
+          console.log('上次跳转', floor)
           this.jump(floor)
           eventBus.emit(CMD.SHOW_MSG, {type: 'success', text: '已跳转到上次阅读位置'})
         }, 300)

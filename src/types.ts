@@ -50,6 +50,7 @@ export interface Config {
   autoSignin: boolean,
   customBgColor: string
   version: number
+  collectBrowserNotice: boolean// 收藏时，浏览器提醒
 }
 
 export enum PageType {

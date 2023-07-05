@@ -181,6 +181,14 @@
             <div class="notice">
               此项需要刷新页面才能生效
             </div>
+            <div class="option">
+              <span>收藏时提醒添加到书签：</span>
+              <div class="switch gray" :class="{active:config.collectBrowserNotice,isNight}"
+                   @click="config.collectBrowserNotice = !config.collectBrowserNotice"/>
+            </div>
+            <div class="notice">
+              V站的帐号一旦被封了，就无法登录了，账号里的收藏也就看不到了
+            </div>
           </div>
         </div>
       </div>
