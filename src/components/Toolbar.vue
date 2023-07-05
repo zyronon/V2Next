@@ -157,6 +157,9 @@ export default {
       }
     },
     async toggleFavorite() {
+      if (!this.post.isFavorite && config.collectBrowserNotice) {
+        alert('请按Command/Cmd/CTRL + D添加到书签')
+      }
       if (!this.checkIsLogin()) return
       // return eventBus.emit('merge', 'isFavorite')
       this.loading = true

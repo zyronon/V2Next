@@ -9,7 +9,7 @@
     <div v-if="cssStyle && !expand" class="more ago" @click="expand = !expand">
       由于嵌套回复层级太深，自动将后续回复隐藏
     </div>
-    <div class="comment-content-w" v-show="expand" :style="cssStyle">
+    <div class="comment-content-w" v-if="expand" :style="cssStyle">
       <div v-if="cssStyle" class="more ago" @click="expand = !expand">
         由于嵌套回复层级太深，自动将以下回复移至可见范围
       </div>
@@ -71,7 +71,7 @@ import {CMD} from "@/utils/type";
 export default {
   name: "Comment",
   components: {BaseHtmlRender, Author, PostEditor, Point},
-  inject: ['post', 'postDetailWidth', 'show'],
+  inject: ['post', 'postDetailWidth', 'show', 'isNight'],
   props: {
     modelValue: {
       reply_content: ''
@@ -99,6 +99,9 @@ export default {
       if (e) {
         this.edit = false
       }
+    },
+    postDetailWidth(n, o) {
+      this.checkIsTooLong(n)
     }
   },
   computed: {
@@ -109,28 +112,31 @@ export default {
         isLevelOne: this.modelValue.level === 0,
         ['c_' + this.floor]: this.type !== 'top'
       }
-      // return [modelValue.isOp ? 'isOp' : '', ding ? 'ding' : '']
     }
-  },
-  created() {
-    // console.log(this.modelValue)
   },
   mounted() {
-    let rect = this.$refs.comment.getBoundingClientRect()
-    let ban = this.postDetailWidth / 2
-    if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
-      this.expand = false
-      // console.log(rect.width - this.postDetailWidth)
-      let padding = 2
-      this.cssStyle = {
-        padding: '1rem 0',
-        width: `calc(${this.postDetailWidth}px - ${padding}rem)`,
-        transform: `translateX(calc(${rect.width - this.postDetailWidth}px + ${padding}rem))`
-      }
-      // console.log(this.cssStyle)
-    }
+    this.checkIsTooLong(this.postDetailWidth)
   },
   methods: {
+    checkIsTooLong(postDetailWidth) {
+      if (postDetailWidth !== 0) {
+        let rect = this.$refs.comment.getBoundingClientRect()
+        let ban = postDetailWidth / 2
+        console.log('ban', ban)
+        if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
+          this.expand = false
+          // console.log(rect.width - this.postDetailWidth)
+          let padding = 2
+          this.cssStyle = {
+            padding: '1rem 0',
+            width: `calc(${postDetailWidth}px - ${padding}rem)`,
+            transform: `translateX(calc(${rect.width - postDetailWidth}px + ${padding}rem))`,
+            background: this.isNight ? '#18222d' : 'white'
+          }
+          // console.log(this.cssStyle)
+        }
+      }
+    },
     //高亮一下
     showDing() {
       this.ding = true
