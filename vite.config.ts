@@ -17,6 +17,11 @@ export default defineConfig({
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
         match: [
+          'https://v2ex.com/',
+          'https://v2ex.com/?tab=*',
+          'https://v2ex.com/t/*',
+          'https://v2ex.com/recent*',
+          'https://v2ex.com/go/*',
           'https://*.v2ex.com/',
           'https://*.v2ex.com/?tab=*',
           'https://*.v2ex.com/t/*',

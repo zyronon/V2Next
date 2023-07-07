@@ -4,6 +4,7 @@
               ref="txtRef"
               @focus="isFocus = true"
               @blur="onBlur"
+              @focusin="onFocusin"
               placeholder="请尽量让自己的回复能够对别人有帮助"
               :class="editorId"
               @input="onInput"
@@ -26,7 +27,6 @@
           <path d="M31 18V22" stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M17 18V22" stroke="#929596" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-
         <div class="upload">
           <input type="file" accept="image/*" @change="e=>upload(e.currentTarget.files[0])">
           <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -40,11 +40,15 @@
                   fill="none" stroke="#929596" stroke-width="2" stroke-linejoin="round"/>
           </svg>
         </div>
-        <span v-if="uploadLoading">上传中...</span>
+        <span v-if="uploadLoading" style="color: black;font-size: 1.4rem">上传中.....</span>
       </div>
-      <div class="button"
-           :class="{disabled,loading}"
-           @click="submit">回复
+      <div class="right">
+        <span v-if="useType === 'reply-comment'" style="margin-right: 1rem;cursor: pointer;"
+              @click="emits('close')">关闭</span>
+        <div class="button"
+             :class="{disabled,loading}"
+             @click="submit">回复
+        </div>
       </div>
     </div>
 
@@ -67,7 +71,7 @@
 </template>
 
 <script setup>
-import {computed, h, inject, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, h, inject, onBeforeUnmount, onMounted, ref, toRef, watch} from "vue";
 import eventBus from "@/utils/eventBus.js";
 import {CMD} from "../utils/type";
 
@@ -176,8 +180,8 @@ const emojiEmoticons = [
     list: ['👻', '🤡', '🐔', '👀', '💩', '🐴', '🦄', '🐧', '🐶', '🐒', '🙈', '🙉', '🙊', '🐵'],
   },
 ]
-/** 贴吧表情数据 */
-const classicsEmoticons = [
+/** 新版贴吧表情数据 */
+const newClassicsEmoticons = [
   {
     name: '[狗头]',
     low: 'https://i.imgur.com/nQIIqnv.png',
@@ -276,6 +280,147 @@ const classicsEmoticons = [
   },
 ]
 
+/** 老版贴吧表情数据 */
+const classicsEmoticons = [
+  {
+    name: '[狗头]',
+    low: 'https://i.imgur.com/io2SM1h.png',
+    high: 'https://i.imgur.com/0icl60r.png'
+  },
+  {
+    name: '[马]',
+    low: 'https://i.imgur.com/8EKZv7I.png',
+    high: 'https://i.imgur.com/ANFUX52.png'
+  },
+  {
+    name: '[不高兴]',
+    low: 'https://i.imgur.com/huX6coX.png',
+    high: 'https://i.imgur.com/N7JEuvc.png'
+  },
+  {
+    name: '[呵呵]',
+    low: 'https://i.imgur.com/RvoLAbX.png',
+    high: 'https://i.imgur.com/xSzIqrK.png'
+  },
+  {
+    name: '[真棒]',
+    low: 'https://i.imgur.com/xr1UOz1.png',
+    high: 'https://i.imgur.com/w8YEw9Q.png'
+  },
+  {
+    name: '[鄙视]',
+    low: 'https://i.imgur.com/u6jlqVq.png',
+    high: 'https://i.imgur.com/8JFNANq.png'
+  },
+  {
+    name: '[疑问]',
+    low: 'https://i.imgur.com/F29pmQ6.png',
+    high: 'https://i.imgur.com/EbbTQAR.png'
+  },
+  {
+    name: '[吐舌]',
+    low: 'https://i.imgur.com/InmIzl9.png',
+    high: 'https://i.imgur.com/Ovj56Cd.png'
+  },
+  // {
+  //   name: '[嘲笑]',
+  //   low: 'https://i.imgur.com/BaWcsMR.png',
+  //   high: 'https://i.imgur.com/0OGfJw4.png'
+  // },
+  // {
+  //   name: '[滑稽]',
+  //   low: 'https://i.imgur.com/lmbN0yI.png',
+  //   high: 'https://i.imgur.com/Pc0wH85.png'
+  // },
+  {
+    name: '[笑眼]',
+    low: 'https://i.imgur.com/ZveiiGy.png',
+    high: 'https://i.imgur.com/PI1CfEr.png'
+  },
+  {
+    name: '[狂汗]',
+    low: 'https://i.imgur.com/veWihk6.png',
+    high: 'https://i.imgur.com/3LtHdQv.png'
+  },
+  {
+    name: '[大哭]',
+    low: 'https://i.imgur.com/hu4oR6C.png',
+    high: 'https://i.imgur.com/b4X9XLE.png'
+  },
+  {
+    name: '[喷]',
+    low: 'https://i.imgur.com/bkw3VRr.png',
+    high: 'https://i.imgur.com/wnZL13L.png'
+  },
+  {
+    name: '[苦笑]',
+    low: 'https://i.imgur.com/VUWFktU.png',
+    high: 'https://i.imgur.com/NAfspZ1.png'
+  },
+  {
+    name: '[喝酒]',
+    low: 'https://i.imgur.com/2ZZSapE.png',
+    high: 'https://i.imgur.com/rVbSVak.png'
+  },
+  {
+    name: '[吃瓜]',
+    low: 'https://i.imgur.com/ee8Lq7H.png',
+    high: 'https://i.imgur.com/0L26og9.png'
+  },
+  {
+    name: '[捂脸]',
+    low: 'https://i.imgur.com/krir4IG.png',
+    high: 'https://i.imgur.com/qqBqgVm.png'
+  },
+  {
+    name: '[呕]',
+    low: 'https://i.imgur.com/6CUiUxv.png',
+    high: 'https://i.imgur.com/kgdxRsG.png'
+  },
+  {
+    name: '[阴险]',
+    low: 'https://i.imgur.com/MA8YqTP.png',
+    high: 'https://i.imgur.com/e94jbaT.png'
+  },
+  {
+    name: '[怒]',
+    low: 'https://i.imgur.com/n4kWfGB.png',
+    high: 'https://i.imgur.com/iMXxNxh.png'
+  },
+
+  {
+    name: '[衰]',
+    low: 'https://i.imgur.com/voHFDyQ.png',
+    high: 'https://i.imgur.com/XffE6gu.png'
+  },
+  {
+    name: '[合十]',
+    low: 'https://i.imgur.com/I8x3ang.png',
+    high: 'https://i.imgur.com/T4rJVee.png'
+  },
+  {
+    name: '[赞]',
+    low: 'https://i.imgur.com/lG44yUl.png',
+    high: 'https://i.imgur.com/AoF5PLp.png'
+  },
+  {
+    name: '[踩]',
+    low: 'https://i.imgur.com/cJp0uKZ.png',
+    high: 'https://i.imgur.com/1XYGfXj.png'
+  },
+  {
+    name: '[爱心]',
+    low: 'https://i.imgur.com/sLENaF5.png',
+    high: 'https://i.imgur.com/dND56oX.png'
+  },
+
+  {
+    name: '[心碎]',
+    low: 'https://i.imgur.com/AZxJzve.png',
+    high: 'https://i.imgur.com/RiUsPci.png'
+  },
+]
+
 /** 以下 Client ID 来自「V2EX_Polish」*/
 const imgurClientIdPool = [
   '3107b9ef8b316f3',
@@ -339,7 +484,7 @@ async function upload(file) {
   if (res.ok) {
     const resData = await res.json()
     if (resData.success) {
-      return insert(resData.data.link + ' ')
+      return insert(' ' + resData.data.link + ' ')
     }
   }
   eventBus.emit(CMD.SHOW_MSG, {type: 'error', text: '上传失败'})
@@ -540,6 +685,10 @@ function onKeydown(e) {
       e.stopPropagation()
       e.stopImmediatePropagation()
       return false
+    case 13:
+      //Ctrl + Enter发送
+      if (e.ctrlKey) submit()
+      break
   }
 }
 
@@ -592,11 +741,39 @@ function onInput(e) {
   }
 }
 
+// 监听paste事件
+function onPaste(e) {
+  // console.log('onPaste', e)
+  const dataTransferItemList = e.clipboardData.items;
+  // 过滤非图片类型
+  const items = [].slice.call(dataTransferItemList).filter(function (item) {
+    return item.type.indexOf('image') !== -1;
+  });
+  if (items.length === 0) {
+    return;
+  }
+  const dataTransferItem = items[0];
+  const blob = dataTransferItem.getAsFile();
+  upload(blob);
+}
+
 function onBlur() {
+  // console.log('onBlur',)
   // eventBus.emit(CMD.SHOW_CALL, {show: false})
   // eventBus.off(CMD.SET_CALL)
+  document.removeEventListener('paste', onPaste);
   isFocus.value = false
 }
+
+function onFocusin() {
+  console.log('onFocusin',)
+  document.addEventListener('paste', onPaste);
+}
+
+//如果帖子详情关闭了，那么把表情框也关了
+watch(() => show, (n) => {
+  if (n.value) isShowEmoticons.value = false
+}, {deep: true})
 
 onMounted(() => {
   $(`.${editorId.value}`).each(function () {
@@ -713,8 +890,10 @@ onBeforeUnmount(() => {
     border-radius: 1rem;
     padding: 1rem;
     width: 31rem;
+    max-width: 31rem;
     height: 30rem;
-    overflow: overlay;
+    max-height: 30rem;
+    overflow: auto;
     background: white;
     border: 1px solid #e2e8f0;
     box-shadow: 0 9px 24px -3px rgb(0 0 0 / 6%), 0 4px 8px -1px rgb(0 0 0 /12%);
