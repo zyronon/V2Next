@@ -4,7 +4,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 
 - 感谢，recall失效了
 - 启用脚本后无法显示代码高亮 https://v2ex.com/t/937951
-
+- base64中文有乱码：https://www.v2ex.com/t/955201#reply14
 # 测试数据
 
 - 362535 回复巨多
