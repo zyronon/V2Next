@@ -502,6 +502,7 @@ async function submit() {
     return match
   })
 
+
   //转换上传的图片
   let show_content = content.value.replace(/https?:\/\/(i\.)?imgur\.com\/((?!http).)+\.(gif|png|jpg|jpeg|GIF|PNG|JPG|JPEG)/g, function (match) {
     return `<img src="${match}" data-originUrl="${match}" data-notice="这个img标签由v2ex-超级增强脚本解析" style="max-width: 100%">`
@@ -511,10 +512,7 @@ async function submit() {
   show_content = show_content.replace(/\[((?!\[).)+\]/g, function (match) {
     let item = classicsEmoticons.find(v => v.name === match)
     if (item) {
-      return `<a target="_blank" href="${item.low}" rel="nofollow noopener"><img
-          src="${item.low}" class="embedded_image" rel="noreferrer">
-      </a>
-      `
+      return `<a target="_blank" href="${item.low}" rel="nofollow noopener"><img src="${item.low}" class="embedded_image" rel="noreferrer"></a> `
     }
     return match
   })
@@ -527,6 +525,9 @@ async function submit() {
     })
   }
 
+  show_content = show_content.replaceAll('\n', '<br/>')
+
+  // loading.value = false
   // return console.log('show_content', show_content)
 
   let item = {

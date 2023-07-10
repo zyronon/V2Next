@@ -49,11 +49,7 @@ https://www.v2ex.com/poll_once 好像是换once的
 - [ ] 支持多开
 - [ ] 支持手机版
 
-
-Ctrl+v 粘贴回复图片
-Ctrl + Enter 发送
-修复关闭帖子详情，未关闭表情框的bug
-
+ 
 
 
 
