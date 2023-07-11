@@ -53,10 +53,18 @@
           <template v-if="post.replyList.length ||loading">
             <div class="my-cell flex" v-if="config.showToolbar">
               <div class="radio-group2" :class="{isNight}">
-                <div class="radio"
-                     @click="changeOption(0)"
-                     :class="displayType === 0?'active':''">楼中楼
-                </div>
+                <Tooltip title="不隐藏@用户">
+                  <div class="radio"
+                       @click="changeOption(0)"
+                       :class="displayType === 0?'active':''">楼中楼(@)
+                  </div>
+                </Tooltip>
+                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
+                  <div class="radio"
+                       @click="changeOption(4)"
+                       :class="displayType === 4?'active':''">楼中楼
+                  </div>
+                </Tooltip>
                 <div class="radio"
                      @click="changeOption(1)"
                      :class="displayType === 1?'active':''">感谢
@@ -255,7 +263,7 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
-      if (this.displayType === 0) return this.post.nestedReplies
+      if ([0, 4].includes(this.displayType)) return this.post.nestedReplies
       if (this.displayType === 1) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX - 超级增强
 // @namespace    http://tampermonkey.net/
-// @version      5.9
+// @version      6.0
 // @author       zyronon
 // @description  楼中楼回复(支持感谢数排序)、自动签到、快捷回复图片和表情、列表预览内容、点击帖子弹框展示详情、对用户打标签、回复上下文、记录上次阅读位置、自定义背景、使用 SOV2EX 搜索、正文超长自动折叠、划词 base64 解码、一键@所有人,@管理员、操作按钮(感谢、收藏、回复、隐藏)异步请求、支持黑暗模式
 // @license      GPL License
@@ -24,7 +24,7 @@
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
-(t=>{const e=document.createElement("style");e.dataset.source="vite-plugin-monkey",e.textContent=t,document.head.append(e)})(' .v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.op{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove{display:inline}.my-tag .remove{cursor:pointer;margin-left:.5rem;display:none}.floor{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p0{padding:0!important}.post-author{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username{font-size:1.2rem}.sticky{position:sticky;bottom:0}.sticky[stuck]{box-shadow:0 2px 20px #00000059}a{color:#778087;text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}.base-loading{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear}.loading-c{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;width:3rem;height:3rem}.loading-b{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button:hover{opacity:.9}.button.info{color:#000;border:1px solid #40a9ff;background:white}.button.gray{color:#f5f5f5;border:1px solid #b6b6b6;background:#b6b6b6}.button.light{color:gray;border:1px solid #e2e2e2;background:#e2e2e2}.button:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading{cursor:not-allowed;opacity:.5}.button.loading:before{display:block}.button.disabled{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.button.isNight{color:#c6c6c6;background:#2b4054;border:1px solid transparent}.tool{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading{cursor:not-allowed;opacity:.5}.tool.loading:before{display:block}.tool.loading:hover{background:unset}.tool>svg{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool:hover{background:#e8e8e8}.tool.no-hover{cursor:default}.tool.no-hover:hover{background:unset}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node:hover{text-decoration:none;background:#e2e2e2}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left{background:#40a9ff}.msg.warning .left{background:#c8c002}.msg.error .left{background:red}.msg .left{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg{margin:0 .3rem;cursor:pointer}.msg .right{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line{border-bottom:1px solid #e2e2e2}.my-box{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;overflow:hidden;box-sizing:border-box}.my-cell{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14{font-size:1.4rem}.switch{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;transition:all .3s}.switch.light{border:1px solid #e2e2e2}.switch.light.active{background:#e2e2e2}.switch.light.active:before{right:.2rem;background:white}.switch.light:before{background:#e2e2e2}.switch.gray{border:1px solid #ccc}.switch.gray.active{background:#ccc}.switch.gray.active:before{right:.2rem;background:white}.switch.gray:before{background:#ccc}.switch.isNight{border:1px solid #31475e}.switch.isNight.active{background:#31475e}.switch.isNight.active:before{right:.2rem;background:gray}.switch.isNight:before{background:#31475e}.switch:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%}.modal{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0}.modal .mask{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:#e2e2e2;color:gray}.radio-group2.isNight{border:1px solid #454847}.radio-group2.isNight .radio{border-left:1px solid #454847;color:#fff}.radio-group2.isNight .active{background:#31475e}.pop-confirm{position:relative;display:inline-flex;justify-content:center}.tip{position:fixed;background:black;color:#fff;max-width:10rem;padding:.7rem 1rem;border-radius:.5rem;transform:translate(-50%);z-index:999}input{height:3rem;outline:unset;border:1px solid #e1e1e1;padding:0 .5rem;border-radius:5px;box-sizing:border-box}.isNight .wrapper[data-v-2c468bc2]{background:#22303f!important}.isNight .wrapper .title[data-v-2c468bc2],.isNight .wrapper .option-title[data-v-2c468bc2],.isNight .wrapper .option>span[data-v-2c468bc2]{color:#a9a9a9}.isNight .wrapper .notice[data-v-2c468bc2]{color:gray!important}.setting-modal .wrapper[data-v-2c468bc2]{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem;max-height:80vh;max-width:80vw;overflow:auto}.setting-modal .wrapper .sub-title[data-v-2c468bc2]{color:gray;font-size:1.4rem}.setting-modal .wrapper .option-title[data-v-2c468bc2]{text-align:start;font-size:1.6rem;font-weight:700;margin-top:1.5rem}.setting-modal .wrapper .body[data-v-2c468bc2]{display:flex;gap:3rem}.setting-modal .wrapper .body .option-list[data-v-2c468bc2]{width:40rem}.setting-modal .wrapper .notice[data-v-2c468bc2]{font-size:12px;padding-left:3rem;text-align:left}.setting-modal .wrapper .notice a[data-v-2c468bc2]{color:#00f}.pop-confirm-content[data-v-8df5d12b]{position:fixed;background:white;padding:1.5rem;box-shadow:0 0 12px #0003;border-radius:.4rem;transform:translate(-50%,calc(-100% - 1rem));z-index:999}.pop-confirm-content .text[data-v-8df5d12b]{color:#000;text-align:start;font-size:1.4rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-8df5d12b]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem;font-size:1rem}.pop-confirm-content .options div[data-v-8df5d12b]{cursor:pointer}.pop-confirm-content .options .main[data-v-8df5d12b]{color:gray;background:#e2e2e2;padding:.3rem .8rem;border-radius:.2rem}.point[data-v-810a119b]{margin-left:1rem;font-size:1.2rem;min-width:4rem;border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;flex-direction:row!important;padding:0!important}.point .up[data-v-810a119b]{display:flex;flex-direction:column;align-items:center;justify-content:center}.point .num[data-v-810a119b]{margin-left:.2rem;font-weight:700;color:#000;user-select:none}.point svg[data-v-810a119b]{width:2rem;padding:.4rem;border-radius:.2rem}.point svg[data-v-810a119b]:hover{background:#e5e5e5}.point svg.disabled[data-v-810a119b]{cursor:not-allowed}.point svg.disabled[data-v-810a119b]:hover{background:unset!important}.Author[data-v-d8c00e09]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative;margin-bottom:.4rem}.Author.expand[data-v-d8c00e09]{margin-bottom:0}.Author .Author-left[data-v-d8c00e09]{display:flex;align-items:center;max-width:90%}.Author .Author-left .username[data-v-d8c00e09]{font-size:1.4rem;margin-right:1rem}.Author .Author-left .expand-icon[data-v-d8c00e09]{cursor:pointer;margin-right:.8rem;width:2rem;height:2rem;transform:rotate(90deg)}.Author .Author-left .avatar[data-v-d8c00e09]{margin-right:1rem;display:flex}.Author .Author-left .avatar img[data-v-d8c00e09]{width:3.4rem;height:3.4rem;border-radius:.3rem}.Author .Author-left .texts[data-v-d8c00e09]{flex:1}.Author .Author-left .op[data-v-d8c00e09]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .mod[data-v-d8c00e09]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.Author .Author-left .my-tag[data-v-d8c00e09]{font-size:1.4rem;color:red;margin-left:1rem}.Author .Author-left .my-tag:hover .remove[data-v-d8c00e09]{display:inline}.Author .Author-left .my-tag .remove[data-v-d8c00e09]{cursor:pointer;margin-left:.5rem;display:none}.Author .Author-left .add-tag[data-v-d8c00e09]{font-size:2.5rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;display:none}.Author:hover .add-tag[data-v-d8c00e09]{display:inline-block}.Author .Author-right[data-v-d8c00e09]{position:absolute;right:0;display:flex;align-items:center}.Author .Author-right .toolbar[data-v-d8c00e09]{display:flex;align-items:center;color:#929596;opacity:0}.Author .Author-right .toolbar[data-v-d8c00e09]:hover{background:white;opacity:1}.Author .Author-right .floor[data-v-d8c00e09]{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}.Author .Author-right .isDev[data-v-d8c00e09]{color:#000!important}.post-editor-wrapper[data-v-dc3eb8bf]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s}.post-editor-wrapper.reply-post .post-editor[data-v-dc3eb8bf]{border:1px solid #e2e2e2;border-radius:.4rem}.post-editor-wrapper.reply-post.isFocus .post-editor[data-v-dc3eb8bf]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment[data-v-dc3eb8bf]{border:1px solid #e2e2e2;border-radius:.4rem;overflow:hidden}.post-editor-wrapper.reply-comment.isFocus[data-v-dc3eb8bf]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment .toolbar[data-v-dc3eb8bf]{background:#f6f7f8}.post-editor-wrapper .post-editor[data-v-dc3eb8bf]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none}.post-editor-wrapper .toolbar[data-v-dc3eb8bf]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-dc3eb8bf]{display:flex;gap:1rem}.post-editor-wrapper .toolbar .left svg[data-v-dc3eb8bf]{cursor:pointer}.post-editor-wrapper .toolbar .left .upload input[data-v-dc3eb8bf]{cursor:pointer;position:absolute;width:20px;height:20px;opacity:0}.post-editor-wrapper .toolbar span[data-v-dc3eb8bf]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-dc3eb8bf]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-dc3eb8bf]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:white;border:1px solid #e2e8f0;box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack i[data-v-dc3eb8bf]{cursor:pointer;position:absolute;right:2rem;font-size:2rem;color:#e2e2e2}.post-editor-wrapper .emoticon-pack .list[data-v-dc3eb8bf]{margin:1rem 0}.post-editor-wrapper .emoticon-pack img[data-v-dc3eb8bf]{cursor:pointer;width:3rem;height:3rem;padding:.5rem}.post-editor-wrapper .emoticon-pack span[data-v-dc3eb8bf]{display:inline-block;cursor:pointer;font-size:2.3rem;padding:.5rem}.isNight .emoticon-pack[data-v-dc3eb8bf]{background:#18222d;border:1px solid #737373}.v-enter-active[data-v-a77c3d96],.v-leave-active[data-v-a77c3d96]{transition:opacity .3s ease}.v-enter-from[data-v-a77c3d96],.v-leave-to[data-v-a77c3d96]{opacity:0}.username[data-v-a77c3d96]{font-weight:700;font-size:1.4rem;margin-right:1rem}.op[data-v-a77c3d96]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-a77c3d96]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-a77c3d96]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-a77c3d96]{display:inline}.my-tag .remove[data-v-a77c3d96]{cursor:pointer;margin-left:.5rem;display:none}.floor[data-v-a77c3d96]{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}html[data-v-a77c3d96],body[data-v-a77c3d96]{font-size:62.5%}.flex[data-v-a77c3d96]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-a77c3d96]{justify-content:flex-end}.flex-center[data-v-a77c3d96]{justify-content:center}.p1[data-v-a77c3d96]{padding:1rem}.p0[data-v-a77c3d96]{padding:0!important}.post-author[data-v-a77c3d96]{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username[data-v-a77c3d96]{font-size:1.2rem}.sticky[data-v-a77c3d96]{position:sticky;bottom:0}.sticky[stuck][data-v-a77c3d96]{box-shadow:0 2px 20px #00000059}a[data-v-a77c3d96]{color:#778087;text-decoration:none;cursor:pointer}a[data-v-a77c3d96]:hover{text-decoration:underline}.base-loading[data-v-a77c3d96]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-a77c3d96 infinite 1s linear}.loading-c[data-v-a77c3d96]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-a77c3d96 infinite 1s linear;width:3rem;height:3rem}.loading-b[data-v-a77c3d96]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-a77c3d96 infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle-a77c3d96{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button[data-v-a77c3d96]{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button[data-v-a77c3d96]:hover{opacity:.9}.button.info[data-v-a77c3d96]{color:#000;border:1px solid #40a9ff;background:white}.button.gray[data-v-a77c3d96]{color:#f5f5f5;border:1px solid #b6b6b6;background:#b6b6b6}.button.light[data-v-a77c3d96]{color:gray;border:1px solid #e2e2e2;background:#e2e2e2}.button[data-v-a77c3d96]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-a77c3d96 infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading[data-v-a77c3d96]{cursor:not-allowed;opacity:.5}.button.loading[data-v-a77c3d96]:before{display:block}.button.disabled[data-v-a77c3d96]{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.button.isNight[data-v-a77c3d96]{color:#c6c6c6;background:#2b4054;border:1px solid transparent}.tool[data-v-a77c3d96]{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool[data-v-a77c3d96]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-a77c3d96 infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading[data-v-a77c3d96]{cursor:not-allowed;opacity:.5}.tool.loading[data-v-a77c3d96]:before{display:block}.tool.loading[data-v-a77c3d96]:hover{background:unset}.tool>svg[data-v-a77c3d96]{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool[data-v-a77c3d96]:hover{background:#e8e8e8}.tool.no-hover[data-v-a77c3d96]{cursor:default}.tool.no-hover[data-v-a77c3d96]:hover{background:unset}.my-node[data-v-a77c3d96]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-a77c3d96]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-a77c3d96]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg[data-v-a77c3d96]{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left[data-v-a77c3d96]{background:#40a9ff}.msg.warning .left[data-v-a77c3d96]{background:#c8c002}.msg.error .left[data-v-a77c3d96]{background:red}.msg .left[data-v-a77c3d96]{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg[data-v-a77c3d96]{margin:0 .3rem;cursor:pointer}.msg .right[data-v-a77c3d96]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line[data-v-a77c3d96]{border-bottom:1px solid #e2e2e2}.my-box[data-v-a77c3d96]{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;overflow:hidden;box-sizing:border-box}.my-cell[data-v-a77c3d96]{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14[data-v-a77c3d96]{font-size:1.4rem}.switch[data-v-a77c3d96]{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;transition:all .3s}.switch.light[data-v-a77c3d96]{border:1px solid #e2e2e2}.switch.light.active[data-v-a77c3d96]{background:#e2e2e2}.switch.light.active[data-v-a77c3d96]:before{right:.2rem;background:white}.switch.light[data-v-a77c3d96]:before{background:#e2e2e2}.switch.gray[data-v-a77c3d96]{border:1px solid #ccc}.switch.gray.active[data-v-a77c3d96]{background:#ccc}.switch.gray.active[data-v-a77c3d96]:before{right:.2rem;background:white}.switch.gray[data-v-a77c3d96]:before{background:#ccc}.switch.isNight[data-v-a77c3d96]{border:1px solid #31475e}.switch.isNight.active[data-v-a77c3d96]{background:#31475e}.switch.isNight.active[data-v-a77c3d96]:before{right:.2rem;background:gray}.switch.isNight[data-v-a77c3d96]:before{background:#31475e}.switch[data-v-a77c3d96]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%}.modal[data-v-a77c3d96]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-a77c3d96]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-a77c3d96]{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0}.modal .mask[data-v-a77c3d96]{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2[data-v-a77c3d96]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio[data-v-a77c3d96]{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio[data-v-a77c3d96]:first-child{border-left:none}.radio-group2 .active[data-v-a77c3d96]{background:#e2e2e2;color:gray}.radio-group2.isNight[data-v-a77c3d96]{border:1px solid #454847}.radio-group2.isNight .radio[data-v-a77c3d96]{border-left:1px solid #454847;color:#fff}.radio-group2.isNight .active[data-v-a77c3d96]{background:#31475e}.pop-confirm[data-v-a77c3d96]{position:relative;display:inline-flex;justify-content:center}.tip[data-v-a77c3d96]{position:fixed;background:black;color:#fff;max-width:10rem;padding:.7rem 1rem;border-radius:.5rem;transform:translate(-50%);z-index:999}input[data-v-a77c3d96]{height:3rem;outline:unset;border:1px solid #e1e1e1;padding:0 .5rem;border-radius:5px;box-sizing:border-box}.html-wrapper[data-v-a77c3d96]{position:relative}.html-wrapper .mask[data-v-a77c3d96]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-a77c3d96]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%);cursor:pointer}.comment[data-v-a0031aa2]{width:100%;box-sizing:border-box;margin-top:1rem}.comment.isLevelOne[data-v-a0031aa2]{border-bottom:1px solid #ececec;padding:1rem;margin-top:0}.comment.ding[data-v-a0031aa2]{background:rgba(255,255,0,.3)!important}.comment .comment-content-w .more[data-v-a0031aa2]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-a0031aa2]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-a0031aa2]{cursor:pointer;width:3rem;min-width:3rem;position:relative}.comment .comment-content .expand-line[data-v-a0031aa2]:after{position:absolute;left:calc(60% - 1px);content:" ";height:100%;width:0;border-right:1px solid #ececec}.comment .comment-content .expand-line[data-v-a0031aa2]:hover:after{border-right:2px solid #0079D3}.comment .comment-content .right[data-v-a0031aa2]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-a0031aa2]{padding-left:1.7rem}.comment .comment-content .right .w .post-editor-wrapper[data-v-a0031aa2]{margin-top:1rem}.wrong-wrapper[data-v-a0031aa2]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper span[data-v-a0031aa2]{cursor:pointer}.wrong-wrapper .del-line[data-v-a0031aa2]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-a0031aa2]{margin-left:.5rem}.wrong-wrapper .warning[data-v-a0031aa2]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.toolbar[data-v-07fa3ae8]{display:flex;align-items:center;color:#929596}.comment[data-v-3eb530b9]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid #e2e2e2}.comment .avatar[data-v-3eb530b9]{display:flex}.comment .avatar img[data-v-3eb530b9]{width:3.8rem;height:3.8rem;border-radius:.3rem}.comment .comment-body[data-v-3eb530b9]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-3eb530b9]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-3eb530b9]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-3eb530b9]{align-items:flex-end}.comment .isRight .op[data-v-3eb530b9],.comment .isRight .mod[data-v-3eb530b9],.comment .isRight .username[data-v-3eb530b9]{margin:0 0 0 1rem}.comment .Author-right[data-v-3eb530b9]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-3eb530b9]{margin-left:0}.comment .Author-right .jump[data-v-3eb530b9]{color:#929596;margin-left:0}.comment .point[data-v-3eb530b9]{margin:0 .5rem;font-size:1.4rem;display:flex;gap:.5rem;align-items:center;font-weight:700;color:#000}.sticky{position:sticky;bottom:-2px;z-index:2}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.Post[data-v-4038172d]{position:unset!important;background:transparent!important;overflow:unset!important}.Post .main[data-v-4038172d]{background:transparent!important;padding:unset!important;width:100%!important}.Post .close-btn[data-v-4038172d]{display:none}.post-detail[data-v-4038172d]{text-align:start;position:fixed;z-index:99;left:0;right:0;bottom:0;top:0;background:rgba(46,47,48,.8);overflow:auto;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail.isNight[data-v-4038172d]{background:rgba(46,47,48,.8)}.post-detail.isNight .main[data-v-4038172d]{background:#22303f}.post-detail.isNight .main .toolbar-wrapper[data-v-4038172d]{border-top:unset!important}.post-detail.isNight .main .button.gray[data-v-4038172d]{background:#18222d!important;border:1px solid #18222d!important}.post-detail.isNight .main .relationReply[data-v-4038172d]{color:#fff}.post-detail.isNight .main .relationReply .comments[data-v-4038172d],.post-detail.isNight .main .relationReply .my-cell[data-v-4038172d]{background:#18222d}.post-detail.isNight .main .relationReply .comment[data-v-4038172d]{border-bottom:1px solid #22303f}.post-detail.isNight .main .my-box[data-v-4038172d]{color:#fff;background:#18222d}.post-detail.isNight .main .my-box .title[data-v-4038172d],.post-detail.isNight .main .my-box .content[data-v-4038172d]{color:#d1d5d9!important}.post-detail.isNight .main .my-box .base-info[data-v-4038172d],.post-detail.isNight .main .my-box .content[data-v-4038172d]{border:1px solid #22303f!important}.post-detail.isNight .main[data-v-4038172d] .subtle .fade{color:#b2c3d4!important}.post-detail.isNight .main[data-v-4038172d] .subtle .topic_content{color:#d1d5d9!important}.post-detail.isNight .main .my-cell[data-v-4038172d]{border-bottom:1px solid #22303f!important}.post-detail.isNight .main[data-v-4038172d] .isLevelOne{border-bottom:1px solid #22303f}.post-detail.isNight .main[data-v-4038172d] .comment .expand-line:after{border-right:1px solid #22303f!important}.post-detail.isNight .main[data-v-4038172d] .comment .expand-line:hover:after{border-right:2px solid #0079D3!important}.post-detail.isNight .main[data-v-4038172d] .comment .comment-content .w>.text{color:#d1d5d9!important}.post-detail.isNight .main[data-v-4038172d] .Author-right .toolbar:hover{background:#18222d!important}.post-detail.isNight .main[data-v-4038172d] .Author-right .tool{background:#22303f!important}.post-detail.isNight .main[data-v-4038172d] .point svg:hover{background:#22303f}.post-detail.isNight .main[data-v-4038172d] .point .num{color:#d1d5d9!important}.post-detail.isNight .main[data-v-4038172d] .floor{background:#393f4e!important;color:#d1d5d9!important}.post-detail.isNight .main .editor-wrapper[data-v-4038172d]{background:#393f4e!important}.post-detail.isNight .main[data-v-4038172d] .post-editor-wrapper .post-editor{background:#18222d;border:transparent;color:#fff}.post-detail.isNight .main[data-v-4038172d] .post-editor-wrapper .toolbar{background:#393f4e!important}.post-detail.isNight .main .call-list[data-v-4038172d]{background:#22303f}.post-detail.isNight .main .call-list .call-item[data-v-4038172d]{border-top:1px solid #18222d}.post-detail.isNight .main .call-list .call-item .select[data-v-4038172d],.post-detail.isNight .main .call-list .call-item[data-v-4038172d]:hover,.post-detail.isNight .main .call-list .call-item.select[data-v-4038172d]{background-color:#393f4e;text-decoration:none}.post-detail.isNight .main .scroll-to[data-v-4038172d],.post-detail.isNight .main .close-btn[data-v-4038172d],.post-detail.isNight .main .scroll-top[data-v-4038172d],.post-detail.isNight .main .top-reply[data-v-4038172d]{color:#9caec7}.post-detail .main[data-v-4038172d]{display:flex;justify-content:flex-end;padding:3rem 8rem 15rem;background:#e2e2e2;position:relative}.post-detail .main .main-wrapper[data-v-4038172d]{width:77rem;padding-bottom:2rem;display:flex;flex-direction:column;align-items:center;position:relative}.post-detail .main .main-wrapper .post-wrapper .toolbar-wrapper[data-v-4038172d]{border-top:1px solid #e2e2e2;height:4rem;padding-left:.6rem;display:flex;align-items:center}.post-detail .main .main-wrapper .editor-wrapper .float[data-v-4038172d]{margin-right:2rem}.post-detail .main .main-wrapper .editor-wrapper .w[data-v-4038172d]{padding:1.2rem}.post-detail .main .main-wrapper .comment-wrapper .comments[data-v-4038172d]{width:100%;box-sizing:border-box}.post-detail .main .main-wrapper .loading-wrapper[data-v-4038172d]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .main .main-wrapper #no-comments-yet[data-v-4038172d]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .main .relationReply[data-v-4038172d]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:99;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .main .relationReply .my-cell[data-v-4038172d]{background:white;border-radius:.5rem .5rem 0 0}.post-detail .main .relationReply .comments[data-v-4038172d]{max-height:calc(100% - 4.2rem);overflow:auto;background:white;border-radius:0 0 .5rem .5rem}.post-detail .main .call-list[data-v-4038172d]{z-index:9;position:absolute;top:12rem;border:1px solid #ccc;background-color:#fff;box-shadow:0 5px 15px #0000001a;overflow:hidden;max-height:30rem;min-width:8rem;box-sizing:content-box}.post-detail .main .call-list .call-item[data-v-4038172d]{border-top:1px solid #ccc;height:3rem;display:flex;padding:0 1rem;align-items:center;cursor:pointer;font-size:14px;box-sizing:border-box}.post-detail .main .call-list .call-item .select[data-v-4038172d],.post-detail .main .call-list .call-item[data-v-4038172d]:hover,.post-detail .main .call-list .call-item.select[data-v-4038172d]{background-color:#f0f0f0;text-decoration:none}.post-detail .main .call-list .call-item[data-v-4038172d]:nth-child(1){border-top:1px solid transparent}@media screen and (max-width: 1500px){.post-detail .main-wrapper[data-v-4038172d]{width:65vw!important}}@media screen and (max-width: 1280px){.post-detail .main-wrapper[data-v-4038172d]{width:75vw!important}}.post-detail .scroll-top[data-v-4038172d]{position:fixed;bottom:10rem;z-index:99;padding:.6rem .2rem;width:3.5rem;transform:translate(6rem);font-size:2rem;background:#f1f1f1;border:none;color:#a9a9a9}.post-detail .scroll-to[data-v-4038172d]{position:fixed;bottom:10rem;z-index:99;padding:.6rem .2rem;width:3.5rem;transform:translate(6rem);font-size:2rem;background:#f1f1f1;border:none;color:#a9a9a9;bottom:15rem;display:flex;flex-direction:column}.post-detail .scroll-to input[data-v-4038172d]{margin-top:.5rem;height:2rem;width:3.3rem;font-size:1.4rem;text-align:center;color:gray}.post-detail .read-notice[data-v-4038172d]{display:flex;align-items:center;color:gray}.post-detail .read-notice .jump[data-v-4038172d]{background:#f1f1f1;color:gray;padding:.3rem 1rem;border-radius:.4rem;margin:0 1rem;cursor:pointer}.post-detail .close-btn[data-v-4038172d]{color:#b6b6b6;cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2rem}.post-detail .top-reply[data-v-4038172d]{color:#e2e2e2;cursor:pointer;font-size:2rem;display:flex}.post-detail .top-reply i[data-v-4038172d]{padding:0 1rem}.isNight[data-v-19fe372d]{background:#22303f!important;color:#ccc!important}.base64_tooltip[data-v-19fe372d]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:white;min-height:2.2rem;max-width:20rem;padding:.8rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;cursor:pointer;line-break:anywhere;font-size:1.4rem;color:#000}.base64_tooltip svg[data-v-19fe372d]{margin-left:1rem;min-width:1.8rem}.base64_tooltip .button[data-v-19fe372d]{margin-top:1rem;margin-left:2rem}.isNight .wrapper[data-v-b28a2e5e]{background:#22303f!important}.isNight .wrapper .title[data-v-b28a2e5e]{color:gray}.isNight .wrapper .option[data-v-b28a2e5e]{color:#fff!important}.isNight .wrapper .option span[data-v-b28a2e5e]{color:gray!important}.isNight .wrapper .white[data-v-b28a2e5e]{color:#fff!important}.tag-modal .wrapper[data-v-b28a2e5e]{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem 6rem 4rem;width:25rem}.tag-modal .wrapper .btns[data-v-b28a2e5e]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1rem}.tag-modal .wrapper .btns div[data-v-b28a2e5e]{cursor:pointer}.tag-modal .wrapper .btns .main[data-v-b28a2e5e]{color:gray;background:#e2e2e2;padding:.5rem 1.2rem;border-radius:.4rem}.msgs[data-v-95974c3e]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.isNight .open-post[data-v-f9a9d2e9],.isNight .nav[data-v-f9a9d2e9]{color:#fff;background:#18222d;border-bottom:1px solid #22303f}.card[data-v-f9a9d2e9]{border-radius:0 0 .4rem .4rem;overflow:hidden}.nav[data-v-f9a9d2e9]{font-size:1.4rem;background:white;padding:1rem;border-bottom:1px solid #e2e2e2} ');
+(t=>{const e=document.createElement("style");e.dataset.source="vite-plugin-monkey",e.textContent=t,document.head.append(e)})(' .v-enter-active,.v-leave-active{transition:opacity .3s ease}.v-enter-from,.v-leave-to{opacity:0}.username{font-weight:700;font-size:1.4rem;margin-right:1rem}.op{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove{display:inline}.my-tag .remove{cursor:pointer;margin-left:.5rem;display:none}.floor{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}html,body{font-size:62.5%}.flex{display:flex;align-items:center;justify-content:space-between}.flex-end{justify-content:flex-end}.flex-center{justify-content:center}.p1{padding:1rem}.p0{padding:0!important}.post-author{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username{font-size:1.2rem}.sticky{position:sticky;bottom:0}.sticky[stuck]{box-shadow:0 2px 20px #00000059}a{color:#778087;text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}.base-loading{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear}.loading-c{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;width:3rem;height:3rem}.loading-b{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button:hover{opacity:.9}.button.info{color:#000;border:1px solid #40a9ff;background:white}.button.gray{color:#f5f5f5;border:1px solid #b6b6b6;background:#b6b6b6}.button.light{color:gray;border:1px solid #e2e2e2;background:#e2e2e2}.button:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading{cursor:not-allowed;opacity:.5}.button.loading:before{display:block}.button.disabled{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.button.isNight{color:#c6c6c6;background:#2b4054;border:1px solid transparent}.tool{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading{cursor:not-allowed;opacity:.5}.tool.loading:before{display:block}.tool.loading:hover{background:unset}.tool>svg{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool:hover{background:#e8e8e8}.tool.no-hover{cursor:default}.tool.no-hover:hover{background:unset}.my-node{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node:hover{text-decoration:none;background:#e2e2e2}.msgs{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left{background:#40a9ff}.msg.warning .left{background:#c8c002}.msg.error .left{background:red}.msg .left{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg{margin:0 .3rem;cursor:pointer}.msg .right{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line{border-bottom:1px solid #e2e2e2}.my-box{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;overflow:hidden;box-sizing:border-box}.my-cell{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14{font-size:1.4rem}.switch{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;transition:all .3s}.switch.light{border:1px solid #e2e2e2}.switch.light.active{background:#e2e2e2}.switch.light.active:before{right:.2rem;background:white}.switch.light:before{background:#e2e2e2}.switch.gray{border:1px solid #ccc}.switch.gray.active{background:#ccc}.switch.gray.active:before{right:.2rem;background:white}.switch.gray:before{background:#ccc}.switch.isNight{border:1px solid #31475e}.switch.isNight.active{background:#31475e}.switch.isNight.active:before{right:.2rem;background:gray}.switch.isNight:before{background:#31475e}.switch:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%}.modal{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0}.modal .mask{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio:first-child{border-left:none}.radio-group2 .active{background:#e2e2e2;color:gray}.radio-group2.isNight{border:1px solid #454847}.radio-group2.isNight .radio{border-left:1px solid #454847;color:#fff}.radio-group2.isNight .active{background:#31475e}.pop-confirm{position:relative;display:inline-flex;justify-content:center}.tip{position:fixed;background:black;color:#fff;max-width:10rem;padding:.7rem 1rem;border-radius:.5rem;transform:translate(-50%);z-index:999}input{height:3rem;outline:unset;border:1px solid #e1e1e1;padding:0 .5rem;border-radius:5px;box-sizing:border-box}.isNight .wrapper[data-v-4586360d]{background:#22303f!important}.isNight .wrapper .title[data-v-4586360d],.isNight .wrapper .option-title[data-v-4586360d],.isNight .wrapper .option>span[data-v-4586360d]{color:#a9a9a9}.isNight .wrapper .notice[data-v-4586360d]{color:gray!important}.setting-modal .wrapper[data-v-4586360d]{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem;max-height:80vh;max-width:80vw;overflow:auto}.setting-modal .wrapper .sub-title[data-v-4586360d]{color:gray;font-size:1.4rem}.setting-modal .wrapper .option-title[data-v-4586360d]{text-align:start;font-size:1.6rem;font-weight:700;margin-top:1.5rem}.setting-modal .wrapper .body[data-v-4586360d]{display:flex;gap:3rem}.setting-modal .wrapper .body .option-list[data-v-4586360d]{width:45rem}.setting-modal .wrapper .notice[data-v-4586360d]{font-size:12px;padding-left:3rem;text-align:left}.setting-modal .wrapper .notice a[data-v-4586360d]{color:#00f}.pop-confirm-content[data-v-8df5d12b]{position:fixed;background:white;padding:1.5rem;box-shadow:0 0 12px #0003;border-radius:.4rem;transform:translate(-50%,calc(-100% - 1rem));z-index:999}.pop-confirm-content .text[data-v-8df5d12b]{color:#000;text-align:start;font-size:1.4rem;width:15rem;min-width:15rem}.pop-confirm-content .options[data-v-8df5d12b]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1rem;font-size:1rem}.pop-confirm-content .options div[data-v-8df5d12b]{cursor:pointer}.pop-confirm-content .options .main[data-v-8df5d12b]{color:gray;background:#e2e2e2;padding:.3rem .8rem;border-radius:.2rem}.point[data-v-810a119b]{margin-left:1rem;font-size:1.2rem;min-width:4rem;border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;flex-direction:row!important;padding:0!important}.point .up[data-v-810a119b]{display:flex;flex-direction:column;align-items:center;justify-content:center}.point .num[data-v-810a119b]{margin-left:.2rem;font-weight:700;color:#000;user-select:none}.point svg[data-v-810a119b]{width:2rem;padding:.4rem;border-radius:.2rem}.point svg[data-v-810a119b]:hover{background:#e5e5e5}.point svg.disabled[data-v-810a119b]{cursor:not-allowed}.point svg.disabled[data-v-810a119b]:hover{background:unset!important}.Author[data-v-d8c00e09]{display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;position:relative;margin-bottom:.4rem}.Author.expand[data-v-d8c00e09]{margin-bottom:0}.Author .Author-left[data-v-d8c00e09]{display:flex;align-items:center;max-width:90%}.Author .Author-left .username[data-v-d8c00e09]{font-size:1.4rem;margin-right:1rem}.Author .Author-left .expand-icon[data-v-d8c00e09]{cursor:pointer;margin-right:.8rem;width:2rem;height:2rem;transform:rotate(90deg)}.Author .Author-left .avatar[data-v-d8c00e09]{margin-right:1rem;display:flex}.Author .Author-left .avatar img[data-v-d8c00e09]{width:3.4rem;height:3.4rem;border-radius:.3rem}.Author .Author-left .texts[data-v-d8c00e09]{flex:1}.Author .Author-left .op[data-v-d8c00e09]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.Author .Author-left .mod[data-v-d8c00e09]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.Author .Author-left .my-tag[data-v-d8c00e09]{font-size:1.4rem;color:red;margin-left:1rem}.Author .Author-left .my-tag:hover .remove[data-v-d8c00e09]{display:inline}.Author .Author-left .my-tag .remove[data-v-d8c00e09]{cursor:pointer;margin-left:.5rem;display:none}.Author .Author-left .add-tag[data-v-d8c00e09]{font-size:2.5rem;transform:translateY(.2rem);line-height:1rem;display:inline-block;margin-left:1rem;cursor:pointer;display:none}.Author:hover .add-tag[data-v-d8c00e09]{display:inline-block}.Author .Author-right[data-v-d8c00e09]{position:absolute;right:0;display:flex;align-items:center}.Author .Author-right .toolbar[data-v-d8c00e09]{display:flex;align-items:center;color:#929596;opacity:0}.Author .Author-right .toolbar[data-v-d8c00e09]:hover{background:white;opacity:1}.Author .Author-right .floor[data-v-d8c00e09]{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}.Author .Author-right .isDev[data-v-d8c00e09]{color:#000!important}.post-editor-wrapper[data-v-dc3eb8bf]{width:100%;box-sizing:border-box;position:relative;overflow:hidden;transition:all .3s}.post-editor-wrapper.reply-post .post-editor[data-v-dc3eb8bf]{border:1px solid #e2e2e2;border-radius:.4rem}.post-editor-wrapper.reply-post.isFocus .post-editor[data-v-dc3eb8bf]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment[data-v-dc3eb8bf]{border:1px solid #e2e2e2;border-radius:.4rem;overflow:hidden}.post-editor-wrapper.reply-comment.isFocus[data-v-dc3eb8bf]{border:1px solid #968b8b}.post-editor-wrapper.reply-comment .toolbar[data-v-dc3eb8bf]{background:#f6f7f8}.post-editor-wrapper .post-editor[data-v-dc3eb8bf]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none}.post-editor-wrapper .toolbar[data-v-dc3eb8bf]{box-sizing:border-box;padding:.5rem 1rem;width:100%;position:relative;display:flex;justify-content:space-between;align-items:center}.post-editor-wrapper .toolbar .left[data-v-dc3eb8bf]{display:flex;gap:1rem}.post-editor-wrapper .toolbar .left svg[data-v-dc3eb8bf]{cursor:pointer}.post-editor-wrapper .toolbar .left .upload input[data-v-dc3eb8bf]{cursor:pointer;position:absolute;width:20px;height:20px;opacity:0}.post-editor-wrapper .toolbar span[data-v-dc3eb8bf]{color:gray;font-size:1.3rem}.post-editor-wrapper .get-cursor[data-v-dc3eb8bf]{transition:border .3s;width:100%;max-width:100%;padding:.6rem 1.4rem;box-sizing:border-box;border:none;outline:none;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:1.4rem;min-height:13rem;resize:none;position:absolute;top:0;z-index:-100}.post-editor-wrapper .emoticon-pack[data-v-dc3eb8bf]{z-index:999999999;border-radius:1rem;padding:1rem;width:31rem;max-width:31rem;height:30rem;max-height:30rem;overflow:auto;background:white;border:1px solid #e2e8f0;box-shadow:0 9px 24px -3px #0000000f,0 4px 8px -1px #0000001f;position:fixed;bottom:11rem;left:14rem}.post-editor-wrapper .emoticon-pack i[data-v-dc3eb8bf]{cursor:pointer;position:absolute;right:2rem;font-size:2rem;color:#e2e2e2}.post-editor-wrapper .emoticon-pack .list[data-v-dc3eb8bf]{margin:1rem 0}.post-editor-wrapper .emoticon-pack img[data-v-dc3eb8bf]{cursor:pointer;width:3rem;height:3rem;padding:.5rem}.post-editor-wrapper .emoticon-pack span[data-v-dc3eb8bf]{display:inline-block;cursor:pointer;font-size:2.3rem;padding:.5rem}.isNight .emoticon-pack[data-v-dc3eb8bf]{background:#18222d;border:1px solid #737373}.v-enter-active[data-v-8ffbfeb2],.v-leave-active[data-v-8ffbfeb2]{transition:opacity .3s ease}.v-enter-from[data-v-8ffbfeb2],.v-leave-to[data-v-8ffbfeb2]{opacity:0}.username[data-v-8ffbfeb2]{font-weight:700;font-size:1.4rem;margin-right:1rem}.op[data-v-8ffbfeb2]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;margin-right:1rem;transform:scale(.8)}.mod[data-v-8ffbfeb2]{display:inline-block;background-color:transparent;color:#1484cd;border-radius:.3rem;padding:0 .3rem;cursor:default;border:2px solid #1484cd;font-size:1.2rem;font-weight:700;transform:scale(.8);background:#1484cd;color:#fff;margin-right:1rem}.my-tag[data-v-8ffbfeb2]{font-size:1.4rem;color:red;margin-left:1rem}.my-tag:hover .remove[data-v-8ffbfeb2]{display:inline}.my-tag .remove[data-v-8ffbfeb2]{cursor:pointer;margin-left:.5rem;display:none}.floor[data-v-8ffbfeb2]{margin-left:1rem;font-size:1.2rem;line-height:1rem;border-radius:1rem;display:inline-block;background-color:#f0f0f0;color:#ccc;padding:.2rem .5rem;cursor:default}html[data-v-8ffbfeb2],body[data-v-8ffbfeb2]{font-size:62.5%}.flex[data-v-8ffbfeb2]{display:flex;align-items:center;justify-content:space-between}.flex-end[data-v-8ffbfeb2]{justify-content:flex-end}.flex-center[data-v-8ffbfeb2]{justify-content:center}.p1[data-v-8ffbfeb2]{padding:1rem}.p0[data-v-8ffbfeb2]{padding:0!important}.post-author[data-v-8ffbfeb2]{display:flex;align-items:center;position:relative;color:#ccc!important}.post-author>.username[data-v-8ffbfeb2]{font-size:1.2rem}.sticky[data-v-8ffbfeb2]{position:sticky;bottom:0}.sticky[stuck][data-v-8ffbfeb2]{box-shadow:0 2px 20px #00000059}a[data-v-8ffbfeb2]{color:#778087;text-decoration:none;cursor:pointer}a[data-v-8ffbfeb2]:hover{text-decoration:underline}.base-loading[data-v-8ffbfeb2]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-8ffbfeb2 infinite 1s linear}.loading-c[data-v-8ffbfeb2]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-8ffbfeb2 infinite 1s linear;width:3rem;height:3rem}.loading-b[data-v-8ffbfeb2]{border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-8ffbfeb2 infinite 1s linear;border-color:#ffffff rgba(178,177,177,.2) rgba(178,177,177,.2) rgba(178,177,177,.2);width:3rem;height:3rem}@keyframes circle-8ffbfeb2{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.button[data-v-8ffbfeb2]{cursor:pointer;padding:.4rem 2.4rem;border-radius:5px;display:inline-flex;justify-content:center;align-items:center;font-weight:700;font-size:1.2rem;color:#fff;background:#40a9ff;border:1px solid #40a9ff;user-select:none}.button[data-v-8ffbfeb2]:hover{opacity:.9}.button.info[data-v-8ffbfeb2]{color:#000;border:1px solid #40a9ff;background:white}.button.gray[data-v-8ffbfeb2]{color:#f5f5f5;border:1px solid #b6b6b6;background:#b6b6b6}.button.light[data-v-8ffbfeb2]{color:gray;border:1px solid #e2e2e2;background:#e2e2e2}.button[data-v-8ffbfeb2]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-8ffbfeb2 infinite 1s linear;border-color:#fff transparent transparent transparent;width:1rem;height:1rem;margin-right:1rem;display:none}.button.loading[data-v-8ffbfeb2]{cursor:not-allowed;opacity:.5}.button.loading[data-v-8ffbfeb2]:before{display:block}.button.disabled[data-v-8ffbfeb2]{cursor:not-allowed;color:#c6c6c6;background:#8d8d8d;border:1px solid transparent}.button.isNight[data-v-8ffbfeb2]{color:#c6c6c6;background:#2b4054;border:1px solid transparent}.tool[data-v-8ffbfeb2]{position:relative;margin-left:1rem;display:flex;align-items:center;font-size:1.2rem;font-weight:700;border-radius:.2rem;cursor:pointer;height:3rem;padding:0 .5rem}.tool[data-v-8ffbfeb2]:before{content:" ";border:2px solid;border-color:#000 #00000033 #00000033 #00000033;border-radius:100%;animation:circle-8ffbfeb2 infinite 1s linear;border-color:transparent #929596 #929596 #929596;width:1rem;height:1rem;margin-left:1rem;display:none}.tool.loading[data-v-8ffbfeb2]{cursor:not-allowed;opacity:.5}.tool.loading[data-v-8ffbfeb2]:before{display:block}.tool.loading[data-v-8ffbfeb2]:hover{background:unset}.tool>svg[data-v-8ffbfeb2]{width:1.6rem!important;height:1.6rem!important;margin-right:.4rem;box-sizing:border-box;border-radius:.2rem}.tool[data-v-8ffbfeb2]:hover{background:#e8e8e8}.tool.no-hover[data-v-8ffbfeb2]{cursor:default}.tool.no-hover[data-v-8ffbfeb2]:hover{background:unset}.my-node[data-v-8ffbfeb2]{border-radius:.2rem;padding:.4rem;font-size:1rem;color:#999;background:#f5f5f5;cursor:pointer}.my-node[data-v-8ffbfeb2]:hover{text-decoration:none;background:#e2e2e2}.msgs[data-v-8ffbfeb2]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.msg[data-v-8ffbfeb2]{cursor:default;margin-bottom:2rem;background:white;display:flex;color:#000;font-size:1.4rem;box-sizing:border-box;border-radius:.4rem;box-shadow:0 0 1rem 1px silver}.msg.success .left[data-v-8ffbfeb2]{background:#40a9ff}.msg.warning .left[data-v-8ffbfeb2]{background:#c8c002}.msg.error .left[data-v-8ffbfeb2]{background:red}.msg .left[data-v-8ffbfeb2]{border-radius:.4rem 0 0 .4rem;display:flex;align-items:center;background:#40a9ff}.msg .left svg[data-v-8ffbfeb2]{margin:0 .3rem;cursor:pointer}.msg .right[data-v-8ffbfeb2]{flex:1;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}.line[data-v-8ffbfeb2]{border-bottom:1px solid #e2e2e2}.my-box[data-v-8ffbfeb2]{box-shadow:0 2px 3px #0000001a;border-radius:.4rem;background:white;margin-bottom:2rem;width:100%;overflow:hidden;box-sizing:border-box}.my-cell[data-v-8ffbfeb2]{padding:1rem;font-size:1.4rem;line-height:150%;text-align:left;border-bottom:1px solid #e2e2e2}.f14[data-v-8ffbfeb2]{font-size:1.4rem}.switch[data-v-8ffbfeb2]{width:4.5rem;height:2rem;border-radius:2rem;position:relative;display:flex;align-items:center;transition:all .3s}.switch.light[data-v-8ffbfeb2]{border:1px solid #e2e2e2}.switch.light.active[data-v-8ffbfeb2]{background:#e2e2e2}.switch.light.active[data-v-8ffbfeb2]:before{right:.2rem;background:white}.switch.light[data-v-8ffbfeb2]:before{background:#e2e2e2}.switch.gray[data-v-8ffbfeb2]{border:1px solid #ccc}.switch.gray.active[data-v-8ffbfeb2]{background:#ccc}.switch.gray.active[data-v-8ffbfeb2]:before{right:.2rem;background:white}.switch.gray[data-v-8ffbfeb2]:before{background:#ccc}.switch.isNight[data-v-8ffbfeb2]{border:1px solid #31475e}.switch.isNight.active[data-v-8ffbfeb2]{background:#31475e}.switch.isNight.active[data-v-8ffbfeb2]:before{right:.2rem;background:gray}.switch.isNight[data-v-8ffbfeb2]:before{background:#31475e}.switch[data-v-8ffbfeb2]:before{position:absolute;content:" ";transition:all .3s;right:calc(100% - 2rem);width:1.8rem;height:1.8rem;border-radius:50%}.modal[data-v-8ffbfeb2]{position:fixed;z-index:100;width:100vw;height:100vh;left:0;top:0;display:flex;justify-content:center;align-items:center}.modal .title[data-v-8ffbfeb2]{font-size:2.4rem;margin-bottom:1rem;text-align:center}.modal .option[data-v-8ffbfeb2]{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0}.modal .mask[data-v-8ffbfeb2]{position:fixed;width:100vw;height:100vh;left:0;top:0;background:rgba(0,0,0,.3)}.radio-group2[data-v-8ffbfeb2]{display:inline-flex;border-radius:.5rem;overflow:hidden;border:1px solid #e2e2e2}.radio-group2 .radio[data-v-8ffbfeb2]{cursor:pointer;background:transparent;padding:.4rem 1rem;border-left:1px solid #e2e2e2;color:#9ca1a4;font-size:1.2rem}.radio-group2 .radio[data-v-8ffbfeb2]:first-child{border-left:none}.radio-group2 .active[data-v-8ffbfeb2]{background:#e2e2e2;color:gray}.radio-group2.isNight[data-v-8ffbfeb2]{border:1px solid #454847}.radio-group2.isNight .radio[data-v-8ffbfeb2]{border-left:1px solid #454847;color:#fff}.radio-group2.isNight .active[data-v-8ffbfeb2]{background:#31475e}.pop-confirm[data-v-8ffbfeb2]{position:relative;display:inline-flex;justify-content:center}.tip[data-v-8ffbfeb2]{position:fixed;background:black;color:#fff;max-width:10rem;padding:.7rem 1rem;border-radius:.5rem;transform:translate(-50%);z-index:999}input[data-v-8ffbfeb2]{height:3rem;outline:unset;border:1px solid #e1e1e1;padding:0 .5rem;border-radius:5px;box-sizing:border-box}.html-wrapper[data-v-8ffbfeb2]{position:relative}.html-wrapper .mask[data-v-8ffbfeb2]{max-height:90rem;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent)}.html-wrapper .expand[data-v-8ffbfeb2]{position:absolute;z-index:1;bottom:2rem;padding:.2rem 1.5rem;border-radius:2rem;border:1px solid gray;background:white;color:gray;left:50%;transform:translate(-50%);cursor:pointer}.comment[data-v-bebb0fb2]{width:100%;box-sizing:border-box;margin-top:1rem}.comment.isLevelOne[data-v-bebb0fb2]{border-bottom:1px solid #ececec;padding:1rem;margin-top:0}.comment.ding[data-v-bebb0fb2]{background:rgba(255,255,0,.3)!important}.comment .comment-content-w .more[data-v-bebb0fb2]{text-align:center;margin:2rem 0}.comment .comment-content[data-v-bebb0fb2]{display:flex;position:relative}.comment .comment-content .expand-line[data-v-bebb0fb2]{cursor:pointer;width:3rem;min-width:3rem;position:relative}.comment .comment-content .expand-line[data-v-bebb0fb2]:after{position:absolute;left:calc(60% - 1px);content:" ";height:100%;width:0;border-right:1px solid #ececec}.comment .comment-content .expand-line[data-v-bebb0fb2]:hover:after{border-right:2px solid #0079D3}.comment .comment-content .right[data-v-bebb0fb2]{flex:1;width:calc(100% - 3rem)}.comment .comment-content .right .w[data-v-bebb0fb2]{padding-left:1.7rem}.comment .comment-content .right .w .post-editor-wrapper[data-v-bebb0fb2]{margin-top:1rem}.wrong-wrapper[data-v-bebb0fb2]{font-size:1.4rem;margin-bottom:1rem}.wrong-wrapper span[data-v-bebb0fb2]{cursor:pointer}.wrong-wrapper .del-line[data-v-bebb0fb2]{text-decoration:line-through}.wrong-wrapper .wrong-icon[data-v-bebb0fb2]{margin-left:.5rem}.wrong-wrapper .warning[data-v-bebb0fb2]{border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:1rem 0;margin-top:1rem;font-size:1.2rem;color:red}.toolbar[data-v-07fa3ae8]{display:flex;align-items:center;color:#929596}.comment[data-v-3eb530b9]{width:100%;box-sizing:border-box;display:flex;gap:1rem;padding:1rem;border-bottom:1px solid #e2e2e2}.comment .avatar[data-v-3eb530b9]{display:flex}.comment .avatar img[data-v-3eb530b9]{width:3.8rem;height:3.8rem;border-radius:.3rem}.comment .comment-body[data-v-3eb530b9]{flex:1;display:flex;flex-direction:column}.comment .comment-body .texts[data-v-3eb530b9]{display:flex;align-items:center}.comment .comment-body .reply_content[data-v-3eb530b9]{margin-top:1rem;max-width:calc(100% - 5rem)}.comment .isRight[data-v-3eb530b9]{align-items:flex-end}.comment .isRight .op[data-v-3eb530b9],.comment .isRight .mod[data-v-3eb530b9],.comment .isRight .username[data-v-3eb530b9]{margin:0 0 0 1rem}.comment .Author-right[data-v-3eb530b9]{display:flex;flex-direction:column;align-items:center}.comment .Author-right .floor[data-v-3eb530b9]{margin-left:0}.comment .Author-right .jump[data-v-3eb530b9]{color:#929596;margin-left:0}.comment .point[data-v-3eb530b9]{margin:0 .5rem;font-size:1.4rem;display:flex;gap:.5rem;align-items:center;font-weight:700;color:#000}.sticky{position:sticky;bottom:-2px;z-index:2}.sticky[stuck]{box-shadow:0 2px 20px #00000059!important}.Post[data-v-191d6dae]{position:unset!important;background:transparent!important;overflow:unset!important}.Post .main[data-v-191d6dae]{background:transparent!important;padding:unset!important;width:100%!important}.Post .close-btn[data-v-191d6dae]{display:none}.post-detail[data-v-191d6dae]{text-align:start;position:fixed;z-index:99;left:0;right:0;bottom:0;top:0;background:rgba(46,47,48,.8);overflow:auto;font-size:1.4rem;display:flex;justify-content:center;flex-wrap:wrap}.post-detail.isNight[data-v-191d6dae]{background:rgba(46,47,48,.8)}.post-detail.isNight .main[data-v-191d6dae]{background:#22303f}.post-detail.isNight .main .toolbar-wrapper[data-v-191d6dae]{border-top:unset!important}.post-detail.isNight .main .button.gray[data-v-191d6dae]{background:#18222d!important;border:1px solid #18222d!important}.post-detail.isNight .main .relationReply[data-v-191d6dae]{color:#fff}.post-detail.isNight .main .relationReply .comments[data-v-191d6dae],.post-detail.isNight .main .relationReply .my-cell[data-v-191d6dae]{background:#18222d}.post-detail.isNight .main .relationReply .comment[data-v-191d6dae]{border-bottom:1px solid #22303f}.post-detail.isNight .main .my-box[data-v-191d6dae]{color:#fff;background:#18222d}.post-detail.isNight .main .my-box .title[data-v-191d6dae],.post-detail.isNight .main .my-box .content[data-v-191d6dae]{color:#d1d5d9!important}.post-detail.isNight .main .my-box .base-info[data-v-191d6dae],.post-detail.isNight .main .my-box .content[data-v-191d6dae]{border:1px solid #22303f!important}.post-detail.isNight .main[data-v-191d6dae] .subtle .fade{color:#b2c3d4!important}.post-detail.isNight .main[data-v-191d6dae] .subtle .topic_content{color:#d1d5d9!important}.post-detail.isNight .main .my-cell[data-v-191d6dae]{border-bottom:1px solid #22303f!important}.post-detail.isNight .main[data-v-191d6dae] .isLevelOne{border-bottom:1px solid #22303f}.post-detail.isNight .main[data-v-191d6dae] .comment .expand-line:after{border-right:1px solid #22303f!important}.post-detail.isNight .main[data-v-191d6dae] .comment .expand-line:hover:after{border-right:2px solid #0079D3!important}.post-detail.isNight .main[data-v-191d6dae] .comment .comment-content .w>.text{color:#d1d5d9!important}.post-detail.isNight .main[data-v-191d6dae] .Author-right .toolbar:hover{background:#18222d!important}.post-detail.isNight .main[data-v-191d6dae] .Author-right .tool{background:#22303f!important}.post-detail.isNight .main[data-v-191d6dae] .point svg:hover{background:#22303f}.post-detail.isNight .main[data-v-191d6dae] .point .num{color:#d1d5d9!important}.post-detail.isNight .main[data-v-191d6dae] .floor{background:#393f4e!important;color:#d1d5d9!important}.post-detail.isNight .main .editor-wrapper[data-v-191d6dae]{background:#393f4e!important}.post-detail.isNight .main[data-v-191d6dae] .post-editor-wrapper .post-editor{background:#18222d;border:transparent;color:#fff}.post-detail.isNight .main[data-v-191d6dae] .post-editor-wrapper .toolbar{background:#393f4e!important}.post-detail.isNight .main .call-list[data-v-191d6dae]{background:#22303f}.post-detail.isNight .main .call-list .call-item[data-v-191d6dae]{border-top:1px solid #18222d}.post-detail.isNight .main .call-list .call-item .select[data-v-191d6dae],.post-detail.isNight .main .call-list .call-item[data-v-191d6dae]:hover,.post-detail.isNight .main .call-list .call-item.select[data-v-191d6dae]{background-color:#393f4e;text-decoration:none}.post-detail.isNight .main .scroll-to[data-v-191d6dae],.post-detail.isNight .main .close-btn[data-v-191d6dae],.post-detail.isNight .main .scroll-top[data-v-191d6dae],.post-detail.isNight .main .top-reply[data-v-191d6dae]{color:#9caec7}.post-detail .main[data-v-191d6dae]{display:flex;justify-content:flex-end;padding:3rem 8rem 15rem;background:#e2e2e2;position:relative}.post-detail .main .main-wrapper[data-v-191d6dae]{width:77rem;padding-bottom:2rem;display:flex;flex-direction:column;align-items:center;position:relative}.post-detail .main .main-wrapper .post-wrapper .toolbar-wrapper[data-v-191d6dae]{border-top:1px solid #e2e2e2;height:4rem;padding-left:.6rem;display:flex;align-items:center}.post-detail .main .main-wrapper .editor-wrapper .float[data-v-191d6dae]{margin-right:2rem}.post-detail .main .main-wrapper .editor-wrapper .w[data-v-191d6dae]{padding:1.2rem}.post-detail .main .main-wrapper .comment-wrapper .comments[data-v-191d6dae]{width:100%;box-sizing:border-box}.post-detail .main .main-wrapper .loading-wrapper[data-v-191d6dae]{height:20rem;display:flex;justify-content:center;align-items:center}.post-detail .main .main-wrapper #no-comments-yet[data-v-191d6dae]{color:#a9a9a9;font-weight:700;text-align:center;width:100%;margin-bottom:2rem;box-sizing:border-box}.post-detail .main .relationReply[data-v-191d6dae]{position:fixed;width:25vw;top:6.5rem;bottom:15rem;z-index:99;transform:translate(calc(100% + 2rem));font-size:2rem;overflow:hidden}.post-detail .main .relationReply .my-cell[data-v-191d6dae]{background:white;border-radius:.5rem .5rem 0 0}.post-detail .main .relationReply .comments[data-v-191d6dae]{max-height:calc(100% - 4.2rem);overflow:auto;background:white;border-radius:0 0 .5rem .5rem}.post-detail .main .call-list[data-v-191d6dae]{z-index:9;position:absolute;top:12rem;border:1px solid #ccc;background-color:#fff;box-shadow:0 5px 15px #0000001a;overflow:hidden;max-height:30rem;min-width:8rem;box-sizing:content-box}.post-detail .main .call-list .call-item[data-v-191d6dae]{border-top:1px solid #ccc;height:3rem;display:flex;padding:0 1rem;align-items:center;cursor:pointer;font-size:14px;box-sizing:border-box}.post-detail .main .call-list .call-item .select[data-v-191d6dae],.post-detail .main .call-list .call-item[data-v-191d6dae]:hover,.post-detail .main .call-list .call-item.select[data-v-191d6dae]{background-color:#f0f0f0;text-decoration:none}.post-detail .main .call-list .call-item[data-v-191d6dae]:nth-child(1){border-top:1px solid transparent}@media screen and (max-width: 1500px){.post-detail .main-wrapper[data-v-191d6dae]{width:65vw!important}}@media screen and (max-width: 1280px){.post-detail .main-wrapper[data-v-191d6dae]{width:75vw!important}}.post-detail .scroll-top[data-v-191d6dae]{position:fixed;bottom:10rem;z-index:99;padding:.6rem .2rem;width:3.5rem;transform:translate(6rem);font-size:2rem;background:#f1f1f1;border:none;color:#a9a9a9}.post-detail .scroll-to[data-v-191d6dae]{position:fixed;bottom:10rem;z-index:99;padding:.6rem .2rem;width:3.5rem;transform:translate(6rem);font-size:2rem;background:#f1f1f1;border:none;color:#a9a9a9;bottom:15rem;display:flex;flex-direction:column}.post-detail .scroll-to input[data-v-191d6dae]{margin-top:.5rem;height:2rem;width:3.3rem;font-size:1.4rem;text-align:center;color:gray}.post-detail .read-notice[data-v-191d6dae]{display:flex;align-items:center;color:gray}.post-detail .read-notice .jump[data-v-191d6dae]{background:#f1f1f1;color:gray;padding:.3rem 1rem;border-radius:.4rem;margin:0 1rem;cursor:pointer}.post-detail .close-btn[data-v-191d6dae]{color:#b6b6b6;cursor:pointer;position:fixed;top:3rem;transform:translate(4rem);font-size:2rem}.post-detail .top-reply[data-v-191d6dae]{color:#e2e2e2;cursor:pointer;font-size:2rem;display:flex}.post-detail .top-reply i[data-v-191d6dae]{padding:0 1rem}.isNight[data-v-19fe372d]{background:#22303f!important;color:#ccc!important}.base64_tooltip[data-v-19fe372d]{box-shadow:0 3px 6px -4px #0000001f,0 6px 16px #00000014,0 9px 28px 8px #0000000d;background:white;min-height:2.2rem;max-width:20rem;padding:.8rem;position:fixed;z-index:9998;display:flex;align-items:center;border-radius:.5rem;cursor:pointer;line-break:anywhere;font-size:1.4rem;color:#000}.base64_tooltip svg[data-v-19fe372d]{margin-left:1rem;min-width:1.8rem}.base64_tooltip .button[data-v-19fe372d]{margin-top:1rem;margin-left:2rem}.isNight .wrapper[data-v-b28a2e5e]{background:#22303f!important}.isNight .wrapper .title[data-v-b28a2e5e]{color:gray}.isNight .wrapper .option[data-v-b28a2e5e]{color:#fff!important}.isNight .wrapper .option span[data-v-b28a2e5e]{color:gray!important}.isNight .wrapper .white[data-v-b28a2e5e]{color:#fff!important}.tag-modal .wrapper[data-v-b28a2e5e]{z-index:9;background:#f1f1f1;border-radius:.8rem;font-size:1.4rem;padding:2rem 6rem 4rem;width:25rem}.tag-modal .wrapper .btns[data-v-b28a2e5e]{margin-top:1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;font-size:1rem}.tag-modal .wrapper .btns div[data-v-b28a2e5e]{cursor:pointer}.tag-modal .wrapper .btns .main[data-v-b28a2e5e]{color:gray;background:#e2e2e2;padding:.5rem 1.2rem;border-radius:.4rem}.msgs[data-v-95974c3e]{position:fixed;margin-left:calc(50% - 25rem);width:50rem;z-index:9999;bottom:0;left:0;right:0}.isNight .open-post[data-v-f9a9d2e9],.isNight .nav[data-v-f9a9d2e9]{color:#fff;background:#18222d;border-bottom:1px solid #22303f}.card[data-v-f9a9d2e9]{border-radius:0 0 .4rem .4rem;overflow:hidden}.nav[data-v-f9a9d2e9]{font-size:1.4rem;background:white;padding:1rem;border-bottom:1px solid #e2e2e2} ');
 
 (function (vue) {
   'use strict';
@@ -79,7 +79,7 @@
     created() {
     }
   };
-  const _withScopeId$8 = (n) => (vue.pushScopeId("data-v-2c468bc2"), n = n(), vue.popScopeId(), n);
+  const _withScopeId$8 = (n) => (vue.pushScopeId("data-v-4586360d"), n = n(), vue.popScopeId(), n);
   const _hoisted_1$f = { class: "wrapper" };
   const _hoisted_2$d = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, " 脚本设置 ", -1));
   const _hoisted_3$a = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "sub-title" }, " 设置自动保存到本地，下次打开依然生效 ", -1));
@@ -95,8 +95,8 @@
   const _hoisted_13$6 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "点击列表的帖子，打开详情弹框 ：", -1));
   const _hoisted_14$6 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "notice" }, " 若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页 ", -1));
   const _hoisted_15$6 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "option-title" }, "帖子:", -1));
-  const _hoisted_16$4 = { class: "option" };
-  const _hoisted_17$4 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复展示方式：", -1));
+  const _hoisted_16$5 = { class: "option" };
+  const _hoisted_17$5 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "回复展示方式：", -1));
   const _hoisted_18$4 = { class: "option" };
   const _hoisted_19$4 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "单独打开帖子时默认显示楼中楼 ：", -1));
   const _hoisted_20$4 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "notice" }, " 单独打开这种地址 https://v2ex.com/t/xxxx 时，是否默认显示楼中楼 ", -1));
@@ -163,6 +163,7 @@
   const _hoisted_62 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("span", null, "收藏时提醒添加到书签：", -1));
   const _hoisted_63 = /* @__PURE__ */ _withScopeId$8(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "notice" }, " V站的帐号一旦被封了，就无法登录了，账号里的收藏也就看不到了 ", -1));
   function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_Tooltip = vue.resolveComponent("Tooltip");
     return vue.openBlock(), vue.createBlock(vue.Transition, null, {
       default: vue.withCtx(() => [
         $props.show ? (vue.openBlock(), vue.createElementBlock("div", {
@@ -211,26 +212,40 @@
                 ]),
                 _hoisted_14$6,
                 _hoisted_15$6,
-                vue.createElementVNode("div", _hoisted_16$4, [
-                  _hoisted_17$4,
+                vue.createElementVNode("div", _hoisted_16$5, [
+                  _hoisted_17$5,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["radio-group2", { isNight: $options.isNight }])
                   }, [
-                    vue.createElementVNode("div", {
-                      class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 0 ? "active" : ""]),
-                      onClick: _cache[5] || (_cache[5] = ($event) => $data.config.commentDisplayType = 0)
-                    }, "楼中楼 ", 2),
+                    vue.createVNode(_component_Tooltip, { title: "不隐藏@用户" }, {
+                      default: vue.withCtx(() => [
+                        vue.createElementVNode("div", {
+                          class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 0 ? "active" : ""]),
+                          onClick: _cache[5] || (_cache[5] = ($event) => $data.config.commentDisplayType = 0)
+                        }, "楼中楼(@) ", 2)
+                      ]),
+                      _: 1
+                    }),
+                    vue.createVNode(_component_Tooltip, { title: "隐藏第一个@用户，双击内容可显示原文" }, {
+                      default: vue.withCtx(() => [
+                        vue.createElementVNode("div", {
+                          class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 4 ? "active" : ""]),
+                          onClick: _cache[6] || (_cache[6] = ($event) => $data.config.commentDisplayType = 4)
+                        }, "楼中楼 ", 2)
+                      ]),
+                      _: 1
+                    }),
                     vue.createElementVNode("div", {
                       class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 1 ? "active" : ""]),
-                      onClick: _cache[6] || (_cache[6] = ($event) => $data.config.commentDisplayType = 1)
+                      onClick: _cache[7] || (_cache[7] = ($event) => $data.config.commentDisplayType = 1)
                     }, "感谢 ", 2),
                     vue.createElementVNode("div", {
                       class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 3 ? "active" : ""]),
-                      onClick: _cache[7] || (_cache[7] = ($event) => $data.config.commentDisplayType = 3)
+                      onClick: _cache[8] || (_cache[8] = ($event) => $data.config.commentDisplayType = 3)
                     }, "只看楼主 ", 2),
                     vue.createElementVNode("div", {
                       class: vue.normalizeClass(["radio", $data.config.commentDisplayType === 2 ? "active" : ""]),
-                      onClick: _cache[8] || (_cache[8] = ($event) => $data.config.commentDisplayType = 2)
+                      onClick: _cache[9] || (_cache[9] = ($event) => $data.config.commentDisplayType = 2)
                     }, "V2原版 ", 2)
                   ], 2)
                 ]),
@@ -238,7 +253,7 @@
                   _hoisted_19$4,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.autoOpenDetail, isNight: $options.isNight }]),
-                    onClick: _cache[9] || (_cache[9] = ($event) => $data.config.autoOpenDetail = !$data.config.autoOpenDetail)
+                    onClick: _cache[10] || (_cache[10] = ($event) => $data.config.autoOpenDetail = !$data.config.autoOpenDetail)
                   }, null, 2)
                 ]),
                 _hoisted_20$4,
@@ -246,7 +261,7 @@
                   _hoisted_22$3,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.closePostDetailBySpace, isNight: $options.isNight }]),
-                    onClick: _cache[10] || (_cache[10] = ($event) => $data.config.closePostDetailBySpace = !$data.config.closePostDetailBySpace)
+                    onClick: _cache[11] || (_cache[11] = ($event) => $data.config.closePostDetailBySpace = !$data.config.closePostDetailBySpace)
                   }, null, 2)
                 ]),
                 _hoisted_23$2,
@@ -254,7 +269,7 @@
                   _hoisted_25$2,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.showTopReply, isNight: $options.isNight }]),
-                    onClick: _cache[11] || (_cache[11] = ($event) => $data.config.showTopReply = !$data.config.showTopReply)
+                    onClick: _cache[12] || (_cache[12] = ($event) => $data.config.showTopReply = !$data.config.showTopReply)
                   }, null, 2)
                 ]),
                 vue.createElementVNode("div", _hoisted_26$2, [
@@ -262,7 +277,7 @@
                   vue.withDirectives(vue.createElementVNode("input", {
                     type: "number",
                     min: "1",
-                    "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => $data.config.topReplyCount = $event)
+                    "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.config.topReplyCount = $event)
                   }, null, 512), [
                     [vue.vModelText, $data.config.topReplyCount]
                   ])
@@ -272,7 +287,7 @@
                   vue.withDirectives(vue.createElementVNode("input", {
                     type: "number",
                     min: "1",
-                    "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => $data.config.topReplyLoveMinCount = $event)
+                    "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => $data.config.topReplyLoveMinCount = $event)
                   }, null, 512), [
                     [vue.vModelText, $data.config.topReplyLoveMinCount]
                   ])
@@ -282,7 +297,7 @@
                   _hoisted_32$1,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.rememberLastReadFloor, isNight: $options.isNight }]),
-                    onClick: _cache[14] || (_cache[14] = ($event) => {
+                    onClick: _cache[15] || (_cache[15] = ($event) => {
                       $data.config.rememberLastReadFloor = !$data.config.rememberLastReadFloor;
                       $data.config.autoJumpLastReadFloor = false;
                     })
@@ -292,7 +307,7 @@
                   _hoisted_34$1,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.autoJumpLastReadFloor, isNight: $options.isNight }]),
-                    onClick: _cache[15] || (_cache[15] = ($event) => $data.config.autoJumpLastReadFloor = !$data.config.autoJumpLastReadFloor)
+                    onClick: _cache[16] || (_cache[16] = ($event) => $data.config.autoJumpLastReadFloor = !$data.config.autoJumpLastReadFloor)
                   }, null, 2)
                 ])
               ]),
@@ -302,7 +317,7 @@
                   _hoisted_38,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.showToolbar, isNight: $options.isNight }]),
-                    onClick: _cache[16] || (_cache[16] = ($event) => $data.config.showToolbar = !$data.config.showToolbar)
+                    onClick: _cache[17] || (_cache[17] = ($event) => $data.config.showToolbar = !$data.config.showToolbar)
                   }, null, 2)
                 ]),
                 _hoisted_39,
@@ -310,7 +325,7 @@
                   _hoisted_41,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.newTabOpen, isNight: $options.isNight }]),
-                    onClick: _cache[17] || (_cache[17] = ($event) => {
+                    onClick: _cache[18] || (_cache[18] = ($event) => {
                       $data.config.newTabOpen = !$data.config.newTabOpen;
                       $data.config.clickPostItemOpenDetail = !$data.config.newTabOpen;
                     })
@@ -320,28 +335,28 @@
                   _hoisted_43,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.openTag, isNight: $options.isNight }]),
-                    onClick: _cache[18] || (_cache[18] = ($event) => $data.config.openTag = !$data.config.openTag)
+                    onClick: _cache[19] || (_cache[19] = ($event) => $data.config.openTag = !$data.config.openTag)
                   }, null, 2)
                 ]),
                 vue.createElementVNode("div", _hoisted_44, [
                   _hoisted_45,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.contentAutoCollapse, isNight: $options.isNight }]),
-                    onClick: _cache[19] || (_cache[19] = ($event) => $data.config.contentAutoCollapse = !$data.config.contentAutoCollapse)
+                    onClick: _cache[20] || (_cache[20] = ($event) => $data.config.contentAutoCollapse = !$data.config.contentAutoCollapse)
                   }, null, 2)
                 ]),
                 vue.createElementVNode("div", _hoisted_46, [
                   _hoisted_47,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.base64, isNight: $options.isNight }]),
-                    onClick: _cache[20] || (_cache[20] = ($event) => $data.config.base64 = !$data.config.base64)
+                    onClick: _cache[21] || (_cache[21] = ($event) => $data.config.base64 = !$data.config.base64)
                   }, null, 2)
                 ]),
                 vue.createElementVNode("div", _hoisted_48, [
                   _hoisted_49,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.sov2ex, isNight: $options.isNight }]),
-                    onClick: _cache[21] || (_cache[21] = ($event) => $data.config.sov2ex = !$data.config.sov2ex)
+                    onClick: _cache[22] || (_cache[22] = ($event) => $data.config.sov2ex = !$data.config.sov2ex)
                   }, null, 2)
                 ]),
                 _hoisted_50,
@@ -349,7 +364,7 @@
                   _hoisted_52,
                   vue.withDirectives(vue.createElementVNode("input", {
                     type: "text",
-                    "onUpdate:modelValue": _cache[22] || (_cache[22] = ($event) => $data.config.postWidth = $event)
+                    "onUpdate:modelValue": _cache[23] || (_cache[23] = ($event) => $data.config.postWidth = $event)
                   }, null, 512), [
                     [vue.vModelText, $data.config.postWidth]
                   ])
@@ -360,14 +375,14 @@
                   _hoisted_56,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.autoSignin, isNight: $options.isNight }]),
-                    onClick: _cache[23] || (_cache[23] = ($event) => $data.config.autoSignin = !$data.config.autoSignin)
+                    onClick: _cache[24] || (_cache[24] = ($event) => $data.config.autoSignin = !$data.config.autoSignin)
                   }, null, 2)
                 ]),
                 vue.createElementVNode("div", _hoisted_57, [
                   _hoisted_58,
                   vue.withDirectives(vue.createElementVNode("input", {
                     type: "text",
-                    "onUpdate:modelValue": _cache[24] || (_cache[24] = ($event) => $data.config.customBgColor = $event)
+                    "onUpdate:modelValue": _cache[25] || (_cache[25] = ($event) => $data.config.customBgColor = $event)
                   }, null, 512), [
                     [vue.vModelText, $data.config.customBgColor]
                   ])
@@ -378,7 +393,7 @@
                   _hoisted_62,
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["switch gray", { active: $data.config.collectBrowserNotice, isNight: $options.isNight }]),
-                    onClick: _cache[25] || (_cache[25] = ($event) => $data.config.collectBrowserNotice = !$data.config.collectBrowserNotice)
+                    onClick: _cache[26] || (_cache[26] = ($event) => $data.config.collectBrowserNotice = !$data.config.collectBrowserNotice)
                   }, null, 2)
                 ]),
                 _hoisted_63
@@ -390,7 +405,7 @@
       _: 1
     });
   }
-  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$9], ["__scopeId", "data-v-2c468bc2"]]);
+  const Setting = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$9], ["__scopeId", "data-v-4586360d"]]);
   const eventBus = {
     eventMap: /* @__PURE__ */ new Map(),
     on(eventType, cb) {
@@ -727,11 +742,11 @@
   const _hoisted_13$5 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("i", { class: "fa fa-tag" }, null, -1));
   const _hoisted_14$5 = ["onClick"];
   const _hoisted_15$5 = { class: "Author-right" };
-  const _hoisted_16$3 = {
+  const _hoisted_16$4 = {
     key: 0,
     class: "toolbar"
   };
-  const _hoisted_17$3 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "tool" }, [
+  const _hoisted_17$4 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "tool" }, [
     /* @__PURE__ */ vue.createElementVNode("span", null, "隐藏")
   ], -1));
   const _hoisted_18$3 = /* @__PURE__ */ _withScopeId$7(() => /* @__PURE__ */ vue.createElementVNode("span", null, "上下文", -1));
@@ -802,13 +817,13 @@
         ])
       ]),
       vue.createElementVNode("div", _hoisted_15$5, [
-        $options.isLogin ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_16$3, [
+        $options.isLogin ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_16$4, [
           vue.createVNode(_component_PopConfirm, {
             title: "确认隐藏这条回复?",
             onConfirm: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("hide"))
           }, {
             default: vue.withCtx(() => [
-              _hoisted_17$3
+              _hoisted_17$4
             ]),
             _: 1
           }),
@@ -930,8 +945,8 @@
   const _hoisted_13$4 = { class: "right" };
   const _hoisted_14$4 = /* @__PURE__ */ _withScopeId$6(() => /* @__PURE__ */ vue.createElementVNode("div", { class: "title" }, "经典表情", -1));
   const _hoisted_15$4 = { class: "list" };
-  const _hoisted_16$2 = ["src", "onClick"];
-  const _hoisted_17$2 = { class: "emoji" };
+  const _hoisted_16$3 = ["src", "onClick"];
+  const _hoisted_17$3 = { class: "emoji" };
   const _hoisted_18$2 = { class: "title" };
   const _hoisted_19$2 = { class: "list" };
   const _hoisted_20$2 = ["onClick"];
@@ -1560,10 +1575,10 @@
                     insert(item.name);
                     isShowEmoticons.value = false;
                   }
-                }, null, 8, _hoisted_16$2);
+                }, null, 8, _hoisted_16$3);
               }), 64))
             ]),
-            vue.createElementVNode("div", _hoisted_17$2, [
+            vue.createElementVNode("div", _hoisted_17$3, [
               (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, vue.renderList(emojiEmoticons, (item) => {
                 return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
                   vue.createElementVNode("div", _hoisted_18$2, vue.toDisplayString(item.title), 1),
@@ -1643,13 +1658,12 @@
           vue.createElementVNode("div", {
             class: vue.normalizeClass({ mask: mask.value })
           }, [
-            vue.createElementVNode("div", vue.mergeProps({
+            vue.createElementVNode("div", {
               ref_key: "contentRef",
-              ref: contentRef
-            }, _ctx.$attrs, {
+              ref: contentRef,
               innerHTML: props.html,
               onMouseup: mouseup
-            }), null, 16, _hoisted_2$8)
+            }, null, 40, _hoisted_2$8)
           ], 2),
           mask.value ? (vue.openBlock(), vue.createElementBlock("div", {
             key: 0,
@@ -1663,11 +1677,11 @@
       };
     }
   };
-  const BaseHtmlRender = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-a77c3d96"]]);
+  const BaseHtmlRender = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-8ffbfeb2"]]);
   const _sfc_main$9 = {
     name: "Comment",
     components: { BaseHtmlRender, Author, PostEditor, Point },
-    inject: ["post", "postDetailWidth", "show", "isNight"],
+    inject: ["post", "postDetailWidth", "show", "isNight", "config"],
     props: {
       modelValue: {
         reply_content: ""
@@ -1681,6 +1695,7 @@
     },
     data() {
       return {
+        showOrigin: false,
         edit: false,
         ding: false,
         expand: true,
@@ -1750,10 +1765,15 @@
       },
       toggle() {
         this.expand = !this.expand;
+      },
+      toggleContent() {
+        if (this.modelValue.level === 0)
+          return;
+        this.showOrigin = !this.showOrigin;
       }
     }
   };
-  const _withScopeId$5 = (n) => (vue.pushScopeId("data-v-a0031aa2"), n = n(), vue.popScopeId(), n);
+  const _withScopeId$5 = (n) => (vue.pushScopeId("data-v-bebb0fb2"), n = n(), vue.popScopeId(), n);
   const _hoisted_1$9 = ["data-floor"];
   const _hoisted_2$7 = { class: "comment-content" };
   const _hoisted_3$5 = { class: "right" };
@@ -1781,6 +1801,8 @@
     href: "https://github.com/zyronon/v2ex-script/discussions/7",
     target: "_blank"
   }, "这里", -1));
+  const _hoisted_16$2 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("p", null, "---原文---", -1));
+  const _hoisted_17$2 = /* @__PURE__ */ _withScopeId$5(() => /* @__PURE__ */ vue.createElementVNode("p", null, "-----------", -1));
   function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Author = vue.resolveComponent("Author");
     const _component_BaseHtmlRender = vue.resolveComponent("BaseHtmlRender");
@@ -1848,13 +1870,31 @@
                   vue.createTextVNode("反馈 ")
                 ])) : vue.createCommentVNode("", true)
               ])) : vue.createCommentVNode("", true),
-              vue.createVNode(_component_BaseHtmlRender, {
+              $options.config.commentDisplayType === 4 ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 1 }, [
+                $data.showOrigin ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 0,
+                  onDblclick: _cache[6] || (_cache[6] = (...args) => $options.toggleContent && $options.toggleContent(...args))
+                }, [
+                  _hoisted_16$2,
+                  vue.createVNode(_component_BaseHtmlRender, {
+                    class: "reply_content",
+                    html: $props.modelValue.reply_content
+                  }, null, 8, ["html"]),
+                  _hoisted_17$2
+                ], 32)) : vue.createCommentVNode("", true),
+                vue.createVNode(_component_BaseHtmlRender, {
+                  class: "reply_content",
+                  onDblclick: $options.toggleContent,
+                  html: $props.modelValue.hideCallUserReplyContent
+                }, null, 8, ["onDblclick", "html"])
+              ], 64)) : (vue.openBlock(), vue.createBlock(_component_BaseHtmlRender, {
+                key: 2,
                 class: "reply_content",
                 html: $props.modelValue.reply_content
-              }, null, 8, ["html"]),
+              }, null, 8, ["html"])),
               $data.edit ? (vue.openBlock(), vue.createBlock(_component_PostEditor, {
-                key: 1,
-                onClose: _cache[6] || (_cache[6] = ($event) => $data.edit = false),
+                key: 3,
+                onClose: _cache[7] || (_cache[7] = ($event) => $data.edit = false),
                 replyInfo: $data.replyInfo,
                 replyUser: $props.modelValue.username,
                 replyFloor: $props.modelValue.floor
@@ -1872,12 +1912,12 @@
         $data.cssStyle ? (vue.openBlock(), vue.createElementBlock("div", {
           key: 1,
           class: "more ago",
-          onClick: _cache[7] || (_cache[7] = ($event) => $data.expand = !$data.expand)
+          onClick: _cache[8] || (_cache[8] = ($event) => $data.expand = !$data.expand)
         }, " 由于嵌套回复层级太深，自动将以上回复移至可见范围 ")) : vue.createCommentVNode("", true)
       ], 4)) : vue.createCommentVNode("", true)
     ], 10, _hoisted_1$9);
   }
-  const Comment = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$5], ["__scopeId", "data-v-a0031aa2"]]);
+  const Comment = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$5], ["__scopeId", "data-v-bebb0fb2"]]);
   const _sfc_main$8 = {
     name: "Toolbar",
     inject: [
@@ -2437,7 +2477,7 @@
         return this.post.replyList.filter((v) => v.thankCount >= this.config.topReplyLoveMinCount).sort((a, b) => b.thankCount - a.thankCount).slice(0, this.config.topReplyCount);
       },
       replyList() {
-        if (this.displayType === 0)
+        if ([0, 4].includes(this.displayType))
           return this.post.nestedReplies;
         if (this.displayType === 1) {
           return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount);
@@ -2702,7 +2742,7 @@
       }
     }
   };
-  const _withScopeId$2 = (n) => (vue.pushScopeId("data-v-4038172d"), n = n(), vue.popScopeId(), n);
+  const _withScopeId$2 = (n) => (vue.pushScopeId("data-v-191d6dae"), n = n(), vue.popScopeId(), n);
   const _hoisted_1$5 = { class: "my-box post-wrapper" };
   const _hoisted_2$4 = { class: "toolbar-wrapper" };
   const _hoisted_3$3 = {
@@ -2783,15 +2823,15 @@
     return vue.withDirectives((vue.openBlock(), vue.createElementBlock("div", {
       class: vue.normalizeClass(["post-detail", [$options.isNight ? "isNight" : "", $options.pageType]]),
       ref: "detail",
-      onKeydown: _cache[23] || (_cache[23] = vue.withKeys(($event) => $options.close(), ["esc"])),
-      onScroll: _cache[24] || (_cache[24] = (...args) => $data.debounceScroll && $data.debounceScroll(...args)),
-      onClick: _cache[25] || (_cache[25] = ($event) => $options.close("space"))
+      onKeydown: _cache[24] || (_cache[24] = vue.withKeys(($event) => $options.close(), ["esc"])),
+      onScroll: _cache[25] || (_cache[25] = (...args) => $data.debounceScroll && $data.debounceScroll(...args)),
+      onClick: _cache[26] || (_cache[26] = ($event) => $options.close("space"))
     }, [
       vue.createElementVNode("div", {
         ref: "main",
         class: "main",
         tabindex: "1",
-        onClick: _cache[22] || (_cache[22] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
+        onClick: _cache[23] || (_cache[23] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
       }, [
         vue.createElementVNode("div", {
           class: "main-wrapper",
@@ -2871,21 +2911,35 @@
                 vue.createElementVNode("div", {
                   class: vue.normalizeClass(["radio-group2", { isNight: $options.isNight }])
                 }, [
-                  vue.createElementVNode("div", {
-                    class: vue.normalizeClass(["radio", $props.displayType === 0 ? "active" : ""]),
-                    onClick: _cache[4] || (_cache[4] = ($event) => $options.changeOption(0))
-                  }, "楼中楼 ", 2),
+                  vue.createVNode(_component_Tooltip, { title: "不隐藏@用户" }, {
+                    default: vue.withCtx(() => [
+                      vue.createElementVNode("div", {
+                        class: vue.normalizeClass(["radio", $props.displayType === 0 ? "active" : ""]),
+                        onClick: _cache[4] || (_cache[4] = ($event) => $options.changeOption(0))
+                      }, "楼中楼(@) ", 2)
+                    ]),
+                    _: 1
+                  }),
+                  vue.createVNode(_component_Tooltip, { title: "隐藏第一个@用户，双击内容可显示原文" }, {
+                    default: vue.withCtx(() => [
+                      vue.createElementVNode("div", {
+                        class: vue.normalizeClass(["radio", $props.displayType === 4 ? "active" : ""]),
+                        onClick: _cache[5] || (_cache[5] = ($event) => $options.changeOption(4))
+                      }, "楼中楼 ", 2)
+                    ]),
+                    _: 1
+                  }),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["radio", $props.displayType === 1 ? "active" : ""]),
-                    onClick: _cache[5] || (_cache[5] = ($event) => $options.changeOption(1))
+                    onClick: _cache[6] || (_cache[6] = ($event) => $options.changeOption(1))
                   }, "感谢 ", 2),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["radio", $props.displayType === 3 ? "active" : ""]),
-                    onClick: _cache[6] || (_cache[6] = ($event) => $options.changeOption(3))
+                    onClick: _cache[7] || (_cache[7] = ($event) => $options.changeOption(3))
                   }, "只看楼主 ", 2),
                   vue.createElementVNode("div", {
                     class: vue.normalizeClass(["radio", $props.displayType === 2 ? "active" : ""]),
-                    onClick: _cache[7] || (_cache[7] = ($event) => $options.changeOption(2))
+                    onClick: _cache[8] || (_cache[8] = ($event) => $options.changeOption(2))
                   }, "V2原版 ", 2)
                 ], 2),
                 $data.read.floor || $data.read.total ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_11, [
@@ -2898,7 +2952,7 @@
                     ]),
                     vue.createElementVNode("div", {
                       class: "jump jump1",
-                      onClick: _cache[8] || (_cache[8] = ($event) => $options.jump($data.read.floor))
+                      onClick: _cache[9] || (_cache[9] = ($event) => $options.jump($data.read.floor))
                     }, _hoisted_14)
                   ], 64)) : vue.createCommentVNode("", true),
                   vue.createElementVNode("span", null, [
@@ -2907,7 +2961,7 @@
                   ]),
                   vue.createElementVNode("div", {
                     class: "jump",
-                    onClick: _cache[9] || (_cache[9] = ($event) => $options.jump($data.read.total))
+                    onClick: _cache[10] || (_cache[10] = ($event) => $options.jump($data.read.total))
                   }, _hoisted_16)
                 ])) : vue.createCommentVNode("", true)
               ])) : vue.createCommentVNode("", true),
@@ -2954,10 +3008,10 @@
                 $data.isSticky ? (vue.openBlock(), vue.createElementBlock("a", {
                   key: 0,
                   class: "float",
-                  onClick: _cache[10] || (_cache[10] = ($event) => $data.isSticky = false)
+                  onClick: _cache[11] || (_cache[11] = ($event) => $data.isSticky = false)
                 }, "取消回复框停靠")) : vue.createCommentVNode("", true),
                 vue.createElementVNode("a", {
-                  onClick: _cache[11] || (_cache[11] = (...args) => $options.scrollTop && $options.scrollTop(...args))
+                  onClick: _cache[12] || (_cache[12] = (...args) => $options.scrollTop && $options.scrollTop(...args))
                 }, "回到顶部")
               ])
             ]),
@@ -2966,7 +3020,7 @@
                 onClose: $options.goBottom,
                 ref: "post-editor",
                 useType: "reply-post",
-                onClick: _cache[12] || (_cache[12] = ($event) => $data.isSticky = true)
+                onClick: _cache[13] || (_cache[13] = ($event) => $data.isSticky = true)
               }, null, 8, ["onClose"])
             ])
           ], 2)) : vue.createCommentVNode("", true)
@@ -2974,23 +3028,23 @@
         $data.showRelationReply ? (vue.openBlock(), vue.createElementBlock("div", {
           key: 0,
           class: "relationReply",
-          onClick: _cache[16] || (_cache[16] = ($event) => $options.close("space"))
+          onClick: _cache[17] || (_cache[17] = ($event) => $options.close("space"))
         }, [
           vue.createElementVNode("div", {
             class: "my-cell flex",
-            onClick: _cache[14] || (_cache[14] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
+            onClick: _cache[15] || (_cache[15] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
           }, [
             _hoisted_29,
             vue.createElementVNode("div", _hoisted_30, [
               vue.createElementVNode("i", {
                 class: "fa fa-times",
-                onClick: _cache[13] || (_cache[13] = ($event) => $data.showRelationReply = false)
+                onClick: _cache[14] || (_cache[14] = ($event) => $data.showRelationReply = false)
               })
             ])
           ]),
           vue.createElementVNode("div", {
             class: "comments",
-            onClick: _cache[15] || (_cache[15] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
+            onClick: _cache[16] || (_cache[16] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
           }, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList($options.relationReply, (item, index2) => {
               return vue.openBlock(), vue.createBlock(_component_SingleComment, {
@@ -3018,21 +3072,21 @@
         $options.config.closePostDetailBySpace ? (vue.openBlock(), vue.createElementBlock("div", {
           key: 2,
           class: "close-btn",
-          onClick: _cache[17] || (_cache[17] = ($event) => $options.close("btn"))
+          onClick: _cache[18] || (_cache[18] = ($event) => $options.close("btn"))
         }, _hoisted_33)) : vue.createCommentVNode("", true),
         vue.createElementVNode("div", {
           class: "scroll-top button",
-          onClick: _cache[18] || (_cache[18] = vue.withModifiers((...args) => $options.scrollTop && $options.scrollTop(...args), ["stop"]))
+          onClick: _cache[19] || (_cache[19] = vue.withModifiers((...args) => $options.scrollTop && $options.scrollTop(...args), ["stop"]))
         }, _hoisted_35),
         vue.createElementVNode("div", {
           class: "scroll-to button",
-          onClick: _cache[21] || (_cache[21] = vue.withModifiers(($event) => $options.jump($data.currentFloor), ["stop"]))
+          onClick: _cache[22] || (_cache[22] = vue.withModifiers(($event) => $options.jump($data.currentFloor), ["stop"]))
         }, [
           _hoisted_36,
           vue.withDirectives(vue.createElementVNode("input", {
             type: "text",
-            "onUpdate:modelValue": _cache[19] || (_cache[19] = ($event) => $data.currentFloor = $event),
-            onClick: _cache[20] || (_cache[20] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
+            "onUpdate:modelValue": _cache[20] || (_cache[20] = ($event) => $data.currentFloor = $event),
+            onClick: _cache[21] || (_cache[21] = vue.withModifiers((...args) => $options.stop && $options.stop(...args), ["stop"]))
           }, null, 512), [
             [vue.vModelText, $data.currentFloor]
           ])
@@ -3042,7 +3096,7 @@
       [vue.vShow, $props.modelValue]
     ]);
   }
-  const PostDetail = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$2], ["__scopeId", "data-v-4038172d"]]);
+  const PostDetail = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$2], ["__scopeId", "data-v-191d6dae"]]);
   const _withScopeId$1 = (n) => (vue.pushScopeId("data-v-19fe372d"), n = n(), vue.popScopeId(), n);
   const _hoisted_1$4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ vue.createElementVNode("svg", {
     width: "24",
@@ -3906,7 +3960,7 @@
       contentAutoCollapse: true,
       //正文超长自动折叠
       viewType: "table",
-      commentDisplayType: 0,
+      commentDisplayType: 4,
       newTabOpen: false,
       //新标签打开
       base64: true,
@@ -4080,6 +4134,10 @@
           item.reply_content = this.checkPhotoLink2Img(reply_content.innerHTML);
           item.reply_text = reply_content.textContent;
           let { users, floor } = this.parseReplyContent(item.reply_content);
+          item.hideCallUserReplyContent = item.reply_content;
+          if (users.length === 1) {
+            item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => "");
+          }
           item.replyUsers = users;
           item.replyFloor = floor;
           let ago = node.querySelector(".ago");

@@ -67,6 +67,7 @@ export interface Reply {
   isMod: boolean,
   id: string,
   reply_content: string,
+  hideCallUserReplyContent: string,
   reply_text: string,
   replyUsers: any
   replyFloor: undefined
