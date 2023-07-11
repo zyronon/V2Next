@@ -55,7 +55,7 @@ function checkContentHeight() {
 <template>
   <div class="html-wrapper" v-if="props.html">
     <div :class="{mask}">
-      <div ref="contentRef" v-bind="$attrs" v-html="props.html" @mouseup="mouseup"></div>
+      <div ref="contentRef" v-html="props.html" @mouseup="mouseup"></div>
     </div>
     <div v-if="mask" class="expand" @click="mask = false;handOpen = true">展开</div>
   </div>

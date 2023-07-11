@@ -45,10 +45,18 @@
             <div class="option">
               <span>回复展示方式：</span>
               <div class="radio-group2" :class="{isNight}">
-                <div class="radio"
-                     @click="config.commentDisplayType = 0"
-                     :class="config.commentDisplayType === 0?'active':''">楼中楼
-                </div>
+                <Tooltip title="不隐藏@用户">
+                  <div class="radio"
+                       @click="config.commentDisplayType = 0"
+                       :class="config.commentDisplayType === 0?'active':''">楼中楼(@)
+                  </div>
+                </Tooltip>
+                <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
+                  <div class="radio"
+                       @click="config.commentDisplayType = 4"
+                       :class="config.commentDisplayType === 4?'active':''">楼中楼
+                  </div>
+                </Tooltip>
                 <div class="radio"
                      @click="config.commentDisplayType = 1"
                      :class="config.commentDisplayType === 1?'active':''">感谢
@@ -281,7 +289,7 @@ export default {
       gap: 3rem;
 
       .option-list {
-        width: 40rem;
+        width: 45rem;
       }
     }
 

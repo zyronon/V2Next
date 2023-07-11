@@ -64,7 +64,7 @@ function run() {
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//正文超长自动折叠
     viewType: 'table',
-    commentDisplayType: 0,
+    commentDisplayType: 4,
     newTabOpen: false,//新标签打开
     base64: true,//base功能
     sov2ex: false,
@@ -258,6 +258,10 @@ function run() {
         item.reply_text = reply_content!.textContent!
 
         let {users, floor} = this.parseReplyContent(item.reply_content)
+        item.hideCallUserReplyContent = item.reply_content
+        if (users.length === 1) {
+          item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
+        }
         item.replyUsers = users
         item.replyFloor = floor
 
