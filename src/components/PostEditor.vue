@@ -528,7 +528,7 @@ async function submit() {
   show_content = show_content.replaceAll('\n', '<br/>')
 
   // loading.value = false
-  // return console.log('show_content', show_content)
+   console.log('show_content', show_content)
 
   let item = {
     thankCount: 0,
@@ -544,6 +544,11 @@ async function submit() {
     replyUsers: replyUser ? [replyUser] : [],
     replyFloor: replyFloor || -1,
     level: useType === 'reply-comment' ? 1 : 0
+  }
+
+  item.hideCallUserReplyContent = item.reply_content
+  if (item.replyUsers.length === 1) {
+    item.hideCallUserReplyContent = item.reply_content.replace(/@<a href="\/member\/[\s\S]+?<\/a>(\s#[\d]+)?\s(<br>)?/, () => '')
   }
   // loading.value = false
   // return console.log(item)
@@ -767,7 +772,7 @@ function onBlur() {
 }
 
 function onFocusin() {
-  console.log('onFocusin',)
+  // console.log('onFocusin',)
   document.addEventListener('paste', onPaste);
 }
 
