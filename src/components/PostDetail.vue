@@ -749,6 +749,7 @@ export default {
     //min-height: 100%;
     background: #e2e2e2;
     position: relative;
+    outline: none;
 
     .main-wrapper {
       width: @width;
@@ -761,7 +762,7 @@ export default {
       .post-wrapper {
         .toolbar-wrapper {
           border-top: 1px solid #e2e2e2;
-          height: 4rem;
+          height: 3.4rem;
           padding-left: .6rem;
           display: flex;
           align-items: center;

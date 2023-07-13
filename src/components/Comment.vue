@@ -167,7 +167,7 @@ export default {
       this.expand = !this.expand
     },
     toggleContent() {
-      if (this.modelValue.level === 0)return
+      if (this.modelValue.level === 0) return
       this.showOrigin = !this.showOrigin
     },
   }
@@ -180,13 +180,14 @@ export default {
 .comment {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 1rem;
+  margin-top: .6rem;
 
   @line-color: #ececec;
 
   &.isLevelOne {
     border-bottom: 1px solid @line-color;
-    padding: 1rem;
+    padding: .8rem 1rem;
+    //padding: 1rem 1rem;
     margin-top: 0;
   }
 
@@ -209,14 +210,15 @@ export default {
 
     .expand-line {
       cursor: pointer;
-      //border-right: 2px solid #ddd;
-      width: 3rem;
-      min-width: 3rem;
+      margin-top: .6rem;
+      @w: 2.8rem;
+      width: @w;
+      min-width: @w;
       position: relative;
 
       &:after {
         position: absolute;
-        left: calc(60% - 1px);
+        left: 50%;
         content: " ";
         height: 100%;
         width: 0;
@@ -235,7 +237,7 @@ export default {
       width: calc(100% - 3rem);
 
       .w {
-        padding-left: 1.7rem;
+        padding-left: 1rem;
 
         .post-editor-wrapper {
           margin-top: 1rem;

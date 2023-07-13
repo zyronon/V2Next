@@ -205,8 +205,13 @@
 </template>
 
 <script>
+import Tooltip from "@/components/Tooltip.vue";
+
 export default {
   name: "Setting",
+  components:{
+    Tooltip
+  },
   inject: ['isNight'],
   props: {
     modelValue: {
