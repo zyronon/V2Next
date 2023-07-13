@@ -302,6 +302,9 @@ export default {
     'post.id'(n, o) {
       if (this.$refs["post-editor"]) {
         this.$refs["post-editor"].content = ''
+        nextTick(() => {
+          this.$refs?.detail?.scrollTo({top: 0})
+        })
       }
     },
     modelValue: {
@@ -313,7 +316,6 @@ export default {
           this.currentFloor = 1
           nextTick(() => {
             this.$refs?.main?.focus()
-            this.$refs?.detail?.scrollTo({top: 0})
           })
         } else {
           this.$emit('saveReadList')
