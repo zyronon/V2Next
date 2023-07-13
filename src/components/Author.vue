@@ -162,7 +162,6 @@ export default {
   justify-content: space-between;
   font-size: 1.2rem;
   position: relative;
-  margin-bottom: .4rem;
 
   &.expand {
     margin-bottom: 0;
@@ -191,9 +190,10 @@ export default {
       display: flex;
 
       img {
-        width: 3.4rem;
-        height: 3.4rem;
-        border-radius: .3rem;
+        @w:2.8rem;
+        width: @w;
+        height: @w;
+        border-radius: 0.4rem;
       }
 
       //border-radius: 50%;
