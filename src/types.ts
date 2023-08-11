@@ -1,6 +1,7 @@
 export interface Post {
   replyList: any[],
   nestedReplies: any[],
+  nestedRedundReplies: any[],
   allReplyUsers: any[],
   username: string,
   member: any,

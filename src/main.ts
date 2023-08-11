@@ -18,6 +18,7 @@ function run() {
     fr: "",
     replyList: [],
     nestedReplies: [],
+    nestedRedundReplies: [],
     username: '',
     member: {},
     node: {},
@@ -191,7 +192,9 @@ function run() {
         post.replyCount = replyList.length
         post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
         let nestedList = this.createNestedList(replyList, post.allReplyUsers)
+        let nestedRedundantList = this.createNestedRedundantList(replyList, post.allReplyUsers)
         if (nestedList) post.nestedReplies = nestedList
+        if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
         return post
       } else {
         let promiseList: any = []
@@ -217,7 +220,9 @@ function run() {
               post.replyCount = replyList.length
               post.allReplyUsers = Array.from(new Set(replyList.map((v: any) => v.username)))
               let nestedList = this.createNestedList(replyList, post.allReplyUsers)
+              let nestedRedundantList = this.createNestedRedundantList(replyList, post.allReplyUsers)
               if (nestedList) post.nestedReplies = nestedList
+              if (nestedRedundantList) post.nestedRedundReplies = nestedRedundantList
               resolve(post)
             }
           );
@@ -387,6 +392,55 @@ function run() {
               item.level === 0
               nestedList.push(this.findChildren(item, endList, list))
             }
+          }
+        }
+      })
+      // console.log('replies长度', allList)
+      // console.log('nestedList长度', nestedList)
+      return nestedList
+    },
+    //生成嵌套冗余回复
+    createNestedRedundantList(allList = []) {
+      if (!allList.length) return []
+      if ((Date.now() - window.win().lastCallDate) < 1000) {
+        // console.log('短时间内，重复调用,因为监听了replies,所以打开时会触发两次。第二次不管他')
+        return false
+      }
+      // console.log('cal-createNestedList', Date.now())
+
+      let list = window.clone(allList)
+      let nestedList: any[] = []
+      list.map((item: any, index: number) => {
+        let startList = list.slice(0, index)
+        //用于918489这种情况，@不存在的人
+        let startReplyUsers = Array.from(new Set(startList.map((v: any) => v.username)))
+
+        let endList = list.slice(index + 1)
+
+        if (index === 0) {
+          nestedList.push(this.findChildren(item, endList, list))
+        } else {
+          if (!item.isUse) {
+            //是否是一级回复
+            let isOneLevelReply = false
+            if (item.replyUsers.length) {
+              if (item.replyUsers.length > 1) {
+                isOneLevelReply = true
+              } else {
+                isOneLevelReply = !startReplyUsers.find(v => v === item.replyUsers[0]);
+              }
+            } else {
+              isOneLevelReply = true
+            }
+            if (isOneLevelReply) {
+              item.level === 0
+              nestedList.push(this.findChildren(item, endList, list))
+            }
+          }else {
+            let newItem = window.clone(item)
+            newItem.children = []
+            newItem.level = 0
+            nestedList.push(newItem)
           }
         }
       })
