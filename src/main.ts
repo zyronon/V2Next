@@ -255,6 +255,7 @@ function run() {
           thankCount: 0,
           isThanked: false,
           isOp: false,
+          isDup: false,
           id: node.id.replace('r_', '')
         } as any
         let reply_content = node.querySelector('.reply_content')
@@ -440,6 +441,7 @@ function run() {
             let newItem = window.clone(item)
             newItem.children = []
             newItem.level = 0
+            newItem.isDup = true
             nestedList.push(newItem)
           }
         }

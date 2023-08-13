@@ -66,6 +66,7 @@ export interface Reply {
   isThanked: boolean,
   isOp: boolean,
   isMod: boolean,
+  isDup: boolean,
   id: string,
   reply_content: string,
   hideCallUserReplyContent: string,
