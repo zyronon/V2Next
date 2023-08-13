@@ -73,10 +73,15 @@ export default {
           if (res) {
             this.current.nestedReplies = res
           }
+          let dup_res = window.parse.createNestedRedundantList(newVal, this.current.allReplyUsers)
+          if (dup_res) {
+            this.current.nestedRedundReplies = dup_res
+          }
           // console.log('this.current.nestedReplies',this.current.nestedReplies)
         } else {
           this.current.replyCount = 0
           this.current.nestedReplies = []
+          this.current.nestedRedundReplies = []
         }
         if (this.list) {
           let rIndex = this.list.findIndex(i => i.id === this.current.id)
