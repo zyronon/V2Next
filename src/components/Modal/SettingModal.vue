@@ -57,6 +57,12 @@
                        :class="config.commentDisplayType === 4?'active':''">楼中楼
                   </div>
                 </Tooltip>
+                <Tooltip title="重复显示楼中楼的回复">
+                  <div class="radio"
+                       @click="config.commentDisplayType = 5"
+                       :class="config.commentDisplayType === 5?'active':''">冗余楼中楼
+                  </div>
+                </Tooltip>
                 <div class="radio"
                      @click="config.commentDisplayType = 1"
                      :class="config.commentDisplayType === 1?'active':''">感谢

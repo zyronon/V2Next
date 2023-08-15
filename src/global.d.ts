@@ -24,6 +24,7 @@ declare global {
       getPostDetail: Function,
       getAllReply: Function,
       createNestedList: Function,
+      createNestedRedundantList: Function,
       findChildren: Function,
       parsePagePostList: Function,
       parseA: Function,
