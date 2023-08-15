@@ -873,13 +873,13 @@ function run() {
         }
       } else {
         GM_notification({
-          text: '自动签到失败！请访问 V2EX 首页试试。\n如果连续几天都签到失败，请联系作者解决！',
+          text: '自动签到失败！请关闭其他插件或脚本。\n如果连续几天都签到失败，请联系作者解决！',
           timeout: 4000,
           onclick() {
             feedback()
           }
         });
-        console.warn('[V2EX 增强] 自动签到失败！请访问 V2EX 首页试试。如果连续几天都签到失败，请联系作者解决！')
+        console.warn('[V2EX 增强] 自动签到失败！请关闭其他插件或脚本。如果连续几天都签到失败，请联系作者解决！')
         if (qiandao) qiandao.textContent = '自动签到失败！请尝试手动签到！';
       }
     })
