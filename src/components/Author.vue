@@ -16,6 +16,7 @@
           <a :href="`/member/${comment.username}`" class="username">{{ comment.username }}</a>
         </strong>
         <div v-if="comment.isOp" class="op">OP</div>
+        <div v-if="comment.isDup" class="dup">DUP</div>
         <div v-if="comment.isMod" class="mod">MOD</div>
         <span class="ago">{{ comment.date }}</span>
         <template v-if="isLogin && config.openTag">
@@ -200,6 +201,7 @@ export default {
     }
 
     @color: #1484cd;
+    @dup-color: red;
 
     .texts {
       flex: 1;
@@ -213,6 +215,20 @@ export default {
       padding: 0 .3rem;
       cursor: default;
       border: 2px solid @color;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-right: 1rem;
+      transform: scale(.8);
+    }
+
+    .dup {
+      display: inline-block;
+      background-color: transparent;
+      color: @dup-color;
+      border-radius: .3rem;
+      padding: 0 .3rem;
+      cursor: default;
+      border: 2px solid @dup-color;
       font-size: 1.2rem;
       font-weight: bold;
       margin-right: 1rem;

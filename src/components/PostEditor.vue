@@ -534,6 +534,7 @@ async function submit() {
     thankCount: 0,
     isThanked: false,
     isOp: post.value.username === window.user.username,
+    isDup: false,
     id: Date.now(),
     username: window.user.username,
     avatar: window.user.avatar,

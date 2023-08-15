@@ -65,6 +65,12 @@
                        :class="displayType === 4?'active':''">楼中楼
                   </div>
                 </Tooltip>
+                <Tooltip title="重复显示楼中楼的回复">
+                  <div class="radio"
+                       @click="changeOption(5)"
+                       :class="displayType === 5?'active':''">冗余楼中楼
+                  </div>
+                </Tooltip>
                 <div class="radio"
                      @click="changeOption(1)"
                      :class="displayType === 1?'active':''">感谢
@@ -268,6 +274,7 @@ export default {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.displayType === 2) return this.post.replyList
+      if (this.displayType === 5) return this.post.nestedRedundReplies
       if (this.displayType === 3) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },

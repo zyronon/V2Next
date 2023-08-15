@@ -1,6 +1,7 @@
 export interface Post {
   replyList: any[],
   nestedReplies: any[],
+  nestedRedundReplies: any[],
   allReplyUsers: any[],
   username: string,
   member: any,
@@ -65,6 +66,7 @@ export interface Reply {
   isThanked: boolean,
   isOp: boolean,
   isMod: boolean,
+  isDup: boolean,
   id: string,
   reply_content: string,
   hideCallUserReplyContent: string,
