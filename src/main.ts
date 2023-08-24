@@ -78,7 +78,9 @@ function run() {
     autoSignin: true,
     customBgColor: '',
     version: 1,
-    collectBrowserNotice: false
+    collectBrowserNotice: false,
+    simple: true,
+    hideName: true,
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
@@ -437,7 +439,7 @@ function run() {
               item.level === 0
               nestedList.push(this.findChildren(item, endList, list))
             }
-          }else {
+          } else {
             let newItem = window.clone(item)
             newItem.children = []
             newItem.level = 0
@@ -747,7 +749,7 @@ function run() {
 
       .toggle {
           position: absolute;
-          right: 0;
+          right: ${window.config.simple ? '5rem' : 0};
           top: 0.5rem;
           width: 9rem;
           height: 100%;
@@ -818,6 +820,22 @@ function run() {
       .Night .preview  .topic-link:link {
           color: #c0dbff !important;
       }
+      
+      ${
+      window.config.simple ? `
+      .item table tr td:first-child{display:none;}
+      #Rightbar .cell table:first-child tr td:first-child{display:none;}
+      .item table tr td .sep5{display:none;}
+      .item table tr td .topic_info{display:none;}
+      .item {border-bottom:none;}
+      .avatar,#avatar{display:none}
+      ` : ''}
+
+      ${window.config.hideName ? `
+      .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #111 0 0 6px;user-select: none;}
+      #Rightbar .cell table:first-child tr td:first-child{display:none;}
+      ` : ''}
+    }
 
     `
     let addStyle2: HTMLStyleElement = document.createElement("style");
@@ -1042,7 +1060,6 @@ function run() {
   function init() {
     checkPageType()
     initMonkeyMenu()
-    initStyle()
 
     let top2 = document.querySelector('.tools .top:nth-child(2)')
     if (top2 && top2.textContent !== '注册') {
@@ -1055,6 +1072,8 @@ function run() {
     addSettingText()
 
     initConfig().then(r => {
+      initStyle()
+
       if (window.config.sov2ex) {
         setTimeout(initSoV2ex, 1000)
       }

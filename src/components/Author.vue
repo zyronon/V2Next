@@ -8,7 +8,7 @@
         <path d="M22 42H6V26" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M26 6H42V22" stroke="#177EC9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <a class="avatar" :href="`/member/${comment.username}`">
+      <a class="avatar" v-if="!config.simple" :href="`/member/${comment.username}`">
         <img :src="comment.avatar" alt="">
       </a>
       <span class="texts">

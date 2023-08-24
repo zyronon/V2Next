@@ -203,6 +203,22 @@
             <div class="notice">
               V站的帐号一旦被封了，就无法登录了，账号里的收藏也就看不到了
             </div>
+            <div class="option">
+              <span>简洁模式：</span>
+              <div class="switch gray" :class="{active:config.simple,isNight}"
+                   @click="config.simple = !config.simple"/>
+            </div>
+            <div class="notice">
+              此项需要刷新页面才能生效
+            </div>
+            <div class="option">
+              <span>隐藏名字：</span>
+              <div class="switch gray" :class="{active:config.hideName,isNight}"
+                   @click="config.hideName = !config.hideName"/>
+            </div>
+            <div class="notice">
+              此项需要刷新页面才能生效
+            </div>
           </div>
         </div>
       </div>
@@ -280,7 +296,7 @@ export default {
     //box-shadow: 0 0 6px 4px gainsboro;
     padding: 2rem;
     max-height: 80vh;
-    max-width: 80vw;
+    max-width: 83vw;
     overflow: auto;
 
     .sub-title {
@@ -300,7 +316,7 @@ export default {
       gap: 3rem;
 
       .option-list {
-        width: 45rem;
+        width: 50rem;
       }
     }
 

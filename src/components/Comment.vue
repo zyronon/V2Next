@@ -57,9 +57,11 @@
                         :replyUser="modelValue.username"
                         :replyFloor="modelValue.floor"/>
           </div>
-          <Comment v-for="(item,index) in modelValue.children"
-                   v-model="modelValue.children[index]"
-                   :key="index"/>
+          <div class="simple-wrapper">
+            <Comment v-for="(item,index) in modelValue.children"
+                     v-model="modelValue.children[index]"
+                     :key="index"/>
+          </div>
         </div>
       </div>
       <div v-if="cssStyle" class="more ago" @click="expand = !expand">
@@ -117,6 +119,7 @@ export default {
     myClass() {
       return {
         isOp: this.modelValue.isOp,
+        isSimple: this.config.simple,
         ding: this.ding,
         isLevelOne: this.modelValue.level === 0,
         ['c_' + this.floor]: this.type !== 'top'
@@ -191,13 +194,28 @@ export default {
     margin-top: 0;
   }
 
+
   &.ding {
     @bg: rgb(yellow, .3);
     background: @bg !important;
   }
 
-  .comment-content-w {
+  &.isSimple {
+    .avatar, .expand-line {
+      display: none;
+    }
 
+    .simple-wrapper {
+      padding-left: 2.8rem;
+    }
+
+    .w {
+      padding-left: 0 !important;
+      padding-top: .5rem;
+    }
+  }
+
+  .comment-content-w {
     .more {
       text-align: center;
       margin: 2rem 0;
