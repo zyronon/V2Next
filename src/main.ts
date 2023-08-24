@@ -79,8 +79,8 @@ function run() {
     customBgColor: '',
     version: 1,
     collectBrowserNotice: false,
-    simple: true,
-    hideName: true,
+    simple: false,
+    hideName: false,
   }
   window.isNight = $('.Night').length === 1
   window.cb = null
