@@ -1,5 +1,5 @@
 <template>
-  <div class="comment" ref="comment">
+  <div class="comment" :class="{isSimple:config.simple}" ref="comment">
     <a class="avatar" v-if="!isRight" :href="`/member/${comment.username}`">
       <img :src="comment.avatar" alt="">
     </a>
@@ -96,6 +96,16 @@ function jump() {
   gap: 1rem;
   padding: 1rem;
   border-bottom: 1px solid #e2e2e2;
+
+  &.isSimple {
+    .avatar {
+      display: none;
+    }
+
+    .reply_content {
+      margin-top: 0.5rem !important;
+    }
+  }
 
   .avatar {
     display: flex;
