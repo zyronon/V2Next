@@ -7,6 +7,7 @@ declare global {
     baseUrl: string,
     pageData: any,
     config: Config,
+    currentVersion:number,
     isNight: boolean,
     canParseV2exPage: boolean,
     pageType?: PageType,

@@ -82,6 +82,7 @@ function run() {
     simple: false,
     hideName: false,
   }
+  window.currentVersion = 1
   window.isNight = $('.Night').length === 1
   window.cb = null
   window.postList = []
@@ -828,13 +829,36 @@ function run() {
       .item table tr td .sep5{display:none;}
       .item table tr td .topic_info{display:none;}
       .item {border-bottom:none;}
-      .avatar,#avatar{display:none}
+      #Logo,.avatar,#avatar{display:none}
       ` : ''}
 
       ${window.config.hideName ? `
-      .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #111 0 0 6px;user-select: none;}
+       .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
+      // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
       ` : ''}
+      
+      ${window.config.customBgColor ? `#Wrapper {
+          background-color: ${window.config.customBgColor} !important;
+          background-image: unset !important;
+        }` : ''}
+        
+        
+        .top{
+          position:relative;
+        }
+        
+      .new:before{
+        content:'new';
+        position: absolute;
+        background: red;
+        font-size: 10px;
+        border-radius: 4px;
+        padding: 0px 2px;
+        color: white;
+        right: -9px;
+        top: -3px;
+      }
     }
 
     `
@@ -1037,25 +1061,14 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="javascript:void 0;" class="top">脚本设置</a>`)
-    setting.on('click', () => {
+    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version <  window.currentVersion?'new':''}">脚本设置</a>`)
+    setting.on('click',function () {
+      this.classList.remove('new')
       cbChecker({type: 'openSetting'})
     })
     $('.tools').prepend(setting)
   }
 
-  function initCustomBgColor() {
-    let style2 = `#Wrapper {
-          background-color: ${window.config.customBgColor} !important;
-          background-image: unset !important;
-        }`
-    let addStyle2: HTMLStyleElement = document.createElement("style");
-    // @ts-ignore
-    addStyle2.rel = "stylesheet";
-    addStyle2.type = "text/css";
-    addStyle2.innerHTML = style2
-    $(window.win().doc.head).append(addStyle2)
-  }
 
   function init() {
     checkPageType()
@@ -1068,17 +1081,15 @@ function run() {
 
       initNoteData()
     }
-    //这个要放后面，不然前面查找会出错
-    addSettingText()
 
     initConfig().then(r => {
+      //这个要放后面，不然前面查找会出错
+      addSettingText()
+
       initStyle()
 
       if (window.config.sov2ex) {
         setTimeout(initSoV2ex, 1000)
-      }
-      if (window.config.customBgColor) {
-        initCustomBgColor()
       }
       try {
         if (window.config.autoSignin && window.user.username) {
