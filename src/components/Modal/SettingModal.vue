@@ -1,7 +1,7 @@
 <template>
   <Transition>
     <div v-if="show" class="setting-modal modal" :class="{isNight}">
-      <div class="mask" @click="$emit('update:show',false)"></div>
+      <div class="mask" @click="close"></div>
       <div class="wrapper">
         <div class="title">
           脚本设置
@@ -43,7 +43,7 @@
             </div>
             <div class="option-title">帖子:</div>
             <div class="option">
-              <span>回复展示方式：</span>
+              <span :class="isNew && 'new'">回复展示方式：</span>
               <div class="radio-group2" :class="{isNight}">
                 <Tooltip title="不隐藏@用户">
                   <div class="radio"
@@ -204,7 +204,7 @@
               V站的帐号一旦被封了，就无法登录了，账号里的收藏也就看不到了
             </div>
             <div class="option">
-              <span>简洁模式：</span>
+              <span :class="isNew && 'new'">简洁模式：</span>
               <div class="switch gray" :class="{active:config.simple,isNight}"
                    @click="config.simple = !config.simple"/>
             </div>
@@ -212,7 +212,7 @@
               此项需要刷新页面才能生效
             </div>
             <div class="option">
-              <span>隐藏名字：</span>
+              <span :class="isNew && 'new'">隐藏名字：</span>
               <div class="switch gray" :class="{active:config.hideName,isNight}"
                    @click="config.hideName = !config.hideName"/>
             </div>
@@ -231,7 +231,7 @@ import Tooltip from "@/components/Tooltip.vue";
 
 export default {
   name: "Setting",
-  components:{
+  components: {
     Tooltip
   },
   inject: ['isNight'],
@@ -254,6 +254,11 @@ export default {
       config: window.clone(this.modelValue),
     }
   },
+  computed: {
+    isNew() {
+      return this.config.version < window.currentVersion
+    }
+  },
   watch: {
     config: {
       handler(n) {
@@ -266,7 +271,11 @@ export default {
       deep: true
     }
   },
-  created() {
+  methods: {
+    close() {
+      this.config.version = window.currentVersion
+      this.$emit('update:show', false)
+    }
   }
 }
 </script>
