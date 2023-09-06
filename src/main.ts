@@ -829,7 +829,8 @@ function run() {
       .item table tr td .sep5{display:none;}
       .item table tr td .topic_info{display:none;}
       .item {border-bottom:none;}
-      #Logo,.avatar,#avatar{display:none}
+      .avatar,#avatar{display:none;}
+      #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
       ` : ''}
 
       ${window.config.hideName ? `
@@ -844,9 +845,9 @@ function run() {
         }` : ''}
         
         
-        .top{
-          position:relative;
-        }
+      .top{
+        position:relative;
+      }
         
       .new:before{
         content:'new';
@@ -1061,8 +1062,8 @@ function run() {
   }
 
   function addSettingText() {
-    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version <  window.currentVersion?'new':''}">脚本设置</a>`)
-    setting.on('click',function () {
+    let setting = $(`<a href="javascript:void 0;" class="top ${window.config.version < window.currentVersion ? 'new' : ''}">脚本设置</a>`)
+    setting.on('click', function () {
       this.classList.remove('new')
       cbChecker({type: 'openSetting'})
     })
