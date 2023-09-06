@@ -13,7 +13,7 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        version: '6.6',
+        version: '6.8',
         name: 'V2EX - 超级增强',
         icon: 'https://www.google.com/s2/favicons?sz=64&domain=v2ex.com',
         namespace: 'http://tampermonkey.net/',
@@ -29,7 +29,7 @@ export default defineConfig({
           'https://*.v2ex.com/recent*',
           'https://*.v2ex.com/go/*'
         ],
-        description: '楼中楼回复(支持感谢数排序)、简洁模式、自动签到、快捷回复图片和表情、列表预览内容、点击帖子弹框展示详情、对用户打标签、回复上下文、记录上次阅读位置、自定义背景、使用 SOV2EX 搜索、正文超长自动折叠、划词 base64 解码、一键@所有人,@管理员、操作按钮(感谢、收藏、回复、隐藏)异步请求、支持黑暗模式',
+        description: 'V2EX最现代、最好用、功能最完整的脚本。本脚本日活1300，V2EX Polish日活320，V2EX 增强日活1500，统计于2023/9/6日，数据来源：打开脚本详情，点上面的“统计数据”查看',
         author: 'zyronon',
         license: 'GPL License',
         updateURL: 'https://github.com/zyronon/v2ex-script/raw/master/dist/vite-project.user.js',
