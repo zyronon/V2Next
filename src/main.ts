@@ -592,6 +592,20 @@ function run() {
                 a.append(div)
                 // console.log(div.clientHeight)
                 itemDom.append(a)
+                // show More
+                if (div.clientHeight < 172) {
+                  a.classList.add('show-all')
+                } else {
+                  let showMore = document.createElement('div')
+                  showMore.classList.add('show-more')
+                  showMore.innerHTML = '显示更多/收起'
+                  showMore.onclick = function(e) {
+                    e.stopPropagation()
+                    a.classList.toggle('show-all')
+                  }
+                  a.parentNode?.append(showMore)
+                }
+                
               }
             }
           }
@@ -779,6 +793,11 @@ function run() {
           margin-top: 0.5rem !important;
       }
 
+      .preview > .post-content.show-all {
+          max-height: unset;
+          -webkit-mask-image:none; 
+      }
+
       .preview  .topic-link:link {
           color: black !important;
       }
@@ -793,14 +812,22 @@ function run() {
           -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
       }
 
+      .show-more {
+        display: none;
+      }
+
+      .preview > .show-more {
+          display: block;
+          font-size: 1.2rem;
+          text-align: right;
+          padding-right: 2rem;
+      }
+
       .post-content:link {
           color: #494949;
       }
 
 
-      .post-content:visited {
-          color: #afb9c1 !important;
-      }
 
       .Night .post-item {
           background: #18222d !important;
@@ -812,10 +839,6 @@ function run() {
 
       .Night .preview > .post-content:link {
           color: #d1d5d9;
-      }
-
-      .Night .preview > .post-content:visited {
-          color: #393f4e !important;
       }
 
       .Night .preview  .topic-link:link {
