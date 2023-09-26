@@ -80,7 +80,6 @@ function run() {
     version: 1,
     collectBrowserNotice: false,
     simple: false,
-    hideName: false,
   }
   window.currentVersion = 1
   window.isNight = $('.Night').length === 1
@@ -605,7 +604,6 @@ function run() {
                   }
                   a.parentNode?.append(showMore)
                 }
-                
               }
             }
           }
@@ -817,16 +815,23 @@ function run() {
       }
 
       .preview > .show-more {
-          display: block;
-          font-size: 1.2rem;
-          text-align: right;
-          padding-right: 2rem;
+        font-size: 1.3rem;
+        text-align: right;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 9;
+      }
+
+      .post-content:visited {
+          color: #afb9c1 !important;
       }
 
       .post-content:link {
           color: #494949;
       }
-
 
 
       .Night .post-item {
@@ -841,6 +846,10 @@ function run() {
           color: #d1d5d9;
       }
 
+      .Night .preview > .post-content:visited {
+          color: #393f4e !important;
+      }
+      
       .Night .preview  .topic-link:link {
           color: #c0dbff !important;
       }
@@ -854,14 +863,13 @@ function run() {
       .item {border-bottom:none;}
       .avatar,#avatar{display:none;}
       #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
-      ` : ''}
-
-      ${window.config.hideName ? `
+      
        .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
       // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      ` : ''}
       
+      ` : ''}
+
       ${window.config.customBgColor ? `#Wrapper {
           background-color: ${window.config.customBgColor} !important;
           background-image: unset !important;

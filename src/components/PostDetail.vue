@@ -683,7 +683,6 @@ export default {
       }
 
       :deep(.point) {
-
         svg {
           &:hover {
             background: @bg1;
@@ -742,6 +741,12 @@ export default {
       .scroll-to, .close-btn, .scroll-top, .top-reply {
         //color: rgb(72, 98, 126);
         color: #9caec7;
+      }
+
+      :deep(.tool) {
+        &:hover {
+          background-color: #22303f!important;
+        }
       }
 
     }

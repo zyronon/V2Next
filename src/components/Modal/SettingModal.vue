@@ -211,14 +211,6 @@
             <div class="notice">
               此项需要刷新页面才能生效
             </div>
-            <div class="option">
-              <span :class="isNew && 'new'">隐藏名字：</span>
-              <div class="switch gray" :class="{active:config.hideName,isNight}"
-                   @click="config.hideName = !config.hideName"/>
-            </div>
-            <div class="notice">
-              此项需要刷新页面才能生效
-            </div>
           </div>
         </div>
       </div>
