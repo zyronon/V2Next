@@ -41,7 +41,7 @@
                                        target="_blank">这里</a>反馈
               </div>
             </div>
-            <template v-if="config.commentDisplayType === 4">
+            <template v-if="config.commentDisplayType === 4 && this.type !== 'top'">
               <div v-if="showOrigin" @dblclick="toggleContent">
                 <p>---原文---</p>
                 <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
@@ -170,7 +170,7 @@ export default {
       this.expand = !this.expand
     },
     toggleContent() {
-      if (this.modelValue.level === 0) return
+      if (this.modelValue.level === 0 && this.modelValue.replyUsers.length === 0) return
       this.showOrigin = !this.showOrigin
     },
   }
