@@ -38,7 +38,7 @@ export interface Config {
   closePostDetailBySpace: boolean,//点击空白处关闭详情
   contentAutoCollapse: boolean,//正文超长自动折叠
   viewType: string,
-  commentDisplayType: number,
+  commentDisplayType: CommentDisplayType,
   newTabOpen: boolean,//新标签打开
   base64: boolean,//base功能
   sov2ex: boolean,
@@ -59,6 +59,15 @@ export enum PageType {
   Home = "Home",
   Node = "Node",
   Post = "Post",
+}
+
+export enum CommentDisplayType {
+  FloorInFloor = 0,//楼中楼（@）
+  FloorInFloorNoCallUser = 4,//楼中楼（隐藏第一个@用户，双击内容可显示原文）
+  FloorInFloorNested = 5,//冗余楼中楼
+  Like = 1,//感谢
+  V2exOrigin = 2,//V2原版
+  OnlyOp = 3,//只看楼主
 }
 
 export interface Reply {

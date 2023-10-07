@@ -55,33 +55,33 @@
               <div class="radio-group2" :class="{isNight}">
                 <Tooltip title="不隐藏@用户">
                   <div class="radio"
-                       @click="changeOption(0)"
-                       :class="displayType === 0?'active':''">楼中楼(@)
+                       @click="changeOption(CommentDisplayType.FloorInFloor)"
+                       :class="displayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
                   </div>
                 </Tooltip>
                 <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
                   <div class="radio"
-                       @click="changeOption(4)"
-                       :class="displayType === 4?'active':''">楼中楼
+                       @click="changeOption(CommentDisplayType.FloorInFloorNoCallUser)"
+                       :class="displayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
                   </div>
                 </Tooltip>
                 <Tooltip title="重复显示楼中楼的回复">
                   <div class="radio"
-                       @click="changeOption(5)"
-                       :class="displayType === 5?'active':''">冗余楼中楼
+                       @click="changeOption(CommentDisplayType.FloorInFloorNested)"
+                       :class="displayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
                   </div>
                 </Tooltip>
                 <div class="radio"
-                     @click="changeOption(1)"
-                     :class="displayType === 1?'active':''">感谢
+                     @click="changeOption(CommentDisplayType.Like)"
+                     :class="displayType ===CommentDisplayType.Like?'active':''">感谢
                 </div>
                 <div class="radio"
-                     @click="changeOption(3)"
-                     :class="displayType === 3?'active':''">只看楼主
+                     @click="changeOption(CommentDisplayType.OnlyOp)"
+                     :class="displayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
                 </div>
                 <div class="radio"
-                     @click="changeOption(2)"
-                     :class="displayType === 2?'active':''">V2原版
+                     @click="changeOption(CommentDisplayType.V2exOrigin)"
+                     :class="displayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
                 </div>
               </div>
               <div class="read-notice" v-if="read.floor || read.total">
@@ -185,7 +185,7 @@ import BaseHtmlRender from "@/components/BaseHtmlRender";
 import eventBus from "@/utils/eventBus.js";
 import {CMD} from "@/utils/type";
 import {computed, nextTick} from "vue";
-import {PageType} from "@/types";
+import {CommentDisplayType, PageType} from "@/types";
 import Tooltip from "@/components/Tooltip.vue";
 import PopConfirm from "@/components/PopConfirm.vue";
 import SingleComment from "@/components/SingleComment.vue";
@@ -222,7 +222,7 @@ export default {
         return false
       }
     },
-    displayType: 0,
+    displayType: CommentDisplayType.FloorInFloorNoCallUser,
   },
   data() {
     return {
@@ -251,6 +251,9 @@ export default {
     }
   },
   computed: {
+    CommentDisplayType() {
+      return CommentDisplayType
+    },
     isPost() {
       return this.pageType === PageType.Post
     },
@@ -269,13 +272,13 @@ export default {
           .slice(0, this.config.topReplyCount)
     },
     replyList() {
-      if ([0, 4].includes(this.displayType)) return this.post.nestedReplies
-      if (this.displayType === 1) {
+      if ([CommentDisplayType.FloorInFloor, CommentDisplayType.FloorInFloorNoCallUser].includes(this.displayType)) return this.post.nestedReplies
+      if (this.displayType === CommentDisplayType.Like) {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
-      if (this.displayType === 2) return this.post.replyList
-      if (this.displayType === 5) return this.post.nestedRedundReplies
-      if (this.displayType === 3) return this.post.replyList.filter(v => v.username === this.post.member?.username)
+      if (this.displayType === CommentDisplayType.V2exOrigin) return this.post.replyList
+      if (this.displayType ===  CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
+      if (this.displayType === CommentDisplayType.OnlyOp) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },
     //关联回复

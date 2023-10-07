@@ -4,7 +4,7 @@ import './assets/less/index.less'
 import App from './App.vue';
 import {GM_notification, GM_openInTab, GM_registerMenuCommand} from "$"
 import './global.d.ts'
-import {PageType, Post, Reply} from "./types"
+import {CommentDisplayType, PageType, Post, Reply} from "./types"
 
 let $section = document.createElement('section')
 $section.id = 'app'
@@ -65,7 +65,7 @@ function run() {
     closePostDetailBySpace: true,//点击空白处关闭详情
     contentAutoCollapse: true,//正文超长自动折叠
     viewType: 'table',
-    commentDisplayType: 4,
+    commentDisplayType: CommentDisplayType.FloorInFloorNoCallUser,
     newTabOpen: false,//新标签打开
     base64: true,//base功能
     sov2ex: false,
@@ -1100,7 +1100,6 @@ function run() {
     })
     $('.tools').prepend(setting)
   }
-
 
   function init() {
     checkPageType()

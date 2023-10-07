@@ -47,33 +47,33 @@
               <div class="radio-group2" :class="{isNight}">
                 <Tooltip title="不隐藏@用户">
                   <div class="radio"
-                       @click="config.commentDisplayType = 0"
-                       :class="config.commentDisplayType === 0?'active':''">楼中楼(@)
+                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloor"
+                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloor?'active':''">楼中楼(@)
                   </div>
                 </Tooltip>
                 <Tooltip title="隐藏第一个@用户，双击内容可显示原文">
                   <div class="radio"
-                       @click="config.commentDisplayType = 4"
-                       :class="config.commentDisplayType === 4?'active':''">楼中楼
+                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNoCallUser"
+                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser?'active':''">楼中楼
                   </div>
                 </Tooltip>
                 <Tooltip title="重复显示楼中楼的回复">
                   <div class="radio"
-                       @click="config.commentDisplayType = 5"
-                       :class="config.commentDisplayType === 5?'active':''">冗余楼中楼
+                       @click="config.commentDisplayType = CommentDisplayType.FloorInFloorNested"
+                       :class="config.commentDisplayType === CommentDisplayType.FloorInFloorNested?'active':''">冗余楼中楼
                   </div>
                 </Tooltip>
                 <div class="radio"
-                     @click="config.commentDisplayType = 1"
-                     :class="config.commentDisplayType === 1?'active':''">感谢
+                     @click="config.commentDisplayType = CommentDisplayType.Like"
+                     :class="config.commentDisplayType === CommentDisplayType.Like?'active':''">感谢
                 </div>
                 <div class="radio"
-                     @click="config.commentDisplayType = 3"
-                     :class="config.commentDisplayType === 3?'active':''">只看楼主
+                     @click="config.commentDisplayType = CommentDisplayType.OnlyOp"
+                     :class="config.commentDisplayType === CommentDisplayType.OnlyOp?'active':''">只看楼主
                 </div>
                 <div class="radio"
-                     @click="config.commentDisplayType = 2"
-                     :class="config.commentDisplayType === 2?'active':''">V2原版
+                     @click="config.commentDisplayType = CommentDisplayType.V2exOrigin"
+                     :class="config.commentDisplayType === CommentDisplayType.V2exOrigin?'active':''">V2原版
                 </div>
               </div>
             </div>
@@ -220,6 +220,7 @@
 
 <script>
 import Tooltip from "@/components/Tooltip.vue";
+import {CommentDisplayType} from "@/types.js";
 
 export default {
   name: "Setting",
@@ -247,6 +248,9 @@ export default {
     }
   },
   computed: {
+    CommentDisplayType() {
+      return CommentDisplayType
+    },
     isNew() {
       return this.config.version < window.currentVersion
     }

@@ -41,7 +41,7 @@
                                        target="_blank">这里</a>反馈
               </div>
             </div>
-            <template v-if="config.commentDisplayType === 4 && this.type !== 'top'">
+            <template v-if="config.commentDisplayType === CommentDisplayType.FloorInFloorNoCallUser && this.type !== 'top'">
               <div v-if="showOrigin" @dblclick="toggleContent">
                 <p>---原文---</p>
                 <BaseHtmlRender class="reply_content" :html="modelValue.reply_content"/>
@@ -77,6 +77,7 @@ import Point from "./Point";
 import eventBus from "@/utils/eventBus.js";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
 import {CMD} from "@/utils/type";
+import {CommentDisplayType} from "@/types.js";
 
 export default {
   name: "Comment",
@@ -116,6 +117,9 @@ export default {
     }
   },
   computed: {
+    CommentDisplayType() {
+      return CommentDisplayType
+    },
     myClass() {
       return {
         isOp: this.modelValue.isOp,
