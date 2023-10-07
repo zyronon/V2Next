@@ -647,11 +647,14 @@ function run() {
       return apiRes.redirected && apiRes.status === 200;
     },
     //标签操作
-    async saveTags(val: string) {
+    async saveTags(val: any) {
+      for (const [key, value] of Object.entries(val)) {
+        if (!(value as any[]).length) delete val[key]
+      }
       return await this.editNoteItem(window.user.tagPrefix + JSON.stringify(val), window.user.tagsId)
     },
     //已读楼层操作
-    async saveReadList(val: string) {
+    async saveReadList(val: any) {
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
     //图片链接转Img标签
@@ -864,8 +867,9 @@ function run() {
       .item table tr td .topic_info{display:none;}
       .item {border-bottom:none;}
       .avatar,#avatar{display:none;}
-      #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
       ` : ''}
+      
+      #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
        .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
       // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
@@ -1029,26 +1033,25 @@ function run() {
       let bodyText = r.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
       let items: HTMLAnchorElement[] = body.find('#Main .box .note_item_title a') as any
-      if (items.length) {
-        let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
-        if (tagItem) {
-          window.user.tagsId = tagItem.href.substr(-5)
-          window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
-        } else {
-          let r = await window.parse.createNoteItem(window.user.tagPrefix)
-          r && (window.user.tagsId = r);
-        }
 
-        let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
-        if (readItem) {
-          window.user.readNoteItemId = readItem.href.substr(-5)
-          window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
-        } else {
-          let r = await window.parse.createNoteItem(window.user.readPrefix)
-          r && (window.user.readNoteItemId = r);
-        }
-        cbChecker({type: 'syncData'})
+      let tagItem = Array.from(items).find(v => v.innerText.includes(window.user.tagPrefix))
+      if (tagItem) {
+        window.user.tagsId = tagItem.href.substr(-5)
+        window.user.tags = await getNoteItemContent(window.user.tagsId, window.user.tagPrefix,)
+      } else {
+        let r = await window.parse.createNoteItem(window.user.tagPrefix)
+        r && (window.user.tagsId = r);
       }
+
+      let readItem = Array.from(items).find(v => v.innerText.includes(window.user.readPrefix))
+      if (readItem) {
+        window.user.readNoteItemId = readItem.href.substr(-5)
+        window.user.readList = await getNoteItemContent(window.user.readNoteItemId, window.user.readPrefix)
+      } else {
+        let r = await window.parse.createNoteItem(window.user.readPrefix)
+        r && (window.user.readNoteItemId = r);
+      }
+      cbChecker({type: 'syncData'})
     })
   }
 
@@ -1202,7 +1205,7 @@ function run() {
           window.targetUserName = box.querySelector('h1')!.textContent!
           box.after($section)
 
-          if (window.config.openTag){
+          if (window.config.openTag) {
             //移除box的bottom样式，让和vue的div融为一体
             box.style.borderBottom = 'none'
             box.style['border-bottom-left-radius'] = '0'
