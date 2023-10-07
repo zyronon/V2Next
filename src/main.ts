@@ -54,6 +54,7 @@ function run() {
     readNoteItemId: '',
     readList: {}
   }
+  window.targetUserName = ''
   window.pageType = undefined
   window.pageData = {pageNo: 1}
   window.config = {
@@ -598,7 +599,7 @@ function run() {
                   let showMore = document.createElement('div')
                   showMore.classList.add('show-more')
                   showMore.innerHTML = '显示更多/收起'
-                  showMore.onclick = function(e) {
+                  showMore.onclick = function (e) {
                     e.stopPropagation()
                     a.classList.toggle('show-all')
                   }
@@ -710,7 +711,7 @@ function run() {
   }
 
   function feedback() {
-    GM_openInTab('https://github.com/zyronon/v2ex-script/discussions/', {
+    GM_openInTab('https://github.com/zyronon/v2ex-script/issues', {
       active: true,
       insert: true,
       setParent: true
@@ -856,6 +857,7 @@ function run() {
       
       ${
       window.config.simple ? `
+      ${window.pageType !== PageType.Member ? `
       .item table tr td:first-child{display:none;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
       .item table tr td .sep5{display:none;}
@@ -863,11 +865,10 @@ function run() {
       .item {border-bottom:none;}
       .avatar,#avatar{display:none;}
       #Logo {background-image:url('https://i.imgur.com/i9VgUtM.png');}
-      
+      ` : ''}
        .bigger a, .top:nth-last-child(5){color: transparent!important;text-shadow: #b0b0b0 0 0 6px;user-select: none;}
       // .bigger a:before,.top:nth-last-child(5):before{content:'Mona Lisa';position: absolute;background: white;}
       #Rightbar .cell table:first-child tr td:first-child{display:none;}
-      
       ` : ''}
 
       ${window.config.customBgColor ? `#Wrapper {
@@ -985,6 +986,8 @@ function run() {
       }
     } else if (location2.href.match(/.com\/recent/)) {
       window.pageType = PageType.Home
+    } else if (location2.href.match(/.com\/member/)) {
+      window.pageType = PageType.Member
     } else {
       let r = location2.href.match(/.com\/t\/([\d]+)/)
       if (r) {
@@ -1131,8 +1134,9 @@ function run() {
       }
     })
 
-    let box
+    let box: any
     let list
+    console.log(window.pageType)
     switch (window.pageType!) {
       case  PageType.Node:
         box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
@@ -1191,6 +1195,20 @@ function run() {
           // console.log('详情页-回复解析完成', new Date())
           await cbChecker({type: 'postReplies', value: res}, 0)
         })
+        break
+      case PageType.Member:
+        box = document.querySelector('#Wrapper #Main .box')!
+        if (box) {
+          window.targetUserName = box.querySelector('h1')!.textContent!
+          box.after($section)
+
+          if (window.config.openTag){
+            //移除box的bottom样式，让和vue的div融为一体
+            box.style.borderBottom = 'none'
+            box.style['border-bottom-left-radius'] = '0'
+            box.style['border-bottom-right-radius'] = '0'
+          }
+        }
         break
       default:
         console.error('未知页面')

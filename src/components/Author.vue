@@ -243,34 +243,6 @@ export default {
       margin-right: 1rem;
     }
 
-    .my-tag {
-      font-size: 1.4rem;
-      color: red;
-      margin-left: 1rem;
-
-      &:hover {
-        .remove {
-          display: inline;
-        }
-      }
-
-      .remove {
-        cursor: pointer;
-        margin-left: .5rem;
-        display: none;
-      }
-    }
-
-    .add-tag {
-      font-size: 2.5rem;
-      transform: translateY(.2rem);
-      line-height: 1rem;
-      display: inline-block;
-      margin-left: 1rem;
-      cursor: pointer;
-      display: none;
-    }
-
   }
 
   &:hover {

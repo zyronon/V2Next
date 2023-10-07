@@ -13,9 +13,8 @@
           </div>
         </div>
         <input type="text"
-               ref="input"
+               ref="inputRef"
                style="width: 100%;"
-               autofocus
                v-model="tagModal.tag" @keydown.enter="addTag">
         <div class="btns">
           <div class="white" @click="tagModal.show = false">取消</div>
@@ -39,14 +38,14 @@ const tagModal = reactive({
 const isNight = inject('isNight')
 const props = defineProps(['tags'])
 const emit = defineEmits(['update:tags'])
-const input = ref<HTMLInputElement>(null)
+const inputRef = ref()
 
 onMounted(() => {
   eventBus.on(CMD.ADD_TAG, (username) => {
     tagModal.currentUsername = username
     tagModal.show = true
     nextTick(() => {
-      input.value.focus()
+      inputRef.value.focus()
     })
   })
 })

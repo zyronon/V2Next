@@ -220,7 +220,7 @@
 
 <script>
 import Tooltip from "@/components/Tooltip.vue";
-import {CommentDisplayType} from "@/types.js";
+import {CommentDisplayType} from "@/types.ts";
 
 export default {
   name: "Setting",

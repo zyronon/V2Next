@@ -59,6 +59,7 @@ export enum PageType {
   Home = "Home",
   Node = "Node",
   Post = "Post",
+  Member = "Member",
 }
 
 export enum CommentDisplayType {

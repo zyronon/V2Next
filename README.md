@@ -59,7 +59,7 @@
   <br/>
 - 回复时指定错了楼层号
   <br/>
-- 脚本解析错误，请在[这里](https://github.com/zyronon/v2ex-script/discussions/7)反馈给我
+- 脚本解析错误，请在[这里](https://github.com/zyronon/v2ex-script/issues)反馈给我
 
 </details>
 <details>
@@ -72,7 +72,7 @@
 这个项目花了我很多精力，如果对您有用：
 
 - 点个 Star ⭐️ 或分享给他人，让更多的人知道我的存在。
-- 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/discussions/7)提出。
+- 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/issues)提出。
 - 请我喝一杯咖啡
 - ![打赏地址](https://i.imgur.com/ow8fsFW.png)
 

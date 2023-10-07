@@ -4,6 +4,7 @@ declare global {
   interface Window {
     initPost: Post,
     user: any,
+    targetUserName: string,//目标用户名字（用于在member界面添加标签）
     baseUrl: string,
     pageData: any,
     config: Config,
@@ -11,11 +12,8 @@ declare global {
     isNight: boolean,
     canParseV2exPage: boolean,
     pageType?: PageType,
-
     clone: (val: any) => any
-
     postList: any[]
-
     parse: {
       parsePostContent: Function,
       getPostAllReplies: Function,
@@ -36,7 +34,6 @@ declare global {
       checkPhotoLink2Img: Function,
     }
     cb: any
-
     win: any
     query: any
   }

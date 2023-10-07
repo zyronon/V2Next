@@ -77,7 +77,7 @@ import Point from "./Point";
 import eventBus from "@/utils/eventBus.js";
 import BaseHtmlRender from "@/components/BaseHtmlRender";
 import {CMD} from "@/utils/type";
-import {CommentDisplayType} from "@/types.js";
+import {CommentDisplayType} from "@/types.ts";
 
 export default {
   name: "Comment",

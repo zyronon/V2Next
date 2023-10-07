@@ -52,15 +52,21 @@ export default {
         show: false,
         currentUsername: '',
         tag: '',
-      }
+      },
     }
   },
   computed: {
+    targetUserTags() {
+      return this.tags[window.targetUserName] ?? []
+    },
     isList() {
-      return this.pageType !== PageType.Post
+      return [PageType.Home, PageType.Node].includes(this.pageType)
     },
     isPost() {
       return this.pageType === PageType.Post
+    },
+    isMember() {
+      return this.pageType === PageType.Member
     },
   },
   watch: {
@@ -534,6 +540,12 @@ export default {
       }
       console.log('当前帖子', this.current)
     },
+    addTargetUserTag() {
+      eventBus.emit(CMD.ADD_TAG, window.targetUserName)
+    },
+    removeTargetUserTag(tag) {
+      eventBus.emit(CMD.REMOVE_TAG, {username: window.targetUserName, tag})
+    },
   },
 }
 </script>
@@ -562,7 +574,16 @@ export default {
         </div>
       </div>
     </div>
-    <div v-if="!isList && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
+    <div class="target-user-tags" v-if="isMember && isLogin && config.openTag">
+      <span>标签：</span>
+      <span class="my-tag" v-for="i in targetUserTags">
+              <i class="fa fa-tag"></i>
+              <span>{{ i }}</span>
+              <i class="fa fa-trash-o remove" @click="removeTargetUserTag(i)"></i>
+            </span>
+      <span class="add-tag ago" @click="addTargetUserTag" title="添加标签">+</span>
+    </div>
+    <div v-if="isPost && !show" class="my-box flex f14 open-post" style="margin: 2rem 0 0 0;padding: 1rem;">
       <div class="flex">
         默认显示楼中楼 ：
         <div class="switch light" :class="{active:config.autoOpenDetail}"
@@ -599,6 +620,19 @@ export default {
   background: white;
   padding: 1rem;
   border-bottom: 1px solid @border;
+}
+
+.target-user-tags {
+  .nav;
+  word-break: break-all;
+  text-align: start;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .1);
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+
+  .add-tag {
+    display: inline-block;
+  }
 }
 </style>
 

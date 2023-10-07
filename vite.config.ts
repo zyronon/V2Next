@@ -23,11 +23,13 @@ export default defineConfig({
           'https://v2ex.com/t/*',
           'https://v2ex.com/recent*',
           'https://v2ex.com/go/*',
+          'https://v2ex.com/member/*',
           'https://*.v2ex.com/',
           'https://*.v2ex.com/?tab=*',
           'https://*.v2ex.com/t/*',
           'https://*.v2ex.com/recent*',
-          'https://*.v2ex.com/go/*'
+          'https://*.v2ex.com/go/*',
+          'https://*.v2ex.com/member/*'
         ],
         description: '让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、发送图片和表情、base64 解码等功能',
         author: 'zyronon',
