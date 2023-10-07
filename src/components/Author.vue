@@ -171,7 +171,8 @@ export default {
   .Author-left {
     display: flex;
     align-items: center;
-    max-width: 90%;
+    max-width: 65%;
+    word-break: break-all;
 
     .username {
       font-size: 1.4rem;
