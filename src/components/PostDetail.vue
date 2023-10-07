@@ -277,7 +277,7 @@ export default {
         return window.clone(this.post.nestedReplies).sort((a, b) => b.thankCount - a.thankCount)
       }
       if (this.displayType === CommentDisplayType.V2exOrigin) return this.post.replyList
-      if (this.displayType ===  CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
+      if (this.displayType === CommentDisplayType.FloorInFloorNested) return this.post.nestedRedundReplies
       if (this.displayType === CommentDisplayType.OnlyOp) return this.post.replyList.filter(v => v.username === this.post.member?.username)
       return []
     },
@@ -332,7 +332,10 @@ export default {
           document.body.style.overflow = 'unset'
           this.isSticky = false
           this.showRelationReply = false
-          if ((this.pageType === PageType.Home || this.pageType === PageType.Node) &&
+          if ((this.pageType === PageType.Home
+                  || this.pageType === PageType.Node
+                  || this.pageType === PageType.Member
+              ) &&
               window.location.pathname !== '/'
           ) {
             window.history.back();
@@ -551,6 +554,7 @@ export default {
 </style>
 
 <style scoped lang="less">
+@import "src/assets/less/index.less";
 @import "src/assets/less/variable.less";
 
 .Post {
@@ -748,7 +752,7 @@ export default {
 
       :deep(.tool) {
         &:hover {
-          background-color: #22303f!important;
+          background-color: #22303f !important;
         }
       }
 

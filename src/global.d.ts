@@ -31,6 +31,7 @@ declare global {
       editNoteItem: Function,
       saveTags: Function,
       saveReadList: Function,
+      saveImgurList: Function,
       checkPhotoLink2Img: Function,
     }
     cb: any

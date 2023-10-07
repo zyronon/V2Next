@@ -52,7 +52,10 @@ function run() {
     avatar: '',
     readPrefix: '--已读楼层--',
     readNoteItemId: '',
-    readList: {}
+    readList: {},
+    imgurPrefix: '--imgur图片删除hash--',
+    imgurList: {},
+    imgurNoteId: '',
   }
   window.targetUserName = ''
   window.pageType = undefined
@@ -657,6 +660,10 @@ function run() {
     async saveReadList(val: any) {
       return await this.editNoteItem(window.user.readPrefix + JSON.stringify(val), window.user.readNoteItemId)
     },
+    //imgur图片删除hash操作
+    async saveImgurList(val: any) {
+      return await this.editNoteItem(window.user.imgurPrefix + JSON.stringify(val), window.user.imgurNoteId)
+    },
     //图片链接转Img标签
     checkPhotoLink2Img(str: string) {
       if (!str) return
@@ -1051,6 +1058,16 @@ function run() {
         let r = await window.parse.createNoteItem(window.user.readPrefix)
         r && (window.user.readNoteItemId = r);
       }
+
+      let imgurItem = Array.from(items).find(v => v.innerText.includes(window.user.imgurPrefix))
+      if (imgurItem) {
+        window.user.imgurNoteId = imgurItem.href.substr(-5)
+        window.user.imgurList = await getNoteItemContent(window.user.imgurNoteId, window.user.imgurPrefix)
+      } else {
+        let r = await window.parse.createNoteItem(window.user.imgurPrefix)
+        r && (window.user.imgurNoteId = r);
+      }
+
       cbChecker({type: 'syncData'})
     })
   }

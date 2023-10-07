@@ -10,6 +10,7 @@ import Msg from '@/components/Msg.vue';
 import Tooltip from "@/components/Tooltip.vue";
 import TagModal from "@/components/Modal/TagModal.vue";
 import MsgModal from "@/components/Modal/MsgModal.vue";
+import {decodeEmail} from "@/utils/email-decode.js";
 
 export default {
   components: {MsgModal, TagModal, Tooltip, Setting, PostDetail, Base64Tooltip, Msg},
@@ -247,6 +248,7 @@ export default {
       window.parse.saveReadList(this.readList)
     },
     clickPost(e, id, href, title = '') {
+      // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
           let index = this.list.findIndex(v => v.id == id)
@@ -519,6 +521,8 @@ export default {
       }
       let bodyText = htmlText.match(/<body[^>]*>([\s\S]+?)<\/body>/g)
       let body = $(bodyText[0])
+
+      decodeEmail(body)
 
       this.current = await window.parse.getPostDetail(this.current, body, htmlText)
       if (this.current.replyList.length) {
