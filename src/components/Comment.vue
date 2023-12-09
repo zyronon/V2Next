@@ -138,7 +138,7 @@ export default {
       if (postDetailWidth !== 0) {
         let rect = this.$refs.comment.getBoundingClientRect()
         let ban = postDetailWidth / 2
-        console.log('ban', ban)
+        // console.log('ban', ban)
         if (ban < rect.width && rect.width < ban + 25 && this.modelValue.children.length) {
           this.expand = false
           // console.log(rect.width - this.postDetailWidth)

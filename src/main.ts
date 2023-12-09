@@ -698,6 +698,24 @@ function run() {
         console.log('正则解析html里面的a标签的图片链接出错了')
       }
       return str
+    },
+    async checkPostReplies(id: string, needOpen: boolean = true) {
+      return new Promise(async resolve => {
+        let showJsonUrl = location.origin + '/api/topics/show.json?id=' + id
+        let r = await fetch(showJsonUrl)
+        if (r) {
+          let res = await r.json()
+          if (res) {
+            if (res[0]?.replies > 300) {
+              if (needOpen) {
+                window.open(`https://www.v2ex.com/t/${id}?p=1&script=1`, '_black')
+              }
+              return resolve(true)
+            }
+          }
+        }
+        resolve(false)
+      })
     }
   }
 
@@ -1124,7 +1142,21 @@ function run() {
     $('.tools').prepend(setting)
   }
 
-  function init() {
+  async function init() {
+    //监听图片加载失败事件，有的imgur图片填的是分享地址，无法转换。
+    //例如：https://imgur.com/a/Gl0ifQ7，这种加上.png也显示不出来，就需要显示原地址
+    window.addEventListener('error', (e: Event) => {
+      let dom: HTMLImageElement = e.target as any
+      let originImgUrl = dom.getAttribute('data-originurl')
+      if (originImgUrl) {
+        let a = document.createElement('a')
+        a.href = originImgUrl
+        a.setAttribute('notice', '以标签由v2ex超级增强脚本因转换图片失败后生成')
+        a.innerText = originImgUrl
+        dom.parentNode!.replaceChild(a, dom,)
+      }
+    }, true)
+
     checkPageType()
     initMonkeyMenu()
 
@@ -1173,6 +1205,9 @@ function run() {
         window.parse.parsePagePostList(list, box)
         break
       case  PageType.Post:
+        let r = await window.parse.checkPostReplies(window.pageData.id, false)
+        if (r) return
+
         //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
         if (window.config.postWidth) {
           //Rightbar的css样式是float，因为自定义帖子宽度的话需要把content改为flex。
@@ -1197,6 +1232,7 @@ function run() {
         let post = Object.assign({}, window.clone(window.initPost), {id: window.pageData.id})
         let body = $(window.win().doc.body)
         let htmlText = window.win().doc.documentElement.outerHTML
+
         window.parse.parsePostContent(
           post,
           body,
@@ -1236,11 +1272,16 @@ function run() {
     }
   }
 
-  window.canParseV2exPage = !window.location.href.includes('script=0')
+  window.canParseV2exPage = !window.location.search.includes('script')
   if (window.canParseV2exPage) {
     init()
   } else {
-    alert('脚本无法查看此主题，已为您单独打开此主题')
+    if (window.location.search.includes('script=0')) {
+      alert('脚本无法查看此主题，已为您单独打开此主题')
+    }
+    if (window.location.search.includes('script=1')) {
+      alert('由于回复数量较多，已为您单独打开此主题')
+    }
   }
 }
 

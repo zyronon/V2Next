@@ -247,10 +247,13 @@ export default {
     saveReadList() {
       window.parse.saveReadList(this.readList)
     },
-    clickPost(e, id, href, title = '') {
+    async clickPost(e, id, href, title = '') {
       // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
+          let r = await window.parse.checkPostReplies(id, true)
+          if (r) return
+
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
           if (index > -1) {
@@ -258,6 +261,7 @@ export default {
           } else {
             postItem.title = title ?? '加载中'
           }
+          console.log('postItem', postItem)
           postItem.id = id
           postItem.href = href
           if (!postItem.headerTemplate) {
@@ -479,6 +483,7 @@ export default {
       })
     },
     async getPostDetail(post, event) {
+      console.log('getPostDetail')
       this.current = Object.assign({}, window.initPost, post)
       this.current.read = this.readList[this.current.id] ?? {floor: 0, total: 0}
       this.show = true

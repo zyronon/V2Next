@@ -33,6 +33,7 @@ declare global {
       saveReadList: Function,
       saveImgurList: Function,
       checkPhotoLink2Img: Function,
+      checkPostReplies: Promise,
     }
     cb: any
     win: any
