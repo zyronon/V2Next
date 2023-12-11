@@ -1,18 +1,19 @@
-# V2EX最现代、最好用、功能最完整的脚本
+# V2EX - 超级增强
+### 兄弟们觉得好用请狠狠的给我点一个 Star ⭐️ 好吗？隔壁V2EX_Polish主打UI美化都上万安装500多 Star ⭐️ 了，蚌埠住了，难道这个还不如他那个好用？？？
 
-1. 代码完全开源，可自行构建出js文件复制到Tampermonkey里面个人使用，构建方法在本文最下面
-2. 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
-3. git仓库地址：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
+1. 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
+2. git仓库地址：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
 
-# 为什么选择V2EX - 超级增强，脚本的优势在哪？
+# 为什么选择这个，而不是其他？
 
-其实没法比，本脚本和其他脚本的区别就像 jsp 和 Spring Cloud的区别 、 jQuery与React的区别。
-其他脚本大多只是对V2EX修修补补，使用体验上依旧是10年前的网站
-1. 对V2EX进行了现代化改造，预览、点赞、回复、屏蔽都走AJAX请求。
-2. 最好用的楼中楼功能：
-    - 其他脚本：只解析当前页，如果有很多页回复，楼中楼就会前言不搭后语莫名其妙的
-    - 本脚本：加载所有回复然后再解析楼中楼，保证回复解析正确
-3. 集成了市面上常见的增强（辅助）功能
+其他：大多只是对V2EX修修补补、美化UI，使用体验上依旧是10年前的网站
+
+这个：
+- 对V2EX进行了现代化改造，预览、点赞、回复、屏蔽都走AJAX请求。
+- 最好用的楼中楼功能： 
+  1. 其他脚本：只解析当前页，如果有很多页回复，楼中楼就会前言不搭后语莫名其妙的
+  2. 本脚本：加载所有回复然后再解析楼中楼，保证回复解析正确
+- 集成了市面上常见的增强（辅助）功能
 
 # 功能列表
 
@@ -72,18 +73,6 @@
 这个项目花了我很多精力，如果对您有用：
 
 - 点个 Star ⭐️ 或分享给他人，让更多的人知道我的存在。
-- 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/issues)提出。
-- 请我喝一杯咖啡
-- ![打赏地址](https://i.imgur.com/ow8fsFW.png)
+- 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/v2ex-script/issues)提出。 
 
 #### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
-
-# 开发指南
-
-1. npm run dev
-
-# 自行构建指南
-
-1. 运行npm run preview
-2. 自动打开浏览器，并安装构建后的脚本内容，点击确认即可
-3. 打开V2即可使用你自己的脚本
