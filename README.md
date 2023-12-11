@@ -1,5 +1,8 @@
 # V2EX - 超级增强
-### 兄弟们觉得好用请狠狠的给我点一个 Star ⭐️ 好吗？隔壁V2EX_Polish主打UI美化都上万安装500多 Star ⭐️ 了，蚌埠住了，难道这个还不如他那个好用？？？
+
+### 9敏，谁懂啊，家人们，大无语事件发生，咱就是说隔壁V2EX_Polish主打UI美化都上万安装 500 多 Star ⭐️ 了，
+### 蚌埠住了啊，难道我这个还不如他那个好用？？？给我一整个整的困惑了
+### 我真的栓q了，兄弟们觉得好用请狠狠的给我点一个 Star ⭐️ 好吗？ 真是一把子无语住了属于是家人们
 
 1. 脚本油猴安装地址：[https://greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)
 2. git仓库地址：[https://github.com/zyronon/v2ex-script](https://github.com/zyronon/v2ex-script)
