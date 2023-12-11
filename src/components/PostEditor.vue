@@ -434,7 +434,7 @@ const imgurClientIdPool = [
   '81be04b9e4a08ce',
 ]
 
-defineExpose({content})
+defineExpose({content, isFocus: () => isFocus.value})
 
 const editorClass = computed(() => {
   return [useType, isFocus.value ? 'isFocus' : '', isNight.value ? 'isNight' : '']
@@ -528,7 +528,7 @@ async function submit() {
   show_content = show_content.replaceAll('\n', '<br/>')
 
   // loading.value = false
-   console.log('show_content', show_content)
+  console.log('show_content', show_content)
 
   let item = {
     thankCount: 0,
@@ -695,6 +695,8 @@ function onKeydown(e) {
     case 13:
       //Ctrl + Enter发送
       if (e.ctrlKey) submit()
+      //Command + Enter发送
+      if (e.metaKey) submit()
       break
   }
 }
