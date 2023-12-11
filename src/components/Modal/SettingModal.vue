@@ -36,7 +36,7 @@
             <div class="option">
               <span>点击列表的帖子，打开详情弹框 ：</span>
               <div class="switch gray" :class="{active:config.clickPostItemOpenDetail,isNight}"
-                   @click="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail"/>
+                   @click="config.clickPostItemOpenDetail = !config.clickPostItemOpenDetail;config.newTabOpen = !config.clickPostItemOpenDetail"/>
             </div>
             <div class="notice">
               若关闭此项，点击列表的帖子时，不会打开弹框，会跳转网页
@@ -333,6 +333,7 @@ export default {
       a {
         color: blue;
       }
+
     }
   }
 }

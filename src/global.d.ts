@@ -34,10 +34,12 @@ declare global {
       saveImgurList: Function,
       checkPhotoLink2Img: Function,
       checkPostReplies: Promise,
+      openNewTab: Function,
     }
     cb: any
     win: any
     query: any
+    stopMe: boolean
   }
 }
 

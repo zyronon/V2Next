@@ -39,7 +39,7 @@ export default {
       isLogin: !!window.user.username,
       pageType: window.pageType,
       isNight: window.isNight,
-      stopMe: false,//停止使用脚本
+      stopMe: window.stopMe,//停止使用脚本
       show: false,
       current: window.clone(window.initPost),
       list: [],
@@ -124,7 +124,6 @@ export default {
     },
   },
   created() {
-    // console.log('create', this.current)
     window.cb = this.winCb
     if (window.win().canParseV2exPage) {
       if (this.isList) {
@@ -184,15 +183,18 @@ export default {
     }
     //A标签的
     $(document).on('click', 'a', (e) => {
+      //有handle表示是脚本生成的a标签用于新开页面的
+      if (e.currentTarget.getAttribute('script')) return
       if (this.stopMe) return true
       let {href, id, title} = window.parse.parseA(e.currentTarget)
-      if (this.clickPost(e, id, href, title)) {
-        return false
+      if (id) {
+        this.clickPost(e, id, href, title)
       }
     })
-    let that = this
     //帖子的
     $(document).on('click', '.post-item', function (e) {
+      if (e.currentTarget.getAttribute('script')) return
+      if (this.stopMe) return true
       //只有预览时，才响应点击
       if (this.classList.contains('preview')) {
         //A标签，要么上面的on事件已经处理了，要么就是不需要处理
@@ -207,16 +209,17 @@ export default {
           console.log('点空白处')
           let id = this.dataset['id']
           let href = this.dataset['href']
-          if (that.clickPost(e, id, href)) {
-            return false
+          if (id) {
+            this.clickPost(e, id, href)
           } else {
-            location.href = href
+            if (href) location.href = href
           }
         }
       }
     })
     //展开或收起的点击事件
     $(document).on('click', '.toggle', (e) => {
+      if (this.stopMe) return true
       let id = e.currentTarget.dataset['id']
       let itemDom = window.win().query(`.id_${id}`)
       if (itemDom.classList.contains('preview')) {
@@ -251,9 +254,7 @@ export default {
       // id = '976890'
       if (id) {
         if (this.config.clickPostItemOpenDetail) {
-          let r = await window.parse.checkPostReplies(id, true)
-          if (r) return
-
+          e.preventDefault()
           let index = this.list.findIndex(v => v.id == id)
           let postItem = this.clone(window.initPost)
           if (index > -1) {
@@ -261,7 +262,16 @@ export default {
           } else {
             postItem.title = title ?? '加载中'
           }
-          console.log('postItem', postItem)
+          //如果有评论数量，那就取来判断，没有则调接口判断
+          if (postItem.replies) {
+            if (postItem.replies > 300) {
+              return window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
+            }
+          } else {
+            let r = await window.parse.checkPostReplies(id, true)
+            if (r) return true
+          }
+          // console.log('postItem', postItem)
           postItem.id = id
           postItem.href = href
           if (!postItem.headerTemplate) {
@@ -302,21 +312,10 @@ export default {
             postItem.headerTemplate = template
           }
           this.getPostDetail(postItem)
-          e.preventDefault()
-          return true
         }
         if (this.config.newTabOpen) {
-          let tempId = 'a_blank_' + Date.now()
-          let a = win().doc.createElement("a");
-          a.setAttribute("href", href);
-          a.setAttribute("target", "_blank");
-          a.setAttribute("id", tempId);
-          // 防止反复添加
-          if (!win().doc.getElementById(tempId)) {
-            win().doc.body.appendChild(a);
-          }
-          a.click();
-          return true
+          e.preventDefault()
+          window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1`)
         }
       }
     },
@@ -332,35 +331,12 @@ export default {
     async winCb({type, value}) {
       // console.log('回调的类型', type, value)
       if (type === 'openSetting') {
-        this.configModal.show = true
-      }
-      if (type === 'restorePost') {
-        if (this.stopMe) return
-        this.stopMe = true
-        this.show = false
-        this.loading = false
-        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '脚本无法查看此页面！'})
-        $(`#Wrapper #Main .box:lt(3)`).each(function () {
-          $(this).show()
-        })
-      }
-      if (type === 'postContent') {
-        if (this.stopMe) return
-        this.current = Object.assign(this.clone(this.current), this.clone(value))
-        //这时有正文了，再打开，体验比较好
-        if (this.config.autoOpenDetail) {
-          this.showPost()
-        }
-      }
-      if (type === 'postReplies') {
-        if (this.stopMe) return
-        this.current = Object.assign(this.clone(this.current), this.clone(value))
-        console.log('当前帖子', this.current)
-        this.loading = false
+        this.showConfig()
       }
       if (type === 'syncData') {
         this.list = window.postList
         this.config = window.config
+        this.stopMe = window.stopMe
         this.tags = window.user.tags
         this.readList = window.user.readList
         this.current.read = this.readList[this.current.id] ?? {}
@@ -371,8 +347,30 @@ export default {
           //   this.$refs.postDetail.jumpLastRead(this.current.read.floor)
           // })
         }
-        console.log('this.readList', this.readList)
+        // console.log('this.readList', this.readList)
         // console.log(this.tags)
+      }
+
+      if (this.stopMe) return
+      if (type === 'restorePost') {
+        this.show = false
+        this.loading = false
+        eventBus.emit(CMD.SHOW_MSG, {type: 'warning', text: '脚本无法查看此页面！'})
+        $(`#Wrapper #Main .box:lt(3)`).each(function () {
+          $(this).show()
+        })
+      }
+      if (type === 'postContent') {
+        this.current = Object.assign(this.clone(this.current), this.clone(value))
+        //这时有正文了，再打开，体验比较好
+        if (this.config.autoOpenDetail) {
+          this.showPost()
+        }
+      }
+      if (type === 'postReplies') {
+        this.current = Object.assign(this.clone(this.current), this.clone(value))
+        console.log('当前帖子', this.current)
+        this.loading = false
       }
     },
     clone(val) {
@@ -598,6 +596,7 @@ export default {
         <div class="switch light" :class="{active:config.autoOpenDetail}"
              @click="config.autoOpenDetail = !config.autoOpenDetail"/>
       </div>
+      {{stopMe}}
       <div class="button light" @click="showPost" :class="{loading,isNight}">
         点击显示楼中楼
       </div>
@@ -620,7 +619,7 @@ export default {
 }
 
 .card {
-  border-radius: 0 0 0.4rem 0.4rem;
+  border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
   overflow: hidden;
 }
 

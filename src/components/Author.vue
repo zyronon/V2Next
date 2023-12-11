@@ -68,7 +68,7 @@
           @recallThank="recallThank"
           :api-url="'reply/'+comment.id"
       />
-      <div class="floor" :class="{isDev}">{{ (isDev ? `a${comment.floor}-` : comment.floor) }}</div>
+      <div class="floor" :class="{isDev}">{{ (false ? `a${comment.floor}-` : comment.floor) }}</div>
     </div>
   </div>
 </template>
@@ -267,18 +267,6 @@ export default {
         background: white;
         opacity: 1;
       }
-    }
-
-    .floor {
-      margin-left: 1rem;
-      font-size: 1.2rem;
-      line-height: 1rem;
-      border-radius: 1rem;
-      display: inline-block;
-      background-color: #f0f0f0;
-      color: #ccc;
-      padding: .2rem .5rem;
-      cursor: default;
     }
 
     .isDev {

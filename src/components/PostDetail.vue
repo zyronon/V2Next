@@ -589,6 +589,11 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 
+  :deep(.subtle){
+    background-color: rgb(236 253 245 / 90%);
+    border-left: 4px solid #a7f3d0;
+  }
+
   &.isNight {
     background: rgba(46, 47, 48, .8);
 
@@ -635,13 +640,9 @@ export default {
       }
 
       :deep(.subtle) {
-        .fade {
-          color: #b2c3d4 !important;
-        }
+        background-color: rgb(26,51,50);
+        border-left: 4px solid #047857;
 
-        .topic_content {
-          color: @text !important;
-        }
       }
 
       .my-cell {

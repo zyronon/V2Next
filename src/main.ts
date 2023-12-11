@@ -88,6 +88,7 @@ function run() {
   window.currentVersion = 1
   window.isNight = $('.Night').length === 1
   window.cb = null
+  window.stopMe = false
   window.postList = []
   window.parse = {
     //解析帖子内容
@@ -701,14 +702,14 @@ function run() {
     },
     async checkPostReplies(id: string, needOpen: boolean = true) {
       return new Promise(async resolve => {
-        let showJsonUrl = location.origin + '/api/topics/show.json?id=' + id
+        let showJsonUrl = `${location.origin}/api/topics/show.json?id=${id}`
         let r = await fetch(showJsonUrl)
         if (r) {
           let res = await r.json()
           if (res) {
             if (res[0]?.replies > 300) {
               if (needOpen) {
-                window.open(`https://www.v2ex.com/t/${id}?p=1&script=1`, '_black')
+                window.parse.openNewTab(`https://www.v2ex.com/t/${id}?p=1&script=1`)
               }
               return resolve(true)
             }
@@ -716,6 +717,19 @@ function run() {
         }
         resolve(false)
       })
+    },
+    openNewTab(href: string) {
+      let tempId = 'a_blank_' + Date.now()
+      let a = document.createElement("a");
+      a.setAttribute("href", href);
+      a.setAttribute("target", "_blank");
+      a.setAttribute("id", tempId);
+      a.setAttribute("script", '1');
+      // 防止反复添加
+      if (!document.getElementById(tempId)) {
+        document.body.appendChild(a);
+      }
+      a.click();
     }
   }
 
@@ -730,7 +744,7 @@ function run() {
     if (window.cb) {
       window.cb(val)
     } else {
-      while ((!window.cb) && count < 20) {
+      while ((!window.cb) && count < 30) {
         await sleep(500)
         count++
       }
@@ -765,6 +779,28 @@ function run() {
        html, body {
             font-size: 62.5%;
         }
+        :root{
+          --box-border-radius:8px;
+            .Night{
+               --box-foreground-color:rgb(173, 186, 199);
+            }
+        }
+        
+        .box{
+          box-shadow:rgba(0, 0, 0, 0.08) 0px 4px 12px;
+        }
+        
+        #Tabs{
+            border-top-left-radius: var(--box-border-radius) !important;
+            border-top-right-radius: var(--box-border-radius) !important;
+        }
+        
+        #Main .cell .count_livid { 
+            font-size: 14px;
+            font-weight: 500; 
+            padding: 3px 10px; 
+            border-radius: 5px; 
+        }
 
         #Wrapper {
           height: unset !important;
@@ -778,6 +814,9 @@ function run() {
 
       .post-item {
           background: white;
+      } 
+      .post-item:last-of-type {
+          background: red;
       }
 
       .post-item > .post-content {
@@ -806,13 +845,13 @@ function run() {
 
       .preview {
           margin: 1rem 0;
-          border: 1px solid #c8c8c8;
-          border-radius: 0.4rem;
+          border: 1px solid transparent;
+          border-radius: var(--box-border-radius);
           cursor: pointer;
       }
 
       .preview:hover {
-          border: 1px solid #968b8b;
+          border: 1px solid #c8c8c8;
       }
 
       .preview > .post-content {
@@ -1188,7 +1227,7 @@ function run() {
 
     let box: any
     let list
-    console.log(window.pageType)
+    // console.log(window.pageType)
     switch (window.pageType!) {
       case  PageType.Node:
         box = window.win().doc.querySelectorAll('#Wrapper #Main .box')
@@ -1205,8 +1244,16 @@ function run() {
         window.parse.parsePagePostList(list, box)
         break
       case  PageType.Post:
+        box = document.querySelector('#Wrapper #Main .box')
+        // @ts-ignore
+        box.after($section)
+
         let r = await window.parse.checkPostReplies(window.pageData.id, false)
-        if (r) return
+        if (r) {
+          window.stopMe = true
+          alert('由于回复数量较多，脚本已停止解析楼中楼')
+          return cbChecker({type: 'syncData'})
+        }
 
         //如果设置了postWidth才去执行。因为修改Main的宽度会导致页面突然变宽或变窄
         if (window.config.postWidth) {
@@ -1226,9 +1273,6 @@ function run() {
           Main.after($('#Rightbar'))
         }
 
-        box = document.querySelector('#Wrapper #Main .box')
-        // @ts-ignore
-        box.after($section)
         let post = Object.assign({}, window.clone(window.initPost), {id: window.pageData.id})
         let body = $(window.win().doc.body)
         let htmlText = window.win().doc.documentElement.outerHTML
@@ -1276,11 +1320,13 @@ function run() {
   if (window.canParseV2exPage) {
     init()
   } else {
+    window.stopMe = true
+    cbChecker({type: 'syncData'})
     if (window.location.search.includes('script=0')) {
       alert('脚本无法查看此主题，已为您单独打开此主题')
     }
     if (window.location.search.includes('script=1')) {
-      alert('由于回复数量较多，已为您单独打开此主题')
+      alert('由于回复数量较多，已为您单独打开此主题并停止解析楼中楼')
     }
   }
 }
