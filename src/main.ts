@@ -815,9 +815,6 @@ function run() {
       .post-item {
           background: white;
       } 
-      .post-item:last-of-type {
-          background: red;
-      }
 
       .post-item > .post-content {
           height: 0;

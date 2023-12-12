@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         V2EX - 超级增强
 // @namespace    http://tampermonkey.net/
-// @version      7.6
+// @version      7.7
 // @author       zyronon
 // @description  让V2EX现代化。支持楼中楼、简洁模式、高赞回复排序、发送图片和表情、base64 解码等功能
 // @license      GPL License
@@ -4802,9 +4802,6 @@
       .post-item {
           background: white;
       } 
-      .post-item:last-of-type {
-          background: red;
-      }
 
       .post-item > .post-content {
           height: 0;
