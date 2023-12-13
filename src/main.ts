@@ -620,7 +620,7 @@ function run() {
       let href = a.href
       let id
       if (href.includes('/t/')) {
-        id = href.substring(href.indexOf('/t/') + 3, href.indexOf('/t/') + 9)
+        id = href.substring(href.indexOf('/t/') + 3, href.indexOf('/t/') + 10)
       }
       return {href, id, title: a.innerText}
     },
