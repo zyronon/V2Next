@@ -45,7 +45,3 @@
 
 > _**不会离线安装 .crx
 扩展？[Chrome、Edge 重新开启隐藏的 [拖入安装 .crx 扩展] 功能！](https://zhuanlan.zhihu.com/p/276027099)**_
-
-## License
-
-The GPL-3.0 License.
