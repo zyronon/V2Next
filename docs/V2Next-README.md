@@ -1,5 +1,8 @@
 ## V2Next - 最好用的V站脚本
-https://github.com/zyronon/web-scripts/assets/19986642/6db8a9ef-825a-4ef2-bbfe-17dd13dfc232
+
+<video  width="100%" src="https://github.com/zyronon/web-scripts/assets/19986642/6db8a9ef-825a-4ef2-bbfe-17dd13dfc232" controls>
+  Your browser does not support the video tag.
+</video>
 
 UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码等等，**支持移动端**
 
@@ -57,7 +60,7 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 ### 高赞回复、回复上下文
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/8977a5d5-2842-433c-8c95-e9663a462684)
 
-# 常见问题
+## 常见问题
 
 <details>y
   <summary>为什么要加载所有回复？</summary>
@@ -97,7 +100,7 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 
 > _所有脚本均在 **Chrome、Firefox、Edge 浏览器 + Tampermonkey 扩展** 环境下测试通过！_
 
-# 如何帮助我
+## 如何帮助我
 
 这个项目花了我很多精力，如果对您有用：
 
