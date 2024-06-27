@@ -8,7 +8,7 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 
 ## 安装使用
 - PC脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)![i](https://img.shields.io/greasyfork/dt/458024)
-- 手机端脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)，安装教程: [mobile-install.html](https://v2next.netlify.app/mobile-install.html)
+- 手机端脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)，安装教程: [mobile-install.html](https://v2ex-script.vercel.app/mobile-install.html)
 - Github: [github.com/zyronon/web-scripts](https://github.com/zyronon/web-scripts)
 
 **使用其他类似的脚本或插件可能会导致冲突，如果在使用过程中发现网页内容有误，建议关闭其他插件以排查问题。**
