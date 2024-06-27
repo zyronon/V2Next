@@ -5,7 +5,7 @@
 // @author       zyronon
 // @description  V2Next - 一个好用的V2EX脚本！ 移动端专用
 // @license      GPL License
-// @icon         https://v2next.netlify.app/favicon.ico
+// @icon         https://www.v2ex.com/static/favicon.ico
 // @homepage     https://github.com/zyronon/web-scripts
 // @homepageURL  https://github.com/zyronon/web-scripts
 // @supportURL   https://update.greasyfork.org/scripts/485356/V2Next-Mobile.user.js
