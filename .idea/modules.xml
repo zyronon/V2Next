@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/v2ex-script.iml" filepath="$PROJECT_DIR$/.idea/v2ex-script.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/V2Next.iml" filepath="$PROJECT_DIR$/.idea/V2Next.iml" />
     </modules>
   </component>
 </project>
