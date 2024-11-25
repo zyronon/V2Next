@@ -2,10 +2,10 @@
 
 UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码等等，**支持移动端**
 
-### 安装使用
-- PC脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)![i](https://img.shields.io/greasyfork/dt/458024)
-- [Android Apk](https://github.com/zyronon/V2Next/releases)
+### 安装地址
+- Android Apk：https://github.com/zyronon/V2Next/releases
 - iOS App 请自行打包
+- PC脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)![i](https://img.shields.io/greasyfork/dt/458024)
 
 ### 主要功能
 - 楼中楼：主题下的评论回复支持层级展示，可以更轻松地跟踪和回复其他用户的评论
