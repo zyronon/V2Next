@@ -2,20 +2,12 @@
 
 UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码等等，**支持移动端**
 
-<video  width="100%" src="https://github.com/zyronon/web-scripts/assets/19986642/6db8a9ef-825a-4ef2-bbfe-17dd13dfc232" controls>
-  Your browser does not support the video tag.
-</video>
-
-
-## 安装使用
+### 安装使用
 - PC脚本安装地址: [greasyfork.org/zh-CN/scripts/458024](https://greasyfork.org/zh-CN/scripts/458024)![i](https://img.shields.io/greasyfork/dt/458024)
+- [Android Apk](https://github.com/zyronon/V2Next/releases)
+- iOS App 请自行打包
 
-[//]: # (- Github: [https://github.com/zyronon/V2Next]&#40;https://github.com/zyronon/V2Next&#41;)
-
-**使用其他类似的脚本或插件可能会导致冲突，如果在使用过程中发现网页内容有误，建议关闭其他插件以排查问题。**
-
-
-### 特色功能
+### 主要功能
 - 楼中楼：主题下的评论回复支持层级展示，可以更轻松地跟踪和回复其他用户的评论
 - 弹框查看主题：点击标题，在当前页面弹框显示主题正文和回复，无需刷新界面，就像Reddit那样！
 - 高赞回复展示：自动筛选出感谢最多的回复，第一时间追上热评
@@ -26,9 +18,7 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 - 用户标签：对用户设置标签以进行标记
 <details>
   <summary>点击发现更多功能👇</summary>
-
 ---
-
 - 便捷图片上传：粘贴、拖放极速上传图片
 - 划词 base64 解码：选中需要解码的文字，即可自动解码
 - 表情回复支持：评论输入框可以选择 Emoji 和贴吧表情，让回复更加生动和有趣
@@ -43,15 +33,27 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 - 简洁模式：隐藏用户头像，去除非必要信息，界面看起来更清爽
 </details>
 
-## 功能效果展示
+## 截图
 
-### UI美化和卡片模式
+### App截图
+<div align="center">
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/1.jpg?raw=true" width="32%"></img>
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/2.jpg?raw=true" width="32%"></img>
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/3.jpg?raw=true" width="32%"></img>
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/4.jpg?raw=true" width="32%"></img>
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/5.jpg?raw=true" width="32%"></img>
+    <img src="https://github.com/zyronon/V2Next-app/blob/6522b974033f92249f40216ec2bfef53c11fb0e5/docs/6.jpg?raw=true" width="32%"></img>
+</div>
+
+### PC脚本截图
+
+#### UI美化和卡片模式
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/bf4986c8-889c-4408-8149-af85e557dd06)
 
-### 楼中楼、主题显示OP注册时间
+#### 楼中楼、主题显示OP注册时间
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/c5598b53-c0d4-4a0a-b1ad-c9e4740644c1)
 
-### 高赞回复、回复上下文
+#### 高赞回复、回复上下文
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/8977a5d5-2842-433c-8c95-e9663a462684)
 
 ## 常见问题
