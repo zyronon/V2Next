@@ -4,3 +4,6 @@
 [submodule "V2Next-hot"]
 	path = V2Next-hot
 	url = https://github.com/zyronon/V2Next-hot
+[submodule "V2Next-app"]
+	path = V2Next-app
+	url = https://github.com/zyronon/V2Next-app
