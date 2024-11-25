@@ -48,13 +48,8 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 
 ### PC脚本截图
 
-#### UI美化和卡片模式
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/bf4986c8-889c-4408-8149-af85e557dd06)
-
-#### 楼中楼、主题显示OP注册时间
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/c5598b53-c0d4-4a0a-b1ad-c9e4740644c1)
-
-#### 高赞回复、回复上下文
 ![image](https://github.com/zyronon/web-scripts/assets/19986642/8977a5d5-2842-433c-8c95-e9663a462684)
 
 ## 常见问题
@@ -91,5 +86,5 @@ UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图
 - 点个 Star ⭐️ 或分享给他人，让更多的人知道我的存在。
 - 提供反馈，帮助我改进，以持续完善脚本。在[这里](https://github.com/zyronon/V2Next/issues)提出。
 
-#### 更新日志：[https://greasyfork.org/zh-CN/scripts/458024/versions](https://greasyfork.org/zh-CN/scripts/458024/versions)
-
+## 感谢
+[VVEX](https://github.com/guozhigq/flutter_v2ex): 很多思路借鉴了 VVEX， 特别感谢 🙏
