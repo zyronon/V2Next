@@ -1,6 +1,6 @@
 ## V2Next - 最好用的V站辅助工具
 
-UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码等等，**支持移动端**
+UI美化、楼中楼、回复上下文、高赞回复、简洁模式、发送图片和表情 emoji、base64 解码等等，**手机 App 已发布**
 
 ### 安装地址
 - Android Apk：https://github.com/zyronon/V2Next/releases
